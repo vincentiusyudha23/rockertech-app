@@ -21849,10 +21849,8 @@ label,
 }
 
 .icon-shape i {
-  color: #fff;
-  opacity: 0.8;
-  top: 11px;
-  position: relative;
+  color: white;
+  opacity: 1;
 }
 
 .icon-shape .ni {
@@ -21886,7 +21884,7 @@ label,
 
 .icon-sm i {
   top: 2px;
-  font-size: .65rem;
+  /* font-size: .65rem; */
 }
 
 .icon-md {
@@ -22604,8 +22602,8 @@ html {
 
 .navbar-vertical.navbar-expand-xs .navbar-collapse {
   display: block;
-  overflow: auto;
-  height: calc(100vh - 360px);
+  /* overflow: auto;
+  height: calc(100vh - 360px); */
 }
 
 .navbar-vertical.navbar-expand-xs>[class*="container"] {
@@ -22657,11 +22655,11 @@ html {
   top: 0;
 }
 
-.navbar-vertical.navbar-expand-xs .navbar-nav>.nav-item>.nav-link .icon svg .color-background {
+.navbar-vertical.navbar-expand-xs .navbar-nav>.nav-item>.nav-link .icon i .color-background {
   fill: #3A416F;
 }
 
-.navbar-vertical.navbar-expand-xs .navbar-nav>.nav-item>.nav-link .icon svg .color-foreground {
+.navbar-vertical.navbar-expand-xs .navbar-nav>.nav-item>.nav-link .icon i .color-foreground {
   fill: #141727;
 }
 
@@ -22701,8 +22699,8 @@ html {
 
   .navbar-vertical.navbar-expand-sm .navbar-collapse {
     display: block;
-    overflow: auto;
-    height: calc(100vh - 360px);
+    /* overflow: auto;
+    height: calc(100vh - 360px); */
   }
 
   .navbar-vertical.navbar-expand-sm>[class*="container"] {
@@ -22756,11 +22754,11 @@ html {
     top: 0;
   }
 
-  .navbar-vertical.navbar-expand-sm .navbar-nav>.nav-item>.nav-link .icon svg .color-background {
+  .navbar-vertical.navbar-expand-sm .navbar-nav>.nav-item>.nav-link .icon i .color-background {
     fill: #3A416F;
   }
 
-  .navbar-vertical.navbar-expand-sm .navbar-nav>.nav-item>.nav-link .icon svg .color-foreground {
+  .navbar-vertical.navbar-expand-sm .navbar-nav>.nav-item>.nav-link .icon i .color-foreground {
     fill: #141727;
   }
 
@@ -22801,8 +22799,8 @@ html {
 
   .navbar-vertical.navbar-expand-md .navbar-collapse {
     display: block;
-    overflow: auto;
-    height: calc(100vh - 360px);
+    /* overflow: auto;
+    height: calc(100vh - 360px); */
   }
 
   .navbar-vertical.navbar-expand-md>[class*="container"] {
@@ -22856,11 +22854,11 @@ html {
     top: 0;
   }
 
-  .navbar-vertical.navbar-expand-md .navbar-nav>.nav-item>.nav-link .icon svg .color-background {
+  .navbar-vertical.navbar-expand-md .navbar-nav>.nav-item>.nav-link .icon i .color-background {
     fill: #3A416F;
   }
 
-  .navbar-vertical.navbar-expand-md .navbar-nav>.nav-item>.nav-link .icon svg .color-foreground {
+  .navbar-vertical.navbar-expand-md .navbar-nav>.nav-item>.nav-link .icon i .color-foreground {
     fill: #141727;
   }
 
@@ -22901,8 +22899,8 @@ html {
 
   .navbar-vertical.navbar-expand-lg .navbar-collapse {
     display: block;
-    overflow: auto;
-    height: calc(100vh - 360px);
+    /* overflow: auto;
+    height: calc(100vh - 360px); */
   }
 
   .navbar-vertical.navbar-expand-lg>[class*="container"] {
@@ -22956,11 +22954,11 @@ html {
     top: 0;
   }
 
-  .navbar-vertical.navbar-expand-lg .navbar-nav>.nav-item>.nav-link .icon svg .color-background {
+  .navbar-vertical.navbar-expand-lg .navbar-nav>.nav-item>.nav-link .icon i .color-background {
     fill: #3A416F;
   }
 
-  .navbar-vertical.navbar-expand-lg .navbar-nav>.nav-item>.nav-link .icon svg .color-foreground {
+  .navbar-vertical.navbar-expand-lg .navbar-nav>.nav-item>.nav-link .icon i .color-foreground {
     fill: #141727;
   }
 
@@ -23001,8 +22999,8 @@ html {
 
   .navbar-vertical.navbar-expand-xl .navbar-collapse {
     display: block;
-    overflow: auto;
-    height: calc(100vh - 360px);
+    /* overflow: auto;
+    height: calc(100vh - 360px); */
   }
 
   .navbar-vertical.navbar-expand-xl>[class*="container"] {
@@ -23101,8 +23099,8 @@ html {
 
   .navbar-vertical.navbar-expand-xxl .navbar-collapse {
     display: block;
-    overflow: auto;
-    height: calc(100vh - 360px);
+    /* overflow: auto;
+    height: calc(100vh - 360px); */
   }
 
   .navbar-vertical.navbar-expand-xxl>[class*="container"] {
@@ -23156,11 +23154,11 @@ html {
     top: 0;
   }
 
-  .navbar-vertical.navbar-expand-xxl .navbar-nav>.nav-item>.nav-link .icon svg .color-background {
+  .navbar-vertical.navbar-expand-xxl .navbar-nav>.nav-item>.nav-link .icon i .color-background {
     fill: #3A416F;
   }
 
-  .navbar-vertical.navbar-expand-xxl .navbar-nav>.nav-item>.nav-link .icon svg .color-foreground {
+  .navbar-vertical.navbar-expand-xxl .navbar-nav>.nav-item>.nav-link .icon i .color-foreground {
     fill: #141727;
   }
 
@@ -23332,11 +23330,12 @@ html {
 }
 
 .navbar-vertical .navbar-nav>.nav-item .nav-link.active .icon {
-  background-image: linear-gradient(310deg, #cb0c9f 0%, #cb0c9f 100%);
+  background-image: linear-gradient(310deg, #2152ff 0%, #21d4fd 100%);
+  color: white;
 }
 
-.navbar-vertical .navbar-nav>.nav-item .nav-link.active .icon svg .color-background,
-.navbar-vertical .navbar-nav>.nav-item .nav-link.active .icon svg .color-foreground {
+.navbar-vertical .navbar-nav>.nav-item .nav-link.active .icon i .color-background,
+.navbar-vertical .navbar-nav>.nav-item .nav-link.active .icon i .color-foreground {
   fill: #fff;
 }
 
@@ -23628,8 +23627,8 @@ html {
   color: #141727;
 }
 
-.navbar-vertical .navbar-nav .nav-item .nav-link .icon i {
-  color: #fff;
+.navbar-vertical .navbar-nav .nav-item .nav-link.active .icon i {
+  color: white;
 }
 
 .nav.nav-pills {

@@ -1,15 +1,20 @@
 @extends('layouts.master')
 
-@push('styles')
-    <style>
-        .bg-login{
-            background: linear-gradient(310deg, #ddd,);
-        }
-    </style>
-@endpush
+@php
+    $title = 'Login';
+@endphp
+
+@section('title')
+    {{ $title }}
+@endsection
 
 @section('content')
-<div class="w-100 o-hidden vh-100 d-flex justify-content-center align-items-center">
+<div class="w-100 overflow-hidden vh-100 d-flex justify-content-center align-items-center">
+    <div class="w-100 position-absolute top-0 left-0 p-3" style="height: 60vh;">
+        <div class="page-header w-100 h-100 rounded-3" style="background-image: url('{{ assets('img/curved-images/curved14.jpg') }}')">
+            <span class="mask bg-gradient-dark opacity-5"></span>
+        </div>
+    </div>
     <div class="container">
         <div class="row">
             <div class="col-xl-4 col-lg-5 col-md-6 d-flex flex-column mx-auto">
@@ -19,20 +24,26 @@
                         <p class="mb-0">Enter your account to sign in</p>
                     </div>
                     <div class="card-body">
-                        {{-- <div class="alert alert-danger text-white" role="alert">
-                            <strong>Failed!</strong> This is a danger alert—check it out!
-                        </div> --}}
-                        <form role="form">
+                        {{-- ALERT TAG --}}
+                        @if (count($errors) > 0)
+                            <div class="alert alert-danger text-white" role="alert">
+                                {{ $errors->get('username')[0] ?? null }}
+                                {{ $errors->get('password')[0] ?? null }}
+                            </div>
+                        @endif
+                        {{-- FORM LOGIN --}}
+                        <form role="form" method="POST" action="{{ route('login') }}">
+                            @csrf
                             <label>Username</label>
                             <div class="mb-3">
-                                <input type="text" required class="form-control" placeholder="Username" aria-label="Username" aria-describedby="email-addon">
+                                <input type="text" value="{{ old('username') }}" name="username" required class="form-control" placeholder="Username" aria-label="Username" aria-describedby="email-addon">
                             </div>
                             <label>Password</label>
                             <div class="mb-3">
-                                <input type="password" class="form-control" placeholder="Password" aria-label="Password" aria-describedby="password-addon">
+                                <input type="password" name="password" class="form-control" placeholder="Password" aria-label="Password" aria-describedby="password-addon">
                             </div>
                             <div class="form-check form-switch">
-                                <input class="form-check-input" type="checkbox" id="rememberMe" checked="">
+                                <input class="form-check-input" name="remember" type="checkbox" id="rememberMe" checked="">
                                 <label class="form-check-label" for="rememberMe">Remember me</label>
                             </div>
                             <div class="text-center">
