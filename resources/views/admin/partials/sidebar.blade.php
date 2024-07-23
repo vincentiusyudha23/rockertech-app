@@ -6,9 +6,9 @@
       </a>
     </div>
     <hr class="horizontal dark mt-0">
-    <div class="collapse navbar-collapse w-auto" id="sidenav-collapse-main">
+    <div class="collapse navbar-collapse w-autov" id="sidenav-collapse-main">
       <ul class="navbar-nav">
-        <li class="nav-item">
+        <li class="nav-item mb-2">
           <a class="nav-link {{ request()->routeIs('admin.dashboard') ? 'active' : '' }}" href="{{ route('admin.dashboard') }}">
             <div class="icon icon-shape icon-sm shadow border-radius-md bg-white me-2 text-center d-flex align-items-center justify-content-center">
                 <i class="fa-solid fa-gauge fa-sm"></i>
@@ -16,12 +16,12 @@
             <span class="nav-link-text ms-1">Dashboard</span>
           </a>
         </li>
-        <li class="nav-item">
+        <li class="nav-item mb-2">
           <a class="nav-link" href="../pages/dashboard.html">
             <div class="icon icon-shape icon-sm shadow border-radius-md bg-white me-2 text-center d-flex align-items-center justify-content-center">
-                <i class="fa-solid fa-gauge fa-sm"></i>
+                <i class="fa-solid fa-users fa-sm"></i>
             </div>
-            <span class="nav-link-text ms-1">Dashboard</span>
+            <span class="nav-link-text ms-1">Employee Account</span>
           </a>
         </li>
       </ul>

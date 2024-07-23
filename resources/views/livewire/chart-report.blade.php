@@ -1,13 +1,9 @@
-<div class="col-lg-7">
-    <div class="card z-index-2">
+<div class="col-lg-7 h-100">
+    <div class="card z-index-2 h-100">
         <div class="card-header pb-0">
             <h6>Presence Activity</h6>
-            <p class="text-sm">
-                <i class="fa fa-arrow-up text-success"></i>
-                <span class="font-weight-bold">4% more</span> in 2021
-            </p>
         </div>
-        <div class="card-body p-3" style="height: 300px;">
+        <div class="card-body p-3" style="height: 350px;">
             <div wire:loading id="skeleton" class="skeleton">
                 <div class="skeleton-text mt-2"></div>
             </div>

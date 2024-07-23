@@ -35,7 +35,7 @@
     @if (Auth::check())
         @include('admin.partials.sidebar')
     @endif
-    <main class="main-content mt-0">
+    <main class="main-content position-relative max-height-vh-100 h-100 border-radius-lg">
         <section class="@if(Auth::check()) pe-3 pt-2 @endif">
             @yield('content')
         </section>

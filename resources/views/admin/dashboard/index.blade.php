@@ -2,6 +2,7 @@
 
 @section('title', 'Dashboard')
 
+
 @section('content')
     <x-navbar title_page="Dashboard">
         <div class="container-fluid py-4">
@@ -91,8 +92,10 @@
                     </div>
                 </div>
             </div>
-            <div class="row">
+            <div class="row h-100">
                 <livewire:chart-report lazy="on-load"/>
+                @include('admin.dashboard.partials.recent-precense')
+                </div>
             </div>
         </div>
     </x-navbar>
