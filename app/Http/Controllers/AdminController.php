@@ -15,4 +15,9 @@ class AdminController extends Controller
     {
         return view('admin.dashboard.index');
     }
+
+    public function employee_acct()
+    {
+        return view('admin.employee.index');
+    }
 }

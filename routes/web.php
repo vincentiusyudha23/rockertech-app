@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\MediaController;
 use App\Http\Controllers\ProfileController;
 
 /*
@@ -27,6 +28,11 @@ Route::middleware(['auth','verified'])->prefix('admin')->name('admin.')->group(f
     
     Route::controller(AdminController::class)->group(function(){
         Route::get('/dashboard', 'index')->name('dashboard');
+        Route::get('/employee', 'employee_acct')->name('employee');
+    });
+
+    Route::controller(MediaController::class)->group(function(){
+        Route::post('/media-uploader', 'media_upload')->name('media-upload');
     });
 });
 

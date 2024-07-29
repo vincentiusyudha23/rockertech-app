@@ -2915,12 +2915,16 @@ textarea.form-control-lg {
   background-color: #fff;
   background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23343a40' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M2 5l6 6 6-6'/%3e%3c/svg%3e");
   background-repeat: no-repeat;
-  background-position: right 0.75rem center;
+  background-position: right 0.35rem center;
   background-size: 16px 12px;
   border: 1px solid #d2d6da;
   border-radius: 0.5rem;
   transition: box-shadow 0.15s ease, border-color 0.15s ease;
   appearance: none;
+}
+
+.table-responsive .dt-info{
+  font-size: 0.75em;
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -5599,9 +5603,9 @@ fieldset:disabled .btn {
   --bs-pagination-focus-color: #830866;
   --bs-pagination-focus-bg: #e9ecef;
   --bs-pagination-focus-box-shadow: 0 0 0 0.2rem rgba(203, 12, 159, 0.25);
-  --bs-pagination-active-color: #fff;
-  --bs-pagination-active-bg: #cb0c9f;
-  --bs-pagination-active-border-color: #cb0c9f;
+  --bs-pagination-active-color: white;
+  --bs-pagination-active-bg: linear-gradient(310deg, #2152ff 0%, #21d4fd 100%);
+  --bs-pagination-active-border-color: #2180fd;
   --bs-pagination-disabled-color: #6c757d;
   --bs-pagination-disabled-bg: #fff;
   --bs-pagination-disabled-border-color: #dee2e6;
@@ -5643,10 +5647,10 @@ fieldset:disabled .btn {
 }
 
 .page-link.active,
-.active>.page-link {
+.active>button.page-link {
   z-index: 3;
-  color: var(--bs-pagination-active-color);
-  background-color: var(--bs-pagination-active-bg);
+  color: white;
+  background-image: var(--bs-pagination-active-bg);
   border-color: var(--bs-pagination-active-border-color);
 }
 
