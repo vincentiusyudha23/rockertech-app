@@ -21,13 +21,15 @@
                                     <x-media-upload name="image"/>
                                 </div>
                                 <div class="col-6">
-                                    <div class="form-group mb-2">
-                                        <label for="name">Name</label>
-                                        <input type="text" class="form-control" id="name" name="name">
-                                    </div>
-                                    <div class="form-group mb-2">
-                                        <label for="position">Position</label>
-                                        <input type="text" class="form-control" id="position" name="position">
+                                    <div class="d-flex flex-column justify-content-center">
+                                        <div class="form-group mb-2">
+                                            <label for="name">Name</label>
+                                            <input type="text" class="form-control" id="name" name="name">
+                                        </div>
+                                        <div class="form-group mb-2">
+                                            <label for="position">Position</label>
+                                            <input type="text" class="form-control" id="position" name="position">
+                                        </div>
                                     </div>
                                 </div>
                             </div>

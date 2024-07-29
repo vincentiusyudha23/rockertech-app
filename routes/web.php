@@ -24,7 +24,7 @@ use App\Http\Controllers\ProfileController;
 //     return view('dashboard');
 // })->middleware(['auth', 'verified'])->name('dashboard');
 
-Route::middleware(['auth','verified'])->prefix('admin')->name('admin.')->group(function(){
+Route::middleware(['auth','verified', 'role:admin'])->prefix('admin')->name('admin.')->group(function(){
     
     Route::controller(AdminController::class)->group(function(){
         Route::get('/dashboard', 'index')->name('dashboard');
