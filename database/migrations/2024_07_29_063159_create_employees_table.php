@@ -15,10 +15,11 @@ return new class extends Migration
             $table->id();
             $table->foreignId('user_id')->references('id')->on('users')->cascadeOnDelete();
             $table->string('card_id')->unique()->nullable();
+            $table->longText('enc_password');
             $table->string('name');
             $table->string('position');
             $table->string('email');
-            $table->integer('nik');
+            $table->string('nik');
             $table->string('mobile');
             $table->date('birthday');
             $table->unsignedBigInteger('image');

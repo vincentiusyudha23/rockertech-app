@@ -11,7 +11,8 @@
             <div class="modal-body">
                 <div class="row">
                     <div class="col-12">
-                        <form class="px-2" enctype="multipart/form-data">
+                        <form class="px-2" action="{{ route('admin.employee.store') }}" method="POST">
+                            @csrf
                             <div class="row">
                                 <div class="col-6">
                                     {{-- <div class="form-group mb-2">
@@ -24,48 +25,56 @@
                                     <div class="d-flex flex-column justify-content-center">
                                         <div class="form-group mb-2">
                                             <label for="name">Name</label>
-                                            <input type="text" class="form-control" id="name" name="name">
+                                            <input type="text" class="form-control" id="name" name="name" value="{{ old('name') }}">
                                         </div>
                                         <div class="form-group mb-2">
                                             <label for="position">Position</label>
-                                            <input type="text" class="form-control" id="position" name="position">
+                                            <input type="text" class="form-control" id="position" name="position" value="{{ old('position') }}">
                                         </div>
                                     </div>
                                 </div>
                             </div>
                             <div class="form-group mb-2">
+                                <label for="email">Email</label>
+                                <input type="email" class="form-control" id="email" name="email" value="{{ old('email') }}">
+                            </div>
+                            <div class="form-group mb-2">
+                                <label for="mobile">Mobile Number</label>
+                                <input type="number" class="form-control" id="mobile" name="mobile" value="{{ old('mobile') }}">
+                            </div>
+                            <div class="form-group mb-2">
                                 <label for="nik">NIK</label>
-                                <input type="number" class="form-control" id="nik" name="nik">
+                                <input type="number" class="form-control" id="nik" name="nik" value="{{ old('nik') }}">
                             </div>
                             <div class="form-group mb-2">
                                 <label for="date_birth">Date of Birth</label>
-                                <input type="date" class="form-control" id="date_birth" name="date_birth">
+                                <input type="date" class="form-control" id="date_birth" name="date_birth" value="{{ old('date_birth') }}">
                             </div>
-                            <div class="form-group mb-2">
+                            <div class="form-group mb-4">
                                 <label for="address">Address</label>
-                                <input type="text" class="form-control" id="address" name="address"
+                                <input type="text" class="form-control" id="address" name="address" value="{{ old('address') }}"
                                     placeholder="Street Address">
                                 <div class="row mt-2">
                                     <div class="col-12 col-md-6">
-                                        <input class="form-control" type="text" name="kelurahan"
+                                        <input class="form-control" type="text" name="kelurahan" value="{{ old('kelurahan') }}"
                                             placeholder="Kelurahan">
-                                        <input class="form-control mt-2" type="text" name="kecamatan"
+                                        <input class="form-control mt-2" type="text" name="kecamatan" value="{{ old('kecataman') }}"
                                             placeholder="Kecamatan">
                                     </div>
                                     <div class="col-12 col-md-6 mt-2 mt-md-0">
-                                        <input class="form-control" type="text" name="kota" placeholder="Kota">
-                                        <input class="form-control mt-2" type="text" name="provinsi"
+                                        <input class="form-control" type="text" name="kota" placeholder="Kota" value="{{ old('kota') }}">
+                                        <input class="form-control mt-2" type="text" name="provinsi" value="{{ old('provinsi') }}"
                                             placeholder="Provinsi">
                                     </div>
                                 </div>
                             </div>
+                            <div class="mb-2">
+                                {{-- <button type="button" class="btn bg-gradient-secondary" data-bs-dismiss="modal">Close</button> --}}
+                                <button type="submit" class="btn bg-gradient-info w-100">Save changes</button>
+                            </div>
                         </form>
                     </div>
                 </div>
-            </div>
-            <div class="px-4 mb-2">
-                {{-- <button type="button" class="btn bg-gradient-secondary" data-bs-dismiss="modal">Close</button> --}}
-                <button type="button" class="btn bg-gradient-info w-100">Save changes</button>
             </div>
         </div>
     </div>
@@ -77,7 +86,8 @@
         <div class="modal-content">
             <div class="modal-body vh-50">
                 <div class="w-100 h-100 d-flex justify-content-center align-items-center">
-                    <div class="d-flex flex-column text-center base-tap">
+                    <button type="button" class="btn btn-info" id="btn-test">test</button>
+                    <div class="d-flex flex-column text-center base-tap" id="base-tap">
                         <i class="tap-item tap-item-1 fa-solid fa-address-card text-success"></i>
                         <i class="tap-item tap-item-2 fa-solid fa-arrow-down fa-bounce"></i>
                         <span class="fw-bold fs-4">TAP YOUR CARD</span>
