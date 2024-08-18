@@ -70,7 +70,7 @@ class AdminController extends Controller
                 'name' => $request->name,
                 'username' => $username,
                 'email' => $request->email,
-                'role' => 'staff',
+                'role' => 'employee',
                 'password' => Hash::make($password)
             ]);
 
@@ -86,6 +86,8 @@ class AdminController extends Controller
                     'image' => $request->image,
                     'enc_password' => Crypt::encryptString($password)
                 ]);
+
+                $user->assignRole('employee');
     
                 if($employe && $request->address){
                     UserAddress::create([
@@ -107,6 +109,82 @@ class AdminController extends Controller
             dd($e->getMessage());
         }
 
+    }
+
+    public function update_employe(Request $request)
+    {
+        $this->validate($request,[
+            'id' => ['required'],
+            'name' => ['required','max:255'],
+            'position' => ['required','max:255'],
+            'email' => ['required','email','max:50','unique:users,email'],
+            'mobile' => ['required','max:20'],
+            'nik' => ['required'],
+            'date_birth' => ['required'],
+            'address' => ['nullable'],
+            'kelurahan' => ['nullable'],
+            'kecamatan' => ['nullable'],
+            'kota' => ['nullable'],
+            'provinsi' => ['nullable'],
+            'image' => ['nullable']
+        ]);
+
+        $employee = Employee::find($request->id);
+        DB::beginTransaction();
+        try{
+            $employee->update([
+                'name' => $request->name,
+                'position' => $request->position,
+                'email' => $request->email,
+                'nik' => $request->nik,
+                'mobile' => $request->mobile,
+                'birthday' => $request->date_birth,
+                'image' => $request->image,
+            ]);
+
+            if($request->address){
+                $address = UserAddress::find($employee->address->id);
+                if($address){
+                    $address->update([
+                        'street_address' => $request->address,
+                        'kelurahan' => $request->kelurahan,
+                        'kecamatan' => $request->kecamatan,
+                        'kota' => $request->kota,
+                        'provinsi' => $request->provinsi
+                    ]);
+                }else{
+                    UserAddress::create([
+                        'employee_id' => $employee->id,
+                        'street_address' => $request->address,
+                        'kelurahan' => $request->kelurahan,
+                        'kecamatan' => $request->kecamatan,
+                        'kota' => $request->kota,
+                        'provinsi' => $request->provinsi
+                    ]);
+                }
+            }
+            DB::commit();
+            return redirect()->back()->with('success', 'Update Successfully');
+
+        }catch(\Exception $e){
+            DB::rollBack();
+            dd($e->getMessage());
+        }
+
+    }
+
+    public function delete_employe($id)
+    {
+        $employe = Employee::find($id);
+
+        if($employe){
+            User::find($employe->user_id)->delete();
+            $employe->delete();
+
+            return redirect()->back()->with('success', 'Deleted Successfully');
+        }
+
+        return redirect()->back()->with('errors', 'Employee Not Found');
     }
 
     public function updateCardId(Request $request)
@@ -165,5 +243,10 @@ class AdminController extends Controller
             'status' => true,
             'message' => 'Registrasi Successfuly'
         ]);
+    }
+
+    public function presence()
+    {
+        return view('admin.presence.index');
     }
 }

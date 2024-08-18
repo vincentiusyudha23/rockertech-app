@@ -25,14 +25,17 @@ use App\Http\Controllers\ProfileController;
 //     return view('dashboard');
 // })->middleware(['auth', 'verified'])->name('dashboard');
 
-Route::middleware(['auth','web', 'role:admin'])->prefix('admin')->name('admin.')->group(function(){
+Route::middleware(['web', 'role:admin'])->prefix('admin')->name('admin.')->group(function(){
     
     Route::controller(AdminController::class)->group(function(){
         Route::get('/dashboard', 'index')->name('dashboard');
         Route::get('/employee', 'employee_acct')->name('employee');
         Route::post('/employee-store', 'employee_store')->name('employee.store');
+        Route::post('/employee-update', 'update_employe')->name('employee.update');
+        Route::get('/employee-delete/{id}', 'delete_employe')->name('employee.delete');
         Route::post('/register-card', 'updateCardId')->name('employee.regis-card');
         Route::get('/set-action-mode/{id}', 'set_action_mode')->name('set_action_mode');
+        Route::get('/presence', 'presence')->name('presence');
     });
 
     Route::controller(MediaController::class)->group(function(){

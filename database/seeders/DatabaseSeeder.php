@@ -5,6 +5,7 @@ namespace Database\Seeders;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use App\Models\Esp32Mode;
 use Illuminate\Database\Seeder;
+use Spatie\Permission\Models\Role;
 use Illuminate\Support\Facades\Hash;
 
 class DatabaseSeeder extends Seeder
@@ -15,13 +16,17 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
         // \App\Models\User::factory(10)->create();
+        Role::updateOrCreate(['name' => 'admin'],['name' => 'admin']);
+        Role::updateOrCreate(['name' => 'employee'],['name' => 'employee']);
 
-        \App\Models\User::factory()->create([
+        $admin = \App\Models\User::factory()->create([
             'name' => 'Admin',
             'username' => 'admin',
             'email' => 'admin@test.com',
             'role' => 'admin',
             'password' => Hash::make('admin')
         ]);
+
+        $admin->assignRole('admin');
     }
 }

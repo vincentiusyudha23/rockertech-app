@@ -1,4 +1,4 @@
-@props(['name'])
+@props(['name', 'value'])
 
 <style>
     .dropzone {
@@ -150,13 +150,20 @@
         align-items: center;
         flex-direction: column;
     }
+    .dzImage .image-preview-data{
+        max-width: 150px;
+        max-height: 150px;
+        object-fit: contain;
+        position: absolute;
+        border-radius: 10px;
+    }
 </style>
 @php
-    $ranId = null;
+    $ranId = Str::random(8);
 @endphp
 <div class="m-1">
-    <div class="row" _id="{{ $ranId ?? $name}}">
-        <div class="dropzone" id="{{ $ranId ?? $name }}">
+    <div class="row" _id="{{ $ranId }}">
+        <div class="dropzone" id="{{ $ranId }}">
             {{-- <p class="text-gray-700 text-center">
                 <i class="fa-solid fa-cloud-arrow-up text-secondary px-2"></i>
                 <span>
@@ -165,6 +172,9 @@
             </p> --}}
             <div class="dz-message needsclick m-0">
                 <div class="dzImage rounded bg-gray-200">
+                    @if (isset($value))
+                        <img src="{{ get_data_image($value)['img_url'] ?? '' }}" alt="img" class="image-preview-data">
+                    @endif
                     <i class="fa-solid fa-cloud-arrow-up text-secondary px-2"></i>
                     <span>Upload Your Image</span>
                 </div>
@@ -177,36 +187,36 @@
 @push('scripts')
     <script>
         $(document).ready(function() {
-            var {{ $ranId ?? $name }} = [];
+            var {{ $ranId }} = [];
             var type = 'image';
             var acceptedFiles = "image/*";
 
-            var myDropzone_{{ $ranId ?? $name }} = new Dropzone("#{{ $ranId ?? $name }}", {
+            var myDropzone_{{ $ranId }} = new Dropzone("#{{ $ranId }}", {
                 url: '{{ route('admin.media-upload') }}',
                 paramName: "file",
                 maxFiles: 1,
                 uploadMultiple: false,
                 paralelUploads: 1,
-                maxFilesize: 5,
+                maxFilesize: 20,
                 addRemoveLinks: true,
                 acceptedFiles: acceptedFiles,
                 headers: {
                     'X-CSRF-TOKEN': '{{ csrf_token() }}'
                 },
                 sending: function(file, xhr, formData) {
-                    $('div[_id={{ $ranId ?? $name }}] ._done').hide();
+                    $('div[_id={{ $ranId }}] ._done').hide();
                 },
                 init: function() {
                     this.on("removedfile", function(file) {
-                        myDropzone_{{ $randId ?? $name }}.enable();
+                        myDropzone_{{ $ranId }}.enable();
                         var id = parseInt(file._removeLink.getAttribute("data-file_id"));
                         if (!isNaN(id)) {
-                            var index = {{ $randId ?? $name }}.indexOf(id);
+                            var index = {{ $ranId }}.indexOf(id);
                             if (index !== -1) {
-                                {{ $randId ?? $name }}.splice(index, 1);
+                                {{ $ranId }}.splice(index, 1);
                             }
-                            $('div[_id={{ $randId ?? $name }}] input').val(
-                                {{ $randId ?? $name }}.join('|'));
+                            $('div[_id={{ $ranId }}] input').val(
+                                {{ $ranId }}.join('|'));
                         }
                     });
                 },
@@ -214,12 +224,12 @@
                     if (response.id) {
 
                         file._removeLink.setAttribute("data-file_id", response.id);
-                        {{ $randId ?? $name }}.push(response.id);
-                        if ({{ $randId ?? $name }}.length >= {{ (int) ($maxFiles ?? 1) }}) {
-                            myDropzone_{{ $randId ?? $name }}.disable();
+                        {{ $ranId }}.push(response.id);
+                        if ({{ $ranId }}.length >= {{ (int) ($maxFiles ?? 1) }}) {
+                            myDropzone_{{ $ranId }}.disable();
                         }
 
-                        $('div[_id={{ $randId ?? $name }}] input').val({{ $randId ?? $name }}.join(
+                        $('div[_id={{ $ranId }}] input').val({{ $ranId }}.join(
                             '|'));
                     }
                 },

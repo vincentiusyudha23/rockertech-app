@@ -31,7 +31,7 @@ if(!function_exists('get_data_image')){
 
         $data = [
             'alt' => $image->title,
-            'img_url' => asset('storage/media/'.$image->path)
+            'img_url' => assets('img/'.$image->path)
         ];
 
         return $data;
@@ -41,5 +41,13 @@ if(!function_exists('get_data_image')){
 if(!function_exists('decryptPassword')){
     function decryptPassword($password = ''){
         return Crypt::decryptString($password);
+    }
+}
+
+if(!function_exists('global_assets_path')){
+    function global_assets_path($path)
+    {
+        return str_replace(['core/public/',
+                               'core\\public\\'], '', public_path($path));
     }
 }
