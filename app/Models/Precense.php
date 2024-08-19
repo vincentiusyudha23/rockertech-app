@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Carbon\Carbon;
 use App\Models\Employee;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -15,6 +16,10 @@ class Precense extends Model
     protected $fillable = ['employe_id','type','status', 'time'];
     // protected $casts = [ 'time' => 'time'];
 
+    public function scopeTodayPrecense($query)
+    {
+        return $query->whereDate('created_at', Carbon::now());
+    }
     public function employe(): BelongsTo
     {
         return $this->belongsTo(Employee::class);

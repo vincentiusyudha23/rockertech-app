@@ -26,7 +26,9 @@ class AdminController extends Controller
 
     public function index()
     {
-        return view('admin.dashboard.index');
+        $precense = Precense::todayPrecense()->latest()->get();
+        $employe = Employee::all()->count();
+        return view('admin.dashboard.index', compact('precense','employe'));
     }
 
     public function employee_acct()
@@ -271,7 +273,8 @@ class AdminController extends Controller
                     $data = [
                         'image' => get_data_image($new_precense->employe->image)['img_url'] ?? '',
                         'name' => $new_precense->employe->name,
-                        'time' => $new_precense->time
+                        'time' => $new_precense->time,
+                        'today_total' => Precense::todayPrecense()->count()
                     ];
 
                     event(new PrecenseEvent($data));

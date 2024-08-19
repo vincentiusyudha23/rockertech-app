@@ -15,7 +15,7 @@
                                     <div class="numbers">
                                         <p class="text-sm mb-0 text-capitalize font-weight-bold">Employee</p>
                                         <h5 class="font-weight-bolder mb-0">
-                                            22
+                                            {{ $employe }}
                                         </h5>
                                     </div>
                                 </div>
@@ -35,8 +35,8 @@
                                 <div class="col-8">
                                     <div class="numbers">
                                         <p class="text-sm mb-0 text-capitalize font-weight-bold">Today's Presence</p>
-                                        <h5 class="font-weight-bolder mb-0">
-                                            22
+                                        <h5 class="font-weight-bolder mb-0" id="total_precense">
+                                            {{ $precense->count() }}
                                         </h5>
                                     </div>
                                 </div>
@@ -132,6 +132,7 @@
         `;
 
         list_presence.append(markup);
+        $('#total_precense').text(data.precense.today_total);
     })
   </script>
 @endpush
