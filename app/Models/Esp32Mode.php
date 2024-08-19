@@ -16,18 +16,36 @@ class Esp32Mode extends Model
     public function scopeSetRegis($query)
     {
        return $query->updateOrCreate(
-            ['action' => 'registrasi', 'status' => 1],
-            ['action' => 'registrasi', 'status' => 1]
+            ['action' => 2, 'status' => 0],
+            ['action' => 2, 'status' => 1]
        );
+    }
+
+    public function scopeSetPrecense($query)
+    {
+        return $query->updateOrCreate(
+            ['action' => 1, 'status' => 0],
+            ['action' => 1, 'status' => 1]
+        );
     }
 
     public function scopeGetStatusRegis($query): bool
     {
-        return $query->where('action', 'registrasi')->where('status', 1)->exists();
+        return $query->where('action', 2)->where('status', 1)->exists();
+    }
+
+    public function scopeGetStatusPrecense($query): bool
+    {
+        return $query->where('action', 1)->where('status', 1)->exists();
     }
 
     public function scopeSetOffRegis($query)
     {
-        return $query->where('action', 'registrasi')->update(['status' => 0]);
+        return $query->where('action', 2)->update(['status' => 0]);
+    }
+
+    public function scopeSetOffPrecense($query)
+    {
+        return $query->where('action', 1)->update(['status' => 0]);
     }
 }

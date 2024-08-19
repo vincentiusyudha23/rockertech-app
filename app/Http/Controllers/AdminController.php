@@ -2,12 +2,15 @@
 
 namespace App\Http\Controllers;
 
+use Carbon\Carbon;
 use App\Models\User;
 use App\Models\Employee;
+use App\Models\Precense;
 use App\Models\Esp32Mode;
 use App\Models\UserAddress;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
+use App\Events\PrecenseEvent;
 use App\Events\RegisterCardEvent;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
@@ -117,7 +120,7 @@ class AdminController extends Controller
             'id' => ['required'],
             'name' => ['required','max:255'],
             'position' => ['required','max:255'],
-            'email' => ['required','email','max:50','unique:users,email'],
+            'email' => ['required','email','max:50'],
             'mobile' => ['required','max:20'],
             'nik' => ['required'],
             'date_birth' => ['required'],
@@ -207,7 +210,7 @@ class AdminController extends Controller
             $employee->card_id = $request->card_id;
             $employee->save();
 
-            Esp32Mode::setOffRegis();
+            Esp32Mode::setPrecense()->setOffRegis();
 
             return response()->json([
                 'type' => 'success',
@@ -224,29 +227,113 @@ class AdminController extends Controller
     }
 
     public function set_action_mode(string $id)
-    {
-        Esp32Mode::setRegis();
+    {   
+        if($id == 2){
+            Esp32Mode::setRegis()->setOffPrecense();
+        }else{
+            Esp32Mode::setPrecense()->setOffRegis();
+        }
 
         return response()->json([
             'type' => 'success'
         ]);
     }
 
-    public function resgister_card_id(Request $request)
+    public function requestEsp(Request $request)
     {
+        $card_id = $request->input('card_id');
 
         if(Esp32Mode::getStatusRegis()){
-            event(new RegisterCardEvent($request->input('card_id')));
+            event(new RegisterCardEvent($card_id));
+        }
+
+        if(Esp32Mode::getStatusPrecense()){
+            
+            $user = Employee::where('card_id', $card_id)->first();
+
+            if($user){
+                $precense = Precense::where('employe_id', $user->id)->whereDate('created_at', Carbon::now())->first();
+
+                if($precense){
+                    return response()->json([
+                        'status' => true,
+                        'message' => 'Today you have taken attendance',
+                        'sound' => ''
+                    ]);
+                }else{
+                    $new_precense = Precense::create([
+                        'employe_id' => $user->id,
+                        'type' => 1,
+                        'status' => 1,
+                        'time' => Carbon::now()->format('H:i'),
+                    ]);
+
+                    $data = [
+                        'image' => get_data_image($new_precense->employe->image)['img_url'] ?? '',
+                        'name' => $new_precense->employe->name,
+                        'time' => $new_precense->time
+                    ];
+
+                    event(new PrecenseEvent($data));
+
+                    return response()->json([
+                        'status' => true,
+                        'message' => 'Precense Successfully.',
+                        'sound' => 1
+                    ], 200);
+                }
+            }else{
+                return response()->json([
+                    'status' => true,
+                    'message' => 'Invalid Card',
+                    'sound' => ''
+                ], 404);
+            }
         }
 
         return response()->json([
             'status' => true,
-            'message' => 'Registrasi Successfuly'
-        ]);
+            'message' => 'Registrasi Successfully',
+            'sound' => ''
+        ], 200);
     }
 
     public function presence()
     {
         return view('admin.presence.index');
+    }
+
+    public function settings()
+    {
+        $settings = [
+            [
+                'title' => 'Token API',
+                'icon' => 'fa-solid fa-key',
+                'route' => '#',
+                'methode' => '',
+                'field' => [
+                    [
+                        'type' => 'text',
+                        'title' => 'Token',
+                        'option' => 'readonly',
+                        'value' => Auth::user()->createToken('token')->plainTextToken
+                    ]
+                ]
+            ],
+            [
+                'title' => 'Alarm',
+                'icon' => 'fa-solid fa-bell',
+                'route' => '#',
+                'methode' => '',
+            ],
+            [
+                'title' => 'Time Precense',
+                'icon' => 'fa-solid fa-clock',
+                'route' => '#',
+                'methode' => '',
+            ]
+        ];
+        
+        return view('admin.settings.index', compact('settings'));
     }
 }

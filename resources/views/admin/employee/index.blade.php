@@ -98,6 +98,7 @@
     <template id="my-template">
         <swal-title>
             Tap Your ID Card
+            <p>Time left: <span id="countdown">60</span> seconds</p>
         </swal-title>
         <swal-icon color="transparent">
             <div class="d-flex flex-column text-center base-tap">
@@ -143,13 +144,45 @@
 
                     $.ajax({
                         type: 'GET',
-                        url: '{{ route('admin.set_action_mode', ['id' => 1]) }}',
+                        url: '{{ route('admin.set_action_mode', ['id' => 2]) }}',
                         success: function(response) {
                             if (response.type === 'success') {
                                 const tap = Swal.fire({
                                     template: "#my-template",
                                     showConfirmButton: false,
                                 });
+
+                                let timeLeft = 60;
+
+                                let countdownTimer = setInterval(function() {
+                                    // Kurangi waktu
+                                    timeLeft--;
+
+                                    // Update tampilan waktu di front-end
+                                    $('#countdown').text(timeLeft);
+
+                                    // Jika waktu habis, hentikan timer
+                                    if (timeLeft <= 0) {
+                                        clearInterval(countdownTimer);
+                                    }
+                                }, 1000);
+
+                                setTimeout(function() {
+                                    $.ajax({
+                                        url: '{{ route('admin.set_action_mode', ['id' => 1]) }}',
+                                        type: 'GET',
+                                        success: function(response) {
+                                            tap.close();
+
+                                            Swal.fire({
+                                                title: 'Registration has ended...',
+                                                allowOutsideClick: true,
+                                                showConfirmButton: true,
+                                                icon: 'warning'
+                                            });
+                                        },
+                                    });
+                                }, 60000); // 60000 ms = 60 detik
 
                                 channel.bind('register-card', function(data) {
                                     if (data.card_id) {
@@ -177,13 +210,11 @@
                                                 if (response.type ==
                                                     'success') {
                                                     Swal.fire({
-                                                        title: response
-                                                            .msg,
+                                                        title: response.msg,
                                                         icon: 'success',
                                                     });
 
-                                                    $('#card_id-' + employ)
-                                                        .text(response.card_id);
+                                                    $('#card_id-' + employ).text(response.card_id);
                                                 }
                                             }
                                         });

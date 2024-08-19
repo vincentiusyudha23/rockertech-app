@@ -28,5 +28,7 @@ class DatabaseSeeder extends Seeder
         ]);
 
         $admin->assignRole('admin');
+
+        Esp32Mode::setPrecense()->setRegis()->setOffRegis();
     }
 }

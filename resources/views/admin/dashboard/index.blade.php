@@ -110,5 +110,28 @@
       }
       Scrollbar.init(document.querySelector('#sidenav-scrollbar'), options);
     }
+    var channel = pusher.subscribe('precense-event');
+    channel.bind('precense-channel', function(data){
+        var list_presence = $('#precense_list');
+        
+        var markup = `
+            <div class="py-3 d-flex justify-content-between px-4">
+                <div class="d-flex align-items-center">
+                    <div>
+                        <img src="${data.precense.image}" alt="avatar" class="avatar avatar-sm me-3 rounded-circle"/>
+                    </div>
+                    ${data.precense.name}
+                </div>
+                <div class="d-flex flex-column justify-content-center align-items-center" style="height: 100%;">
+                    <span class="text-xs font-weight-bold">
+                        Time
+                    </span>
+                    <span class="text-lg">${data.precense.time}</span>
+                </div>
+            </div>
+        `;
+
+        list_presence.append(markup);
+    })
   </script>
 @endpush

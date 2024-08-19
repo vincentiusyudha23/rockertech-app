@@ -36,6 +36,7 @@ Route::middleware(['web', 'role:admin'])->prefix('admin')->name('admin.')->group
         Route::post('/register-card', 'updateCardId')->name('employee.regis-card');
         Route::get('/set-action-mode/{id}', 'set_action_mode')->name('set_action_mode');
         Route::get('/presence', 'presence')->name('presence');
+        Route::get('/settings', 'settings')->name('settings');
     });
 
     Route::controller(MediaController::class)->group(function(){

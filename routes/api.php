@@ -19,4 +19,4 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::post('/send-card-id', [AdminController::class, 'resgister_card_id'])->name('send_card_id');
+Route::middleware('auth:sanctum')->post('/send-card-id', [AdminController::class, 'requestEsp'])->name('send_card_id');
