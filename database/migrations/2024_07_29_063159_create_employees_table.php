@@ -22,7 +22,7 @@ return new class extends Migration
             $table->string('nik');
             $table->string('mobile');
             $table->date('birthday');
-            $table->unsignedBigInteger('image');
+            $table->unsignedBigInteger('image')->nullable();
             $table->timestamps();
             $table->softDeletes();
         });

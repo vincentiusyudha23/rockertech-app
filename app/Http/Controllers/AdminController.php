@@ -117,6 +117,13 @@ class AdminController extends Controller
 
     }
 
+    public function edit_employe($id)
+    {
+        $employe = Employee::find($id);
+
+        return view('admin.employee.edit', compact('employe'));
+    }
+
     public function update_employe(Request $request)
     {
         $this->validate($request,[
@@ -149,25 +156,17 @@ class AdminController extends Controller
             ]);
 
             if($request->address){
-                $address = UserAddress::find($employee->address->id);
-                if($address){
-                    $address->update([
-                        'street_address' => $request->address,
-                        'kelurahan' => $request->kelurahan,
-                        'kecamatan' => $request->kecamatan,
-                        'kota' => $request->kota,
-                        'provinsi' => $request->provinsi
-                    ]);
-                }else{
-                    UserAddress::create([
+                $address = UserAddress::updateOrCreate(
+                    ['employee_id' => $employee->id],
+                    [   
                         'employee_id' => $employee->id,
                         'street_address' => $request->address,
                         'kelurahan' => $request->kelurahan,
                         'kecamatan' => $request->kecamatan,
                         'kota' => $request->kota,
                         'provinsi' => $request->provinsi
-                    ]);
-                }
+                    ]
+                );
             }
             DB::commit();
             return redirect()->back()->with('success', 'Update Successfully');
@@ -191,6 +190,19 @@ class AdminController extends Controller
         }
 
         return redirect()->back()->with('errors', 'Employee Not Found');
+    }
+
+    public function requestUpdateCardEdit(Request $request)
+    {
+        $employee = Employee::find($request->employee_id);
+
+        $employee->card_id = $request->card_id;
+        $employee->save();
+
+        return response()->json([
+            'type' => 'success',
+            'msg' => 'Update Card Id Successfully' 
+        ]);
     }
 
     public function updateCardId(Request $request)
@@ -255,6 +267,15 @@ class AdminController extends Controller
             $user = Employee::where('card_id', $card_id)->first();
 
             if($user){
+                $time = TimePrecense::where('type', 'settings')->first();
+                
+                if(!$time){
+                        return response()->json([
+                            'status' => true,
+                            'message' => 'Need Settings Time Precense First'
+                        ]);
+                    }
+
                 $precense = Precense::where('employe_id', $user->id)
                             ->where('type' , 1)
                             ->where(function ($query) {
@@ -263,21 +284,13 @@ class AdminController extends Controller
                             })
                             ->whereDate('created_at', Carbon::now())->exists();
 
-                if($precense){
+                if($precense && Carbon::now()->format('H:i') <= $time?->min_out_office){
                     return response()->json([
                         'status' => true,
                         'message' => 'Today you have taken attendance',
                         'sound' => ''
                     ]);
                 }else{
-                    $time = TimePrecense::where('type', 'settings')->first();
-
-                    if(!$time){
-                        return response()->json([
-                            'status' => true,
-                            'message' => 'Need Settings Time Precense First'
-                        ]);
-                    }
                     $status = 0;
                     $type = 1;
                     if(Carbon::now()->format('H:i') <= $time?->min_in_office || Carbon::now()->format('H:i') >= $time?->min_in_office && Carbon::now()->format('H:i') <= $time?->max_in_office){

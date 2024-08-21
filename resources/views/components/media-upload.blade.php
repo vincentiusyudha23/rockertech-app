@@ -173,10 +173,11 @@
             <div class="dz-message needsclick m-0">
                 <div class="dzImage rounded bg-gray-200">
                     @if (isset($value))
-                        <img src="{{ get_data_image($value)['img_url'] ?? '' }}" alt="img" class="image-preview-data">
+                        <img src="{{ get_data_image($value)['img_url'] ?? '' }}" alt="img" class="avatar avatar-xxl">
+                    @else
+                        <i class="fa-solid fa-cloud-arrow-up text-secondary px-2"></i>
+                        <span>Upload Your Image</span>
                     @endif
-                    <i class="fa-solid fa-cloud-arrow-up text-secondary px-2"></i>
-                    <span>Upload Your Image</span>
                 </div>
             </div>
         </div>
