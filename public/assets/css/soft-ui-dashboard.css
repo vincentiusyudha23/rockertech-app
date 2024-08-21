@@ -20220,8 +20220,7 @@ fieldset:disabled .btn {
 .avatar {
   color: #fff;
   display: inline-flex;
-  align-items: center;
-  justify-content: center;
+  object-fit: cover;
   font-size: 1rem;
   border-radius: 0.75rem;
   height: 48px;

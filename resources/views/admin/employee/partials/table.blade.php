@@ -19,12 +19,12 @@
                         </td>
                         <td>
                             <div class="d-flex px-2 py-1">
-                                <div>
+                                <a>
                                     @php
                                         $image = get_data_image($employ?->image);
                                     @endphp
-                                    <img src="{{ $image['img_url'] ?? '' }}" style="max-width: 50px; max-height: 50px;" class="avatar avatar-md me-3" alt="{{ $image['alt'] ?? '' }}">
-                                </div>
+                                    <img src="{{ $image['img_url'] ?? '' }}" class="me-3 avatar avatar-md avatar-scale-up" alt="{{ $image['alt'] ?? '' }}">
+                                </a>
                                 <div class="d-flex flex-column justify-content-center">
                                     <h6 class="mb-0 text-sm">{{ $employ->name }}</h6>
                                     <p class="text-xs text-secondary mb-0">{{ $employ->email }}</p>

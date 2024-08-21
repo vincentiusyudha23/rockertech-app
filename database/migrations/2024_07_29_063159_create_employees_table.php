@@ -24,6 +24,7 @@ return new class extends Migration
             $table->date('birthday');
             $table->unsignedBigInteger('image');
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

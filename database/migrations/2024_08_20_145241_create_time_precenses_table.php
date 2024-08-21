@@ -11,12 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('precenses', function (Blueprint $table) {
+        Schema::create('time_precenses', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('employe_id')->references('id')->on('employees')->cascadeOnDelete();
-            $table->integer('type');
-            $table->integer('status');
-            $table->time('time');
+            $table->time('min_in_office');
+            $table->time('max_in_office');
+            $table->time('min_out_office');
             $table->timestamps();
         });
     }
@@ -26,6 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('precenses');
+        Schema::dropIfExists('time_precenses');
     }
 };

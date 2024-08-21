@@ -24,9 +24,12 @@
                             $image = get_data_image($item?->employe?->image ?? '');
                         @endphp
                         <div>
-                            <img src="{{ $image['img_url'] ?? ''  }}" alt="{{ $image['alt'] ?? '' }}" class="avatar avatar-sm me-3 rounded-circle"/>
+                            <img src="{{ $image['img_url'] ?? ''  }}" alt="{{ $image['alt'] ?? '' }}" class="avatar avatar-md me-3"/>
                         </div>
-                        {{ $item->employe->name }}
+                        <div>
+                            <p class="p-0 m-0">{{ $item->employe->name }}</p>
+                            <p class="p-0 m-0 text-xs fw-bold">{{ Carbon\carbon::parse($item->time)->diffForHumans() }}</p>
+                        </div>
                     </div>
                     <div class="d-flex flex-column justify-content-center align-items-center" style="height: 100%;">
                         <span class="text-xs font-weight-bold">

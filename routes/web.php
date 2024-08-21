@@ -37,6 +37,8 @@ Route::middleware(['web', 'role:admin'])->prefix('admin')->name('admin.')->group
         Route::get('/set-action-mode/{id}', 'set_action_mode')->name('set_action_mode');
         Route::get('/presence', 'presence')->name('presence');
         Route::get('/settings', 'settings')->name('settings');
+        Route::post('/update-static-option', 'update_static_uption')->name('update-static-option');
+        Route::post('/update-time-precense', 'setTimePrecense')->name('update-time-precense');
     });
 
     Route::controller(MediaController::class)->group(function(){

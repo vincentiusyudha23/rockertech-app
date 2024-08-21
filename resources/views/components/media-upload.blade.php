@@ -159,7 +159,7 @@
     }
 </style>
 @php
-    $ranId = Str::random(8);
+    $ranId = str_replace(['0','1','2','3','4','5','6','7','8','9'], 'X', Str::random(8));;
 @endphp
 <div class="m-1">
     <div class="row" _id="{{ $ranId }}">

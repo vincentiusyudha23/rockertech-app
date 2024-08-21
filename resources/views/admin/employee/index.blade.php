@@ -108,7 +108,6 @@
         </swal-icon>
         <swal-param name="allowEscapeKey" value="false" />
         <swal-param name="customClass" value='{ "popup": "my-popup" }' />
-        <swal-function-param name="didOpen" value="popup => console.log(popup)" />
     </template>
 @endsection
 
@@ -153,6 +152,7 @@
                                 });
 
                                 let timeLeft = 60;
+                                let isReg = true;
 
                                 let countdownTimer = setInterval(function() {
                                     // Kurangi waktu
@@ -164,25 +164,31 @@
                                     // Jika waktu habis, hentikan timer
                                     if (timeLeft <= 0) {
                                         clearInterval(countdownTimer);
+                                        
+                                        $.ajax({
+                                            url: '{{ route('admin.set_action_mode', ['id' => 1]) }}',
+                                            type: 'GET',
+                                            success: function(response) {
+                                                tap.close();
+    
+                                                Swal.fire({
+                                                    title: 'Registration has ended...',
+                                                    allowOutsideClick: true,
+                                                    showConfirmButton: true,
+                                                    icon: 'warning'
+                                                });
+    
+                                                timeLeft = 60;
+                                            },
+                                        });
                                     }
                                 }, 1000);
 
-                                setTimeout(function() {
-                                    $.ajax({
-                                        url: '{{ route('admin.set_action_mode', ['id' => 1]) }}',
-                                        type: 'GET',
-                                        success: function(response) {
-                                            tap.close();
-
-                                            Swal.fire({
-                                                title: 'Registration has ended...',
-                                                allowOutsideClick: true,
-                                                showConfirmButton: true,
-                                                icon: 'warning'
-                                            });
-                                        },
-                                    });
-                                }, 60000); // 60000 ms = 60 detik
+                                // setTimeout(function() {
+                                //     if(isReg){
+                                        
+                                //     }
+                                // }, 60000); // 60000 ms = 60 detik
 
                                 channel.bind('register-card', function(data) {
                                     if (data.card_id) {
@@ -207,14 +213,16 @@
                                             },
                                             success: function(response) {
                                                 Swal.hideLoading();
-                                                if (response.type ==
-                                                    'success') {
+                                                if (response.type == 'success') {
                                                     Swal.fire({
                                                         title: response.msg,
                                                         icon: 'success',
                                                     });
 
                                                     $('#card_id-' + employ).text(response.card_id);
+                                                    $('select[id="swal2-select"] option[value="'+employ+'"]').attr('disabled', 'disabled');
+                                                    timeLeft = 60;
+                                                    isReg = false;
                                                 }
                                             }
                                         });

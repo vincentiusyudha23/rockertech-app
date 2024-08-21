@@ -9,6 +9,7 @@ use App\Models\Precense;
 use App\Models\Esp32Mode;
 use App\Models\UserAddress;
 use Illuminate\Support\Str;
+use App\Models\TimePrecense;
 use Illuminate\Http\Request;
 use App\Events\PrecenseEvent;
 use App\Events\RegisterCardEvent;
@@ -254,7 +255,13 @@ class AdminController extends Controller
             $user = Employee::where('card_id', $card_id)->first();
 
             if($user){
-                $precense = Precense::where('employe_id', $user->id)->whereDate('created_at', Carbon::now())->first();
+                $precense = Precense::where('employe_id', $user->id)
+                            ->where('type' , 1)
+                            ->where(function ($query) {
+                                $query->where('status', 1)
+                                    ->orWhere('status', 2);
+                            })
+                            ->whereDate('created_at', Carbon::now())->exists();
 
                 if($precense){
                     return response()->json([
@@ -263,10 +270,33 @@ class AdminController extends Controller
                         'sound' => ''
                     ]);
                 }else{
+                    $time = TimePrecense::where('type', 'settings')->first();
+
+                    if(!$time){
+                        return response()->json([
+                            'status' => true,
+                            'message' => 'Need Settings Time Precense First'
+                        ]);
+                    }
+                    $status = 0;
+                    $type = 1;
+                    if(Carbon::now()->format('H:i') <= $time?->min_in_office || Carbon::now()->format('H:i') >= $time?->min_in_office && Carbon::now()->format('H:i') <= $time?->max_in_office){
+                        $status = 1;
+                    }
+
+                    if(Carbon::now()->format('H:i') >= $time?->max_in_office && Carbon::now()->format('H:i') <= $time?->min_out_office){
+                        $status = 2;
+                    }
+
+                    if(Carbon::now()->format('H:i') >= $time?->min_out_office){
+                        $type = 2;
+                        $status = 0;
+                    }
+
                     $new_precense = Precense::create([
                         'employe_id' => $user->id,
-                        'type' => 1,
-                        'status' => 1,
+                        'type' => $type,
+                        'status' => $status,
                         'time' => Carbon::now()->format('H:i'),
                     ]);
 
@@ -282,6 +312,7 @@ class AdminController extends Controller
                     return response()->json([
                         'status' => true,
                         'message' => 'Precense Successfully.',
+                        'status_time' => $status,
                         'sound' => 1
                     ], 200);
                 }
@@ -303,15 +334,21 @@ class AdminController extends Controller
 
     public function presence()
     {
-        return view('admin.presence.index');
+        $precenses = Precense::latest()->get();
+
+        return view('admin.presence.index', compact('precenses'));
     }
 
     public function settings()
     {
+
+        $time = TimePrecense::where('type', 'settings')->latest()->first();
+        
         $settings = [
             [
                 'title' => 'Token API',
                 'icon' => 'fa-solid fa-key',
+                'key' => '',
                 'route' => '#',
                 'methode' => '',
                 'field' => [
@@ -321,22 +358,90 @@ class AdminController extends Controller
                         'option' => 'readonly',
                         'value' => Auth::user()->createToken('token')->plainTextToken
                     ]
-                ]
+                ],
+                'button' => false
             ],
             [
                 'title' => 'Alarm',
                 'icon' => 'fa-solid fa-bell',
+                'key' => '',
                 'route' => '#',
                 'methode' => '',
+                'button' => false
             ],
             [
                 'title' => 'Time Precense',
                 'icon' => 'fa-solid fa-clock',
-                'route' => '#',
+                'key' => 'time_precense_settings',
+                'route' => route('admin.update-time-precense'),
                 'methode' => '',
+                'field' => [
+                    [
+                        'type' => 'time',
+                        'title' => 'Min Time In Office',
+                        'name' => 'min_in_office',
+                        'value' => $time?->min_in_office,
+                    ],
+                    [
+                        'type' => 'time',
+                        'title' => 'Max Time In Office',
+                        'name' => 'max_in_office',
+                        'value' => $time?->max_in_office,
+                    ],
+                    [
+                        'type' => 'time',
+                        'title' => 'Min Time Out Office',
+                        'name' => 'min_out_office',
+                        'value' => $time?->min_out_office,
+                    ],
+                ],
+                'button' => true
             ]
         ];
         
         return view('admin.settings.index', compact('settings'));
+    }
+
+    public function setTimePrecense(Request $request)
+    {
+        $this->validate($request, [
+            'min_in_office' => 'required',
+            'max_in_office' => 'required',
+            'min_out_office' => 'required'
+        ]);
+        
+        try{
+            TimePrecense::updateOrCreate(
+                ['type' => 'settings'],
+                [
+                    'type' => 'settings',
+                    'min_in_office' => $request->min_in_office,
+                    'max_in_office' => $request->max_in_office,
+                    'min_out_office' => $request->min_out_office
+                ]
+            );
+
+            return response()->json([
+                'type' => 'success',
+                'msg' => 'Update Successfully'
+            ]);
+
+        } catch(\Exception $e){
+            dd($e->getMessage());
+        }
+    }
+
+    public function update_static_uption(Request $request)
+    {
+        $data = $request->formData;
+
+        foreach ($data ?? [] as $key => $value) {
+            update_static_option($key, $value);
+        }
+
+        return response()->json([
+            'type' => 'success',
+            'msg' => 'Update Successfully'
+        ]);
     }
 }

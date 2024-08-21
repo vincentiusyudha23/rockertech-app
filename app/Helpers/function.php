@@ -1,6 +1,8 @@
 <?php
 
+use App\Models\StaticOption;
 use App\Models\MediaUploader;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Crypt;
 
 if (!function_exists('assets')) {
@@ -49,5 +51,101 @@ if(!function_exists('global_assets_path')){
     {
         return str_replace(['core/public/',
                                'core\\public\\'], '', public_path($path));
+    }
+}
+
+
+if(!function_exists('update_static_option')){
+    function update_static_option($key,$value) : bool
+    {
+        $static_option = null;
+        if ($static_option === null) {
+            try {
+                $static_option = StaticOption::query();
+            } catch (\Exception $e) {
+            }
+        }
+        try {
+            $static_option->updateOrCreate(['option_name' => $key], ['option_name'  => $key,'option_value' => $value,]);
+        } catch (\Exception $e) {
+            return false;
+        }
+
+        Cache::forget($key);
+
+        return true;
+    }
+}
+
+if(!function_exists('get_static_option')){
+    function get_static_option($option_name, $default = null)
+    {
+        $value = Cache::remember($option_name, 30 * 24 * 60 * 60, function () use ( $option_name) {
+            return StaticOption::where('option_name', $option_name)->first();
+        });
+
+        return $value->option_value ?? $default;
+    }
+}
+
+if(!function_exists('labelType')){
+    function labelType($id)
+    {
+        switch ($id) {
+            case 1:
+                return '
+                    <div class="rounded-2 py-1 text-white text-center text-sm fw-bold bg-success">
+                        IN OFFICE
+                    </div>
+                ';
+                break;
+
+            case 2:
+                return '
+                    <div class="rounded-2 py-1 text-white text-center text-sm fw-bold bg-info">
+                        OUT OFFICE
+                    </div>
+                ';
+                break;
+            
+            default:
+                return '';
+                break;
+        }
+    }
+}
+
+if(!function_exists('labelStatus')){
+    function labelStatus($id = '')
+    {
+        switch ($id) {
+            case 1:
+                return '
+                    <div class="rounded-2 py-1 text-white text-center text-sm fw-bold bg-gradient-success">
+                        ON TIME
+                    </div>
+                ';
+                break;
+
+            case 2:
+                return '
+                    <div class="rounded-2 py-1 text-white text-center text-sm fw-bold bg-gradient-warning">
+                        LATE
+                    </div>
+                ';
+                break;
+
+            case 3:
+                return '
+                    <div class="rounded-2 py-1 text-white text-center text-sm fw-bold bg-gradient-danger">
+                        ABSEN
+                    </div>
+                ';
+                break;
+            
+            default:
+                return '';
+                break;
+        }
     }
 }

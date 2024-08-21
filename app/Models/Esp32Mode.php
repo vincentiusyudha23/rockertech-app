@@ -16,7 +16,7 @@ class Esp32Mode extends Model
     public function scopeSetRegis($query)
     {
        return $query->updateOrCreate(
-            ['action' => 2, 'status' => 0],
+            ['action' => 2],
             ['action' => 2, 'status' => 1]
        );
     }
@@ -24,7 +24,7 @@ class Esp32Mode extends Model
     public function scopeSetPrecense($query)
     {
         return $query->updateOrCreate(
-            ['action' => 1, 'status' => 0],
+            ['action' => 1],
             ['action' => 1, 'status' => 1]
         );
     }

@@ -11,12 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('precenses', function (Blueprint $table) {
+        Schema::create('static_options', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('employe_id')->references('id')->on('employees')->cascadeOnDelete();
-            $table->integer('type');
-            $table->integer('status');
-            $table->time('time');
+            $table->string('option_name');
+            $table->longText('option_value')->nullable();
+            $table->index(['option_name']);
             $table->timestamps();
         });
     }
@@ -26,6 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('precenses');
+        Schema::dropIfExists('static_options');
     }
 };
