@@ -217,12 +217,10 @@
                                                     Swal.fire({
                                                         title: response.msg,
                                                         icon: 'success',
+                                                        showConfirmButton: false
                                                     });
 
-                                                    $('#card_id-' + employ).text(response.card_id);
-                                                    $('select[id="swal2-select"] option[value="'+employ+'"]').attr('disabled', 'disabled');
-                                                    timeLeft = 60;
-                                                    isReg = false;
+                                                    location.reload();
                                                 }
                                             }
                                         });

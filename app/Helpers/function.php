@@ -30,10 +30,10 @@ if(!function_exists('formatBytes')){
 if(!function_exists('get_data_image')){
     function get_data_image($id){
         $image = MediaUploader::find($id);
-
+        
         $data = [
-            'alt' => $image->title,
-            'img_url' => assets('img/'.$image->path)
+            'alt' => $image?->title ?? 'image',
+            'img_url' => isset($image?->path) ? assets('img/'.$image?->path) : asset('no-image.jpeg')
         ];
 
         return $data;

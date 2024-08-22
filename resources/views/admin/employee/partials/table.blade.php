@@ -44,7 +44,7 @@
                         </td>
                         <td class="d-flex justify-content-center align-items-center gap-2">
                             {{-- <x-modal-edit :employe="$employ"/> --}}
-                            <a href="{{ route('admin.employee.edit', ['id' => $employ->id]) }}" class="bg-gradient-info border-0 rounded-2 text-white d-flex justify-content-center align-items-center" style="width: 30px; height: 30px;"><i class="fa-solid fa-pen-to-square fa-xs"></i></a>
+                            <a href="{{ route('admin.employee.edit', ['id' => $employ->id]) }}" class="bg-gradient-info border-0 rounded-2 text-white d-flex justify-content-center align-items-center" style="width: 30px; height: 30px;"><i class="fa-solid fa-eye fa-xs"></i></a>
                             <a href="{{ route('admin.employee.delete', ['id' => $employ->id]) }}" class="bg-gradient-danger border-0 rounded-2 text-white d-flex justify-content-center align-items-center" style="width: 30px; height: 30px;">
                                 <i class="fa-solid fa-trash fa-xs"></i>
                             </a>

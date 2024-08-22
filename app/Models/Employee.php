@@ -31,6 +31,6 @@ class Employee extends Model
 
     public function precense(): HasMany
     {
-        return $this->hasMany(Precense::class);
+        return $this->hasMany(Precense::class, 'employe_id', 'id');
     }
 }
