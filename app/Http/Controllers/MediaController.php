@@ -25,7 +25,7 @@ class MediaController extends Controller
             $image_name = strtolower(Str::slug($image_name));
 
             $image_db = $image_name.time().'.'.$image_extension;
-            $folder_path = global_assets_path('assets/img');
+            $folder_path = global_assets_path('assets/img/employes');
             $image->move($folder_path, $image_db);
 
             if($image){

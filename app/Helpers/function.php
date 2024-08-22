@@ -33,7 +33,7 @@ if(!function_exists('get_data_image')){
         
         $data = [
             'alt' => $image?->title ?? 'image',
-            'img_url' => isset($image?->path) ? assets('img/'.$image?->path) : asset('no-image.jpeg')
+            'img_url' => isset($image?->path) ? assets('img/employes/'.$image?->path) : asset('no-image.jpeg')
         ];
 
         return $data;
