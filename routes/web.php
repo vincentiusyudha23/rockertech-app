@@ -35,6 +35,7 @@ Route::middleware(['web', 'role:admin'])->prefix('admin')->name('admin.')->group
         Route::get('/settings', 'settings')->name('settings');
         Route::post('/update-static-option', 'update_static_uption')->name('update-static-option');
         Route::post('/update-time-precense', 'setTimePrecense')->name('update-time-precense');
+        Route::get('/make-api-token', 'make_token_api')->name('make_api_token');
     });
 
     Route::controller(MediaController::class)->group(function(){

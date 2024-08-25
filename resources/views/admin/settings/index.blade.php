@@ -67,7 +67,6 @@
                                         </div>
                                         <div class="modal-body">
                                             <form id="{{ Str::slug($setting['title']) }}" data-key="{{ $setting['key'] ?? '' }}" action="{{ $setting['route'] }}" method="{{ $setting['methode'] }}">
-                                                @csrf
                                                 @foreach ($setting['field'] ?? [] as $item)
                                                     @if ($item['type'] == 'text')
                                                         <div class="form-group">
@@ -77,6 +76,9 @@
                                                                 <input type="text" class="form-control" {{ $item['option'] }} value="{{ $item['value'] ?? '' }}" aria-describedby="basic-addon3">
                                                             </div>
                                                         </div>
+                                                        @if ($setting['key'] === 'api-token')
+                                                            <a href="{{ route('admin.make_api_token') }}" class="btn bg-gradient-info w-100" type="button">Make Token</a>
+                                                        @endif
                                                     @endif
                                                     @if ($item['type'] == 'time')
                                                         <div class="form-group">
@@ -124,6 +126,9 @@
                     url: url,
                     processData: false,
                     contentType: false,
+                    headers: {
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                    },
                     data: formData,
                     beforeSend: function(){
                         el.html('<i class="fa-solid fa-spinner fa-spin"></i>');

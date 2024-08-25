@@ -361,7 +361,7 @@ class AdminController extends Controller
             [
                 'title' => 'Token API',
                 'icon' => 'fa-solid fa-key',
-                'key' => '',
+                'key' => 'api-token',
                 'route' => '#',
                 'methode' => '',
                 'field' => [
@@ -369,7 +369,7 @@ class AdminController extends Controller
                         'type' => 'text',
                         'title' => 'Token',
                         'option' => 'readonly',
-                        'value' => Auth::user()->createToken('token')->plainTextToken
+                        'value' => get_static_option('api_token','')
                     ]
                 ],
                 'button' => false
@@ -378,9 +378,29 @@ class AdminController extends Controller
                 'title' => 'Alarm',
                 'icon' => 'fa-solid fa-bell',
                 'key' => '',
-                'route' => '#',
+                'route' => route('admin.update-static-option'),
                 'methode' => '',
-                'button' => false
+                'field' => [
+                    [
+                        'type' => 'time',
+                        'title' => 'Rest Time',
+                        'name' => 'alarm_rest_time',
+                        'value' => get_static_option('alarm_rest_time', ''),
+                    ],
+                    [
+                        'type' => 'time',
+                        'title' => 'Off Rest Time',
+                        'name' => 'alarm_off_rest_time',
+                        'value' => get_static_option('alarm_off_rest_time', ''),
+                    ],
+                    [
+                        'type' => 'time',
+                        'title' => 'Out Office',
+                        'name' => 'alarm_out_office',
+                        'value' => get_static_option('alarm_out_office',''),
+                    ],
+                ],
+                'button' => true
             ],
             [
                 'title' => 'Time Precense',
@@ -415,6 +435,13 @@ class AdminController extends Controller
         return view('admin.settings.index', compact('settings'));
     }
 
+    public function make_token_api()
+    {
+        update_static_option('api_token', Auth::user()->createToken('token')->plainTextToken);
+
+        return redirect()->back()->with('success', 'Create Token Successfully');
+    }
+
     public function setTimePrecense(Request $request)
     {
         $this->validate($request, [
@@ -446,7 +473,7 @@ class AdminController extends Controller
 
     public function update_static_uption(Request $request)
     {
-        $data = $request->formData;
+        $data = $request->all();
 
         foreach ($data ?? [] as $key => $value) {
             update_static_option($key, $value);
@@ -456,5 +483,14 @@ class AdminController extends Controller
             'type' => 'success',
             'msg' => 'Update Successfully'
         ]);
+    }
+
+    public function get_status_alarm()
+    {
+        $status = get_static_option('alarm',0);
+
+        return response()->json([
+            'status' => $status
+        ], 200);
     }
 }
