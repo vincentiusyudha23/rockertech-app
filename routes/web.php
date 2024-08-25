@@ -4,7 +4,9 @@ use App\Events\RegisterCardEvent;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\MediaController;
+use App\Http\Controllers\EmployeController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\Auth\AuthenticatedSessionController;
 
 /*
 |--------------------------------------------------------------------------
@@ -16,14 +18,6 @@ use App\Http\Controllers\ProfileController;
 | be assigned to the "web" middleware group. Make something great!
 |
 */
-
-// Route::get('/', function () {
-//     return view('admin.auth.login');
-// });
-
-// Route::get('/dashboard', function () {
-//     return view('dashboard');
-// })->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::middleware(['web', 'role:admin'])->prefix('admin')->name('admin.')->group(function(){
     
@@ -46,18 +40,32 @@ Route::middleware(['web', 'role:admin'])->prefix('admin')->name('admin.')->group
     Route::controller(MediaController::class)->group(function(){
         Route::post('/media-uploader', 'media_upload')->name('media-upload');
     });
+
+    Route::post('logout', [AuthenticatedSessionController::class, 'destroy'])->name('logout');
 });
 
-Route::middleware('auth')->group(function () {
-    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
-    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
-    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+Route::middleware('guest')->prefix('admin')->name('admin.')->group(function () {
+    Route::get('/', [AuthenticatedSessionController::class, 'create']);
+    Route::post('login', [AuthenticatedSessionController::class, 'store'])->name('login');
 });
 
-require __DIR__.'/auth.php';
 
-// Route::get('/testing', function(){
-//     event(new RegisterCardEvent('2312199'));
+Route::middleware(['web', 'role:employee'])->prefix('employe')->name('employe.')->group(function(){
+    
+    Route::controller(EmployeController::class)->group(function(){
+        Route::get('/dashboard', 'index')->name('dashboard');
+        Route::get('/my-precense', 'myPrecense')->name('myprecense');
+        Route::get('/work-from-home', 'workFromHome')->name('wfh');
+    });
 
-//     echo 'done';
-// });
+    Route::controller(MediaController::class)->group(function(){
+        Route::post('/media-uploader', 'media_upload')->name('media-upload');
+    });
+
+    Route::post('logout', [AuthenticatedSessionController::class, 'destroy_employe'])->name('logout');
+});
+
+Route::middleware('guest')->name('employe.')->group(function () {
+    Route::get('/', [AuthenticatedSessionController::class, 'create_employe']);
+    Route::post('login', [AuthenticatedSessionController::class, 'store_employe'])->name('login');
+});

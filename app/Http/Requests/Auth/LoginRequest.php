@@ -47,10 +47,33 @@ class LoginRequest extends FormRequest
             throw ValidationException::withMessages([
                 'username' => trans('auth.failed'),
             ]);
-            
         }
 
         if (!Auth::user()->hasRole('admin')) {
+            Auth::guard('web')->logout(); // Logout jika role tidak sesuai
+            RateLimiter::hit($this->throttleKey());
+
+            throw ValidationException::withMessages([
+                'username' => trans('auth.failed'),
+            ]);
+        }
+
+        RateLimiter::clear($this->throttleKey());
+    }
+
+    public function authenticate_employe(): void
+    {
+        $this->ensureIsNotRateLimited();
+
+        if (! Auth::attempt($this->only('username', 'password'), $this->boolean('remember'))) {
+            RateLimiter::hit($this->throttleKey());
+
+            throw ValidationException::withMessages([
+                'username' => trans('auth.failed'),
+            ]);
+        }
+
+        if (!Auth::user()->hasRole('employee')) {
             Auth::guard('web')->logout(); // Logout jika role tidak sesuai
             RateLimiter::hit($this->throttleKey());
 

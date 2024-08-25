@@ -70,7 +70,7 @@ class AdminController extends Controller
         try{
             $firstname = explode(' ',$request->name)[0];
             $username = Str::slug($firstname);
-            $password = $request->date_birth;
+            $password = preg_replace('/[^0-9]/', '', $request->date_birth);
 
             $user = User::create([
                 'name' => $request->name,

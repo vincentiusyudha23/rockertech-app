@@ -36,6 +36,10 @@
             height: 50vh;
         }
 
+        .vh-80 {
+            height: 80vh;
+        }
+
         .vh-30 {
             height: 30vh;
         }
@@ -55,19 +59,27 @@
         }
     </style>
     <script src="https://js.pusher.com/8.2.0/pusher.min.js"></script>
-    <script>
-        Pusher.logToConsole = true;
+    @if (Auth::check() && Auth::user()->hasRole('admin'))
+        <script>
+            Pusher.logToConsole = true;
 
-        var pusher = new Pusher('c5cee67bd5404f589f4e', {
-            cluster: 'ap1'
-        });
-    </script>
+            var pusher = new Pusher('c5cee67bd5404f589f4e', {
+                cluster: 'ap1'
+            });
+        </script>
+    @endif
     {{-- @vite(['resources/css/app.css', 'resources/js/app.js']) --}}
 </head>
 
 <body class="@if (Auth::check()) g-sidenav-show  bg-gray-100 @endif">
     @if (Auth::check())
-        @include('admin.partials.sidebar')
+        @if (Auth::user()->hasRole('admin'))
+            @include('admin.partials.sidebar')
+        @endif
+
+        @if (Auth::user()->hasRole('employee'))
+            @include('employe.partials.sidebar')
+        @endif
     @endif
     <main class="main-content position-relative max-height-vh-100 h-100 border-radius-lg">
         <section class="@if (Auth::check()) pe-3 pt-2 @endif">

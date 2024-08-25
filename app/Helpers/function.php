@@ -94,7 +94,7 @@ if(!function_exists('labelType')){
         switch ($id) {
             case 1:
                 return '
-                    <div class="rounded-2 py-1 text-white text-center text-sm fw-bold bg-success">
+                    <div class="rounded-2 py-1 px-2 text-white text-center text-sm fw-bold bg-success">
                         IN OFFICE
                     </div>
                 ';
@@ -102,7 +102,7 @@ if(!function_exists('labelType')){
 
             case 2:
                 return '
-                    <div class="rounded-2 py-1 text-white text-center text-sm fw-bold bg-info">
+                    <div class="rounded-2 py-1 px-2 text-white text-center text-sm fw-bold bg-info">
                         OUT OFFICE
                     </div>
                 ';

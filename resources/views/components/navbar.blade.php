@@ -34,7 +34,7 @@
                 </a>
                 <ul class="dropdown-menu  dropdown-menu-end  px-2 py-3 me-sm-n4" aria-labelledby="navbar-dropdown">
                     <li class="mb-2">
-                        <form class="dropdown-item border-radius-md p-1 d-flex flex-row align-items-center" action="{{ route('logout') }}" method="POST">
+                        <form class="dropdown-item border-radius-md p-1 d-flex flex-row align-items-center" action="{{ Auth::user()->hasRole('admin') ? route('admin.logout') : route('employe.logout') }}" method="POST">
                             @csrf
                             <a onclick="event.preventDefault(); this.closest('form').submit();" href="javascript:void(0)">
                                 <i class="fa-solid fa-right-from-bracket px-2" style="transform: rotate(180deg);"></i> Logout

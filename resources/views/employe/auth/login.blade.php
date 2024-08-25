@@ -1,12 +1,6 @@
 @extends('layouts.master')
 
-@php
-    $title = 'Login';
-@endphp
-
-@section('title')
-    {{ $title }}
-@endsection
+@section('title', 'Login')
 
 @section('content')
 <div class="w-100 overflow-hidden vh-100 d-flex justify-content-center align-items-center">
@@ -21,7 +15,7 @@
                 <div class="card card-plain shadow p-2 bg-body border">
                     <div class="card-header pb-0 text-left bg-transparent">
                         <img src="{{ assets('img/logo-1.png') }}" width="200" height="auto" class="mb-2">
-                        <p class="mb-0">Enter your account admin to sign in</p>
+                        <p class="mb-0">Enter your account to sign in</p>
                     </div>
                     <div class="card-body">
                         {{-- ALERT TAG --}}
@@ -32,7 +26,7 @@
                             </div>
                         @endif
                         {{-- FORM LOGIN --}}
-                        <form role="form" method="POST" action="{{ route('admin.login') }}">
+                        <form role="form" method="POST" action="{{ route('employe.login') }}">
                             @csrf
                             <label>Username</label>
                             <div class="mb-3">
