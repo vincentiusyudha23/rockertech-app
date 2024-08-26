@@ -512,4 +512,16 @@ class AdminController extends Controller
             'status' => true
         ],200);
     }
+
+    public function set_status_alarm($status)
+    {
+        \Log::info('Status Alarm is'.$status);
+
+        StaticOption::updateOrCreate(
+            ['option_name' => 'alarm'],
+            ['option_name' => 'alarm', 'option_value' => $status]
+        );
+
+        return true;
+    }
 }
