@@ -3,6 +3,7 @@
 namespace App\Jobs;
 
 use Carbon\Carbon;
+use App\Models\StaticOption;
 use Illuminate\Bus\Queueable;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
@@ -22,8 +23,9 @@ class ChangeAlarmStatusJob implements ShouldQueue
 
     public function handle(): void
     {
-        // Misalkan fungsi ini mengupdate status alarm
-         \Log::info('Changing alarm status to: ' . $this->status);
-        update_static_option('alarm', $this->status);
+        StaticOption::updateOrCreate(
+            ['option_name' => 'alarm'],
+            ['option_name' => 'alarm', 'option_value' => $this->status]
+        );
     }
 }
