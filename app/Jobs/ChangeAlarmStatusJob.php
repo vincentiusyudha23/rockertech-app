@@ -35,7 +35,9 @@ class ChangeAlarmStatusJob implements ShouldQueue
 
         } catch (\Exception $e) {
             // Log error details
-            \Log::error('Failed to update alarm status: '.$e->getMessage());
+            \Log::error('Failed to update alarm status: '.$e->getMessage(), [
+                'exception' => $e
+            ]);
         }
     }
 }

@@ -500,4 +500,16 @@ class AdminController extends Controller
             'status' => $status
         ], 200);
     }
+
+    public function alarm_status_zero()
+    {
+        StaticOption::updateOrCreate(
+            ['option_name' => 'alarm'],
+            ['option_name' => 'alarm', 'option_value' => 0]
+        );
+
+        return response()->json([
+            'status' => true
+        ],200);
+    }
 }
