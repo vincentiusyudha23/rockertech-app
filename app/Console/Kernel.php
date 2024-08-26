@@ -23,11 +23,17 @@ class Kernel extends ConsoleKernel
         $rest_off_time = $staticOptions['alarm_off_rest_time'] ?? '13:00';
         $out_office = $staticOptions['alarm_out_office'] ?? '17:00';
 
-        $schedule->job(new ChangeAlarmStatusJob(1))->dailyAt(Carbon::parse($rest_time)->format('H:i'));
+        $schedule->call(function(){
+            dispatch(new ChangeAlarmStatusJob(1));
+        })->dailyAt(Carbon::parse($rest_time)->format('H:i'));
 
-        $schedule->job(new ChangeAlarmStatusJob(2))->dailyAt(Carbon::parse($rest_off_time)->format('H:i'));
+        $schedule->call(function(){
+            dispatch(new ChangeAlarmStatusJob(2));
+        })->dailyAt(Carbon::parse($rest_off_time)->format('H:i'));
 
-        $schedule->job(new ChangeAlarmStatusJob(3))->dailyAt(Carbon::parse($out_office)->format('H:i'));
+        $schedule->call(function(){
+            dispatch(new ChangeAlarmStatusJob(3));
+        })->dailyAt(Carbon::parse($out_office)->format('H:i'));
     }
 
     /**
