@@ -23,20 +23,12 @@ class Kernel extends ConsoleKernel
         $rest_off_time = $static->firstWhere('option_name', 'alarm_off_rest_time')->option_value ?? '13:00';
         $out_office = $static->firstWhere('option_name', 'alarm_out_office')->option_value ?? '17:00';
 
-        $schedule->call(function () {
-            dispatch(new ChangeAlarmStatusJob(1));
-            dispatch(new ChangeAlarmStatusJob(0))->delay(now()->addMinute());
-        })->dailyAt(Carbon::parse($rest_time)->format('H:i'));
-
-        $schedule->call(function () {
-            dispatch(new ChangeAlarmStatusJob(2));
-            dispatch(new ChangeAlarmStatusJob(0))->delay(now()->addMinute());
-        })->dailyAt(Carbon::parse($rest_off_time)->format('H:i'));
-
-        $schedule->call(function () {
-            dispatch(new ChangeAlarmStatusJob(3));
-            dispatch(new ChangeAlarmStatusJob(0))->delay(now()->addMinute());
-        })->dailyAt(Carbon::parse($out_office)->format('H:i'));
+        $schedule->job(new ChangeAlarmStatusJob(1))->dailyAt(Carbon::parse($rest_time)->format('H:i'));
+        $schedule->job(new ChangeAlarmStatusJob(0))->dailyAt(Carbon::parse($rest_time)->addMinute()->format('H:i'));
+        $schedule->job(new ChangeAlarmStatusJob(2))->dailyAt(Carbon::parse($rest_off_time)->format('H:i'));
+        $schedule->job(new ChangeAlarmStatusJob(0))->dailyAt(Carbon::parse($rest_off_time)->addMinute()->format('H:i'));
+        $schedule->job(new ChangeAlarmStatusJob(3))->dailyAt(Carbon::parse($out_office)->format('H:i'));
+        $schedule->job(new ChangeAlarmStatusJob(0))->dailyAt(Carbon::parse($out_office)->addMinute()->format('H:i'));
 
     }
 
