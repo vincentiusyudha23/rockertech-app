@@ -6,6 +6,7 @@ use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use App\Models\MediaUploader;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 
 class MediaController extends Controller
 {
@@ -26,7 +27,8 @@ class MediaController extends Controller
 
             $image_db = $image_name.time().'.'.$image_extension;
             $folder_path = global_assets_path('assets/img/employes');
-            $image->move($folder_path, $image_db);
+            // $image->move($folder_path, $image_db);
+            $image->storeAs('public/media', $image_db);
 
             if($image){
                 $mediaData = MediaUploader::create([

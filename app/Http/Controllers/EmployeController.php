@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Carbon\Carbon;
 use App\Models\Precense;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -10,7 +11,9 @@ class EmployeController extends Controller
 {
     public function index()
     {
-        return view('employe.dashboard.index');
+        $total_precense = Precense::whereMonth('created_at', Carbon::now()->month)->where('type', 1)->count();
+
+        return view('employe.dashboard.index', compact('total_precense'));
     }
 
     public function myPrecense()

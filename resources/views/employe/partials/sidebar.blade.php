@@ -24,14 +24,6 @@
             <span class="nav-link-text ms-1">My Presence</span>
           </a>
         </li>
-        <li class="nav-item mb-2">
-          <a class="nav-link {{ request()->routeIs('employe.wfh') ? 'active' : '' }}" href="{{ route('employe.wfh') }}">
-            <div class="icon icon-shape icon-sm shadow border-radius-md bg-white me-2 text-center d-flex align-items-center justify-content-center">
-                <i class="fa-solid fa-home fa-sm"></i>
-            </div>
-            <span class="nav-link-text ms-1">Work From Home</span>
-          </a>
-        </li>
       </ul>
     </div>
   </aside>

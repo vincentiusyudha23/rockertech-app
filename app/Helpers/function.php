@@ -4,11 +4,19 @@ use App\Models\StaticOption;
 use App\Models\MediaUploader;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Crypt;
+use Illuminate\Support\Facades\Storage;
 
 if (!function_exists('assets')) {
     function assets($param) {
         // Logika helper Anda
         return asset('assets/'.$param);
+    }
+}
+
+if (!function_exists('storage_asset')) {
+    function storage_asset($param) {
+        // Logika helper Anda
+        return asset('storage/media/'.$param);
     }
 }
 
@@ -33,7 +41,7 @@ if(!function_exists('get_data_image')){
         
         $data = [
             'alt' => $image?->title ?? 'image',
-            'img_url' => isset($image?->path) ? assets('img/employes/'.$image?->path) : asset('no-image.jpeg')
+            'img_url' => isset($image?->path) && Storage::disk('public')->exists('/media/'.$image?->path) ? storage_asset($image?->path) : asset('no-image.jpeg')
         ];
 
         return $data;

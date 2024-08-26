@@ -57,7 +57,7 @@
                                     <div class="numbers">
                                         <p class="text-sm mb-0 text-capitalize font-weight-bold">Late Employee</p>
                                         <h5 class="font-weight-bolder mb-0">
-                                            0
+                                            {{ $precense->where('status', 2)->count() }}
                                         </h5>
                                     </div>
                                 </div>
@@ -78,7 +78,7 @@
                                     <div class="numbers">
                                         <p class="text-sm mb-0 text-capitalize font-weight-bold">Today's Absence</p>
                                         <h5 class="font-weight-bolder mb-0">
-                                            0
+                                            {{ $precense->where('status', 3)->count() }}
                                         </h5>
                                     </div>
                                 </div>
