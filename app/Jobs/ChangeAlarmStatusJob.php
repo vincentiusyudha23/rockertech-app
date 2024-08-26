@@ -23,10 +23,19 @@ class ChangeAlarmStatusJob implements ShouldQueue
 
     public function handle(): void
     {
-        \Log::info('Status is '.$this->status);
-        StaticOption::updateOrCreate(
-            ['option_name' => 'alarm'],
-            ['option_name' => 'alarm', 'option_value' => $this->status]
-        );
+        try {
+            \Log::info('Changing alarm status to '.$this->status);
+
+            StaticOption::updateOrCreate(
+                ['option_name' => 'alarm'],
+                ['option_name' => 'alarm', 'option_value' => $this->status]
+            );
+
+            \Log::info('Successfully updated alarm status to '.$this->status);
+
+        } catch (\Exception $e) {
+            // Log error details
+            \Log::error('Failed to update alarm status: '.$e->getMessage());
+        }
     }
 }
