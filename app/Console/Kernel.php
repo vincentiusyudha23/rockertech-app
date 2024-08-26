@@ -5,6 +5,7 @@ namespace App\Console;
 use Carbon\Carbon;
 use App\Models\StaticOption;
 use App\Jobs\ChangeAlarmStatusJob;
+use App\Http\Controllers\AdminController;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 
@@ -24,15 +25,15 @@ class Kernel extends ConsoleKernel
         $out_office = $staticOptions['alarm_out_office'] ?? '17:00';
 
         $schedule->call(function(){
-            dispatch(new ChangeAlarmStatusJob(1));
+            app(AdminController::class)->set_status_alarm(1);
         })->dailyAt(Carbon::parse($rest_time)->format('H:i'));
 
         $schedule->call(function(){
-            dispatch(new ChangeAlarmStatusJob(2));
+            app(AdminController::class)->set_status_alarm(2);
         })->dailyAt(Carbon::parse($rest_off_time)->format('H:i'));
 
         $schedule->call(function(){
-            dispatch(new ChangeAlarmStatusJob(3));
+            app(AdminController::class)->set_status_alarm(3);
         })->dailyAt(Carbon::parse($out_office)->format('H:i'));
     }
 
