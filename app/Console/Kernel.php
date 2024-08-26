@@ -18,17 +18,17 @@ class Kernel extends ConsoleKernel
 
         $schedule->call(function () {
             dispatch(new ChangeAlarmStatusJob(1));
-            dispatch(new ChangeAlarmStatusJob(0))->delay(now()->addSeconds(10));
+            dispatch(new ChangeAlarmStatusJob(0))->delay(now()->addMinute());
         })->dailyAt(Carbon::parse(get_static_option('alarm_rest_time'))->format('H:i'));
 
         $schedule->call(function () {
             dispatch(new ChangeAlarmStatusJob(2));
-            dispatch(new ChangeAlarmStatusJob(0))->delay(now()->addSeconds(10));
+            dispatch(new ChangeAlarmStatusJob(0))->delay(now()->addMinute());
         })->dailyAt(Carbon::parse(get_static_option('alarm_off_rest_time'))->format('H:i'));
 
         $schedule->call(function () {
             dispatch(new ChangeAlarmStatusJob(3));
-            dispatch(new ChangeAlarmStatusJob(0))->delay(now()->addSeconds(10));
+            dispatch(new ChangeAlarmStatusJob(0))->delay(now()->addMinute());
         })->dailyAt(Carbon::parse(get_static_option('alarm_out_office'))->format('H:i'));
 
     }

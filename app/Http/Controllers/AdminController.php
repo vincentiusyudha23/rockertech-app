@@ -9,6 +9,7 @@ use App\Models\Precense;
 use App\Models\Esp32Mode;
 use App\Models\UserAddress;
 use Illuminate\Support\Str;
+use App\Models\StaticOption;
 use App\Models\TimePrecense;
 use Illuminate\Http\Request;
 use App\Events\PrecenseEvent;
@@ -487,7 +488,13 @@ class AdminController extends Controller
 
     public function get_status_alarm()
     {
-        $status = get_static_option('alarm',0);
+        $alarm = StaticOption::where('option_name', 'alarm')->select('option_value')->first();
+
+        if($alarm){
+            $status = $alarm->option_value;
+        }else{
+            $status = 0;
+        }
 
         return response()->json([
             'status' => $status
