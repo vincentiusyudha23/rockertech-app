@@ -57,7 +57,7 @@ if(!function_exists('decryptPassword')){
 if(!function_exists('global_assets_path')){
     function global_assets_path($path)
     {
-        if(env('APP_ENV') == 'production'){
+        if(env('CPANEL')){
             $publicHtmlPath = '/home/vincenti/public_html'; 
             return str_replace(['core/public/', 'core\\public\\'], '', $publicHtmlPath . '/' .$path);
         }else{
