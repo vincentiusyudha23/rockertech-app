@@ -396,7 +396,7 @@ class AdminController extends Controller
                         'type' => 'text',
                         'title' => 'Token',
                         'option' => 'readonly',
-                        'value' => get_static_option('api_token','')
+                        'value' => Auth::user()->hasRole('admin')->tokens()->first()->plainTextToken ?? ''
                     ]
                 ],
                 'button' => false
@@ -464,7 +464,7 @@ class AdminController extends Controller
 
     public function make_token_api()
     {
-        update_static_option('api_token', Auth::user()->createToken('token')->plainTextToken);
+        Auth::user()->hasRole('admin')->createToken('token')->plainTextToken;
 
         return redirect()->back()->with('success', 'Create Token Successfully');
     }
