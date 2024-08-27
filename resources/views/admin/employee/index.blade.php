@@ -186,10 +186,10 @@
 
                                     channel.bind('register-card', function(data) {
                                         if (data.card_id) {
-                                            
+                                            let isReg = true;
                                             if (data.card_id !== 'error') {
                                                 tap.close();
-    
+                                                
                                                 Swal.fire({
                                                     title: 'Please Wait...',
                                                     allowOutsideClick: false,
@@ -198,28 +198,30 @@
                                                         Swal.showLoading();
                                                     }
                                                 });
-    
-                                                $.ajax({
-                                                    url: '{{ route('admin.employee.regis-card') }}',
-                                                    type: 'POST',
-                                                    data: {
-                                                        _token: '{{ csrf_token() }}',
-                                                        employee_id: employ,
-                                                        card_id: data.card_id
-                                                    },
-                                                    success: function(response) {
-                                                        Swal.hideLoading();
-                                                        if (response.type == 'success') {
-                                                            Swal.fire({
-                                                                title: response.msg,
-                                                                icon: 'success',
-                                                                showConfirmButton: false
-                                                            });
-    
-                                                            location.reload();
+                                                if(isReg){
+                                                    isReg = false;
+                                                    $.ajax({
+                                                        url: '{{ route('admin.employee.regis-card') }}',
+                                                        type: 'POST',
+                                                        data: {
+                                                            _token: '{{ csrf_token() }}',
+                                                            employee_id: employ,
+                                                            card_id: data.card_id
+                                                        },
+                                                        success: function(response) {
+                                                            Swal.hideLoading();
+                                                            if (response.type == 'success') {
+                                                                Swal.fire({
+                                                                    title: response.msg,
+                                                                    icon: 'success',
+                                                                    showConfirmButton: false
+                                                                });
+        
+                                                                location.reload();
+                                                            }
                                                         }
-                                                    }
-                                                });
+                                                    });
+                                                }
                                             } else {
                                                 tap.close();
                                                 Swal.fire({
