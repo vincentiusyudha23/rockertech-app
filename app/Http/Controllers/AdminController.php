@@ -383,7 +383,7 @@ class AdminController extends Controller
     {
 
         $time = TimePrecense::where('type', 'settings')->latest()->first();
-        
+        $token = Auth::user()->hasRole('admin')->tokens()->first();
         $settings = [
             [
                 'title' => 'Token API',
@@ -396,7 +396,7 @@ class AdminController extends Controller
                         'type' => 'text',
                         'title' => 'Token',
                         'option' => 'readonly',
-                        'value' => Auth::user()->hasRole('admin')->tokens()->first()->plainTextToken ?? ''
+                        'value' => $token ? $token->plainTextToken : ''
                     ]
                 ],
                 'button' => false
