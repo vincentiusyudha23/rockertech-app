@@ -41,7 +41,7 @@ if(!function_exists('get_data_image')){
         
         $data = [
             'alt' => $image?->title ?? 'image',
-            'img_url' => isset($image?->path) && Storage::disk('public')->exists('/media/'.$image?->path) ? storage_asset($image?->path) : asset('no-image.jpeg')
+            'img_url' => isset($image?->path) ? assets('img/employes/'.$image?->path) : asset('no-image.jpeg')
         ];
 
         return $data;
@@ -57,8 +57,12 @@ if(!function_exists('decryptPassword')){
 if(!function_exists('global_assets_path')){
     function global_assets_path($path)
     {
-        return str_replace(['core/public/',
-                               'core\\public\\'], '', public_path($path));
+        if(env('APP_ENV') == 'production'){
+            $publicHtmlPath = '/home/vincenti/public_html'; 
+            return str_replace(['core/public/', 'core\\public\\'], '', $publicHtmlPath . '/' .$path);
+        }else{
+            return str_replace(['core/public/', 'core\\public\\'], '', public_path($path));
+        }
     }
 }
 

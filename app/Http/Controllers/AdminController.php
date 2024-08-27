@@ -230,7 +230,7 @@ class AdminController extends Controller
 
             return response()->json([
                 'type' => 'success',
-                'msg' => 'Register Card Successfuly.',
+                'msg' => 'Register Success',
                 'card_id' => $employee->card_id
             ]);
 
@@ -271,11 +271,12 @@ class AdminController extends Controller
                 $time = TimePrecense::where('type', 'settings')->first();
                 
                 if(!$time){
-                        return response()->json([
-                            'status' => true,
-                            'message' => 'Need Settings Time Precense First'
-                        ]);
-                    }
+                    return response()->json([
+                        'status' => true,
+                        'message' => 'Need Settings Time Precense First',
+                        'sound' => 0
+                    ]);
+                }
 
                 $precense = Precense::where('employe_id', $user->id)
                             ->where('type' , 1)
@@ -288,12 +289,13 @@ class AdminController extends Controller
                 if($precense && Carbon::now()->format('H:i') <= $time?->min_out_office){
                     return response()->json([
                         'status' => true,
-                        'message' => 'Today you have taken attendance',
-                        'sound' => ''
+                        'message' => 'Not Valid',
+                        'sound' => 0
                     ]);
                 }else{
                     $status = 0;
                     $type = 1;
+                    $sound = 1;
                     if(Carbon::now()->format('H:i') <= $time?->min_in_office || Carbon::now()->format('H:i') >= $time?->min_in_office && Carbon::now()->format('H:i') <= $time?->max_in_office){
                         $status = 1;
                     }
@@ -303,8 +305,22 @@ class AdminController extends Controller
                     }
 
                     if(Carbon::now()->format('H:i') >= $time?->min_out_office){
+                        $out_today = Precense::where('employe_id', $user->id)
+                                        ->where('type', 2)
+                                        ->whereDate('created_at', Carbon::now())
+                                        ->exists();
+
+                        if($out_today){
+                            return response()->json([
+                                'status' => true,
+                                'message' => 'Not Valid',
+                                'sound' => 0
+                            ]);
+                        }
+
                         $type = 2;
-                        $status = 0;
+                        $status = 1;
+                        $sound = 2;
                     }
 
                     $new_precense = Precense::create([
@@ -325,24 +341,24 @@ class AdminController extends Controller
 
                     return response()->json([
                         'status' => true,
-                        'message' => 'Precense Successfully.',
+                        'message' => 'Precense Success',
                         'status_time' => $status,
-                        'sound' => 1
+                        'sound' => $sound
                     ], 200);
                 }
             }else{
                 return response()->json([
                     'status' => true,
                     'message' => 'Invalid Card',
-                    'sound' => ''
+                    'sound' => 0
                 ], 404);
             }
         }
 
         return response()->json([
             'status' => true,
-            'message' => 'Registrasi Successfully',
-            'sound' => ''
+            'message' => 'Register Success',
+            'sound' => 0
         ], 200);
     }
 
