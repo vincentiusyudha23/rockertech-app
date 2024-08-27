@@ -13,9 +13,10 @@ return new class extends Migration
     {
         Schema::create('precenses', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('employe_id')->references('id')->on('employees')->cascadeOnDelete();
+            $table->foreignId('employe_id')->references('id')->on('employees')->cascadeOnDelete();
             $table->integer('type');
             $table->integer('status');
+            $table->unsignedBigInteger('image')->nullable();
             $table->time('time');
             $table->timestamps();
         });

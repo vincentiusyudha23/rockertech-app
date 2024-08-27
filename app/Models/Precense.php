@@ -13,7 +13,7 @@ class Precense extends Model
     use HasFactory;
 
     protected $table = 'precenses';
-    protected $fillable = ['employe_id','type','status', 'time'];
+    protected $fillable = ['employe_id','type','status', 'time', 'image'];
     // protected $casts = [ 'time' => 'time'];
 
     public function scopeTodayPrecense($query)

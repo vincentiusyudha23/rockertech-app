@@ -27,4 +27,47 @@ class EmployeController extends Controller
     {
         return view('employe.work_from_home.index');
     }
+
+    public function wfh_request(Request $request)
+    {
+        $this->validate($request, [
+            'image' => 'required'
+        ],[
+            'image.required' => 'Image is Required'
+        ]);
+
+        try{
+            $precense = Precense::where('employe_id', auth()->user()->employee->id)
+                    ->where('type' , 3)
+                    ->todayPrecense()
+                    ->first();
+
+            if(!$precense){
+                Precense::create([
+                    'employe_id' => auth()->user()->employee->id,
+                    'type' => 3,
+                    'status' => 1,
+                    'image' => $request->image,
+                    'time' => Carbon::now()->format('H:i')
+                ]);
+
+                return response()->json([
+                    'type' => 'success',
+                    'msg' => 'Precense Work From Home Success'
+                ]);
+            }else{
+                return response()->json([
+                    'type' => 'error',
+                    'msg' => `You Have Today's WFH Presence`
+                ]);
+            }
+
+        }catch(\Exception $e){
+            \Log::error('An error occurred: ' . $e->getMessage(), [
+                'exception' => $e,
+                'file' => $e->getFile(),
+                'line' => $e->getLine(),
+            ]);
+        }
+    }
 }

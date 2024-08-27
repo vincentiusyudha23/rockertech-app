@@ -56,7 +56,7 @@
                 if (file) {
                     var reader = new FileReader();
                     reader.onload = function(e) {
-                        $('#image-preview').attr('src', e.target.result);
+                        $('#image-preview').attr('class', 'rounded-3').attr('src', e.target.result);
                     }
                     reader.readAsDataURL(file);
 
@@ -82,6 +82,56 @@
                         }
                     });
                 }
+            });
+
+            $(document).on('click', '#save-btn', function(){
+                var el = $(this);
+                var image_id = $('#image-save').val();
+
+                Swal.fire({
+                    title: "Precense From Home",
+                    text: "Do you want a precense?",
+                    icon: 'question',
+                    showDenyButton: true,
+                    showCancelButton: false,
+                    confirmButtonText: "Yes",
+                    denyButtonText: "Cancel"
+                }).then((result) => {
+                /* Read more about isConfirmed, isDenied below */
+                if (result.isConfirmed) {
+
+                    $.ajax({
+                        type: 'POST',
+                        url: '{{ route("employe.whf-precense") }}',
+                        data: {
+                            _token: '{{ csrf_token() }}',
+                            image: image_id
+                        },
+                        beforeSend: function(){
+                            Swal.fire({
+                                title: 'Please Wait...',
+                                allowOutsideClick: false,
+                                showConfirmButton: false,
+                                willOpen: () => {
+                                    Swal.showLoading();
+                                }
+                            });
+                        },
+                        success: function(response){
+                            Swal.hideLoading();
+                            if(response.type == 'success'){
+                                Swal.fire(response.msg, "", "success");
+                            }
+
+                            if($response.type == 'error'){
+                                Swal.fire(response.msg, "", "error");
+                            }
+                        }
+                    });
+                } else if (result.isDenied) {
+                    Swal.fire("Changes are not saved", "", "info");
+                }
+});
             });
         });    
     </script>

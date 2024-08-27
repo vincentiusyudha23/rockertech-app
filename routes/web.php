@@ -57,6 +57,7 @@ Route::middleware(['web', 'role:employee'])->prefix('employe')->name('employe.')
         Route::get('/dashboard', 'index')->name('dashboard');
         Route::get('/my-precense', 'myPrecense')->name('myprecense');
         Route::get('/work-from-home', 'workFromHome')->name('wfh');
+        Route::post('/_wfhPrecense', 'wfh_request')->name('whf-precense');
     });
 
     Route::controller(MediaController::class)->group(function(){
