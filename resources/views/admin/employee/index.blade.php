@@ -226,8 +226,10 @@
                                                 showConfirmButton: true
                                             }).then((result) => {
                                                 // Memulai ulang proses registrasi
-                                                clearInterval(countdownTimer); // Hentikan timer lama
-                                                startRegistration(); // Mulai ulang proses
+                                                if (result.isConfirmed) {
+                                                    clearInterval(countdownTimer); // Hentikan timer lama
+                                                    startRegistration(); // Mulai ulang proses
+                                                }
                                             });
                                         }
                                     });
