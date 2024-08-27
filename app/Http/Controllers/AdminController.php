@@ -383,7 +383,6 @@ class AdminController extends Controller
     {
 
         $time = TimePrecense::where('type', 'settings')->latest()->first();
-        $token = Auth::user()->tokens()->first();
         $settings = [
             [
                 'title' => 'Token API',
@@ -396,7 +395,7 @@ class AdminController extends Controller
                         'type' => 'text',
                         'title' => 'Token',
                         'option' => 'readonly',
-                        'value' => $token ? $token->plainTextToken : ''
+                        'value' => get_static_option('api_token', '')
                     ]
                 ],
                 'button' => false
@@ -464,7 +463,7 @@ class AdminController extends Controller
 
     public function make_token_api()
     {
-        Auth::user()->createToken('token')->plainTextToken;
+        update_static_option('api_token',  Auth::user()->createToken('token', ['*'])->plainTextToken);
 
         return redirect()->back()->with('success', 'Create Token Successfully');
     }
