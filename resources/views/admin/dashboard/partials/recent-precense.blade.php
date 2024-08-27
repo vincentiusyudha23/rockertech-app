@@ -27,7 +27,7 @@
                             <img src="{{ $image['img_url'] ?? ''  }}" alt="{{ $image['alt'] ?? '' }}" class="avatar avatar-md me-3"/>
                         </div>
                         <div>
-                            <p class="p-0 m-0">{{ $item->employe->name }}</p>
+                            <p class="p-0 m-0">{{ $item?->employe?->name }}</p>
                             <p class="p-0 m-0 text-xs fw-bold">{{ Carbon\carbon::parse($item->time)->diffForHumans() }}</p>
                         </div>
                     </div>
