@@ -146,64 +146,57 @@
                         url: '{{ route('admin.set_action_mode', ['id' => 2]) }}',
                         success: function(response) {
                             if (response.type === 'success') {
-                                const tap = Swal.fire({
-                                    template: "#my-template",
-                                    showConfirmButton: false,
-                                });
+                                function startRegistration() {
+                                    const tap = Swal.fire({
+                                        template: "#my-template",
+                                        showConfirmButton: false,
+                                    });
 
-                                let timeLeft = 60;
-                                let isReg = true;
+                                    let timeLeft = 60;
 
-                                let countdownTimer = setInterval(function() {
-                                    // Kurangi waktu
-                                    timeLeft--;
+                                    let countdownTimer = setInterval(function() {
+                                        // Kurangi waktu
+                                        timeLeft--;
 
-                                    // Update tampilan waktu di front-end
-                                    $('#countdown').text(timeLeft);
+                                        // Update tampilan waktu di front-end
+                                        $('#countdown').text(timeLeft);
 
-                                    // Jika waktu habis, hentikan timer
-                                    if (timeLeft <= 0) {
-                                        clearInterval(countdownTimer);
-                                        
-                                        $.ajax({
-                                            url: '{{ route('admin.set_action_mode', ['id' => 1]) }}',
-                                            type: 'GET',
-                                            success: function(response) {
-                                                tap.close();
-    
-                                                Swal.fire({
-                                                    title: 'Registration has ended...',
-                                                    allowOutsideClick: true,
-                                                    showConfirmButton: true,
-                                                    icon: 'warning'
-                                                });
-    
-                                                timeLeft = 60;
-                                            },
-                                        });
-                                    }
-                                }, 1000);
+                                        // Jika waktu habis, hentikan timer
+                                        if (timeLeft <= 0) {
+                                            clearInterval(countdownTimer);
+                                            
+                                            $.ajax({
+                                                url: '{{ route('admin.set_action_mode', ['id' => 1]) }}',
+                                                type: 'GET',
+                                                success: function(response) {
+                                                    tap.close();
 
-                                // setTimeout(function() {
-                                //     if(isReg){
-                                        
-                                //     }
-                                // }, 60000); // 60000 ms = 60 detik
+                                                    Swal.fire({
+                                                        title: 'Registration has ended...',
+                                                        allowOutsideClick: true,
+                                                        showConfirmButton: true,
+                                                        icon: 'warning'
+                                                    });
 
-                                channel.bind('register-card', function(data) {
-                                    if (data.card_id) {
-                                        tap.close();
+                                                    timeLeft = 60;
+                                                },
+                                            });
+                                        }
+                                    }, 1000);
 
-                                        Swal.fire({
-                                            title: 'Please Wait...',
-                                            allowOutsideClick: false,
-                                            showConfirmButton: false,
-                                            willOpen: () => {
-                                                Swal.showLoading();
-                                            }
-                                        });
+                                    channel.bind('register-card', function(data) {
+                                        if (data.card_id && data.card_id != 'error') {
+                                            tap.close();
 
-                                        if(data.card_id !== 0){
+                                            Swal.fire({
+                                                title: 'Please Wait...',
+                                                allowOutsideClick: false,
+                                                showConfirmButton: false,
+                                                willOpen: () => {
+                                                    Swal.showLoading();
+                                                }
+                                            });
+
                                             $.ajax({
                                                 url: '{{ route('admin.employee.regis-card') }}',
                                                 type: 'POST',
@@ -220,21 +213,27 @@
                                                             icon: 'success',
                                                             showConfirmButton: false
                                                         });
-    
+
                                                         location.reload();
                                                     }
                                                 }
                                             });
-                                        }else{
-                                            Swal.hideLoading();
+                                        } else {
+                                            tap.close();
                                             Swal.fire({
                                                 icon: "error",
                                                 title: "Card already use!",
+                                                showConfirmButton: true
+                                            }).then((result) => {
+                                                // Memulai ulang proses registrasi
+                                                clearInterval(countdownTimer); // Hentikan timer lama
+                                                startRegistration(); // Mulai ulang proses
                                             });
                                         }
+                                    });
+                                }
 
-                                    }
-                                });
+                                startRegistration();
                             }
                         }
                     });
