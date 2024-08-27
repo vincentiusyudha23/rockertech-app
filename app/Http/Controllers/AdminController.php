@@ -260,7 +260,17 @@ class AdminController extends Controller
         $card_id = $request->input('card_id');
 
         if(Esp32Mode::getStatusRegis()){
-            event(new RegisterCardEvent($card_id));
+            $employe = Employee::where('card_id', $card_id)->first();
+            if($employe){
+                event(new RegisterCardEvent(0));
+                return response()->json([
+                        'status' => true,
+                        'message' => 'Card Already Use',
+                        'sound' => 0
+                    ]);
+            }else{
+                event(new RegisterCardEvent($card_id));
+            }
         }
 
         if(Esp32Mode::getStatusPrecense()){

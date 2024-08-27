@@ -203,27 +203,36 @@
                                             }
                                         });
 
-                                        $.ajax({
-                                            url: '{{ route('admin.employee.regis-card') }}',
-                                            type: 'POST',
-                                            data: {
-                                                _token: '{{ csrf_token() }}',
-                                                employee_id: employ,
-                                                card_id: data.card_id
-                                            },
-                                            success: function(response) {
-                                                Swal.hideLoading();
-                                                if (response.type == 'success') {
-                                                    Swal.fire({
-                                                        title: response.msg,
-                                                        icon: 'success',
-                                                        showConfirmButton: false
-                                                    });
-
-                                                    location.reload();
+                                        if(data !== 0){
+                                            $.ajax({
+                                                url: '{{ route('admin.employee.regis-card') }}',
+                                                type: 'POST',
+                                                data: {
+                                                    _token: '{{ csrf_token() }}',
+                                                    employee_id: employ,
+                                                    card_id: data.card_id
+                                                },
+                                                success: function(response) {
+                                                    Swal.hideLoading();
+                                                    if (response.type == 'success') {
+                                                        Swal.fire({
+                                                            title: response.msg,
+                                                            icon: 'success',
+                                                            showConfirmButton: false
+                                                        });
+    
+                                                        location.reload();
+                                                    }
                                                 }
-                                            }
-                                        });
+                                            });
+                                        }else{
+                                            Swal.hideLoading();
+                                            Swal.fire({
+                                                icon: "error",
+                                                title: "Card already use!",
+                                            });
+                                        }
+
                                     }
                                 });
                             }
