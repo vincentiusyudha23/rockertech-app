@@ -364,7 +364,7 @@ class AdminController extends Controller
 
     public function presence()
     {
-        $precenses = Precense::latest()->get();
+        $precenses = Precense::orderBy('created_at', 'desc')->get();
 
         return view('admin.presence.index', compact('precenses'));
     }
