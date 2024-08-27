@@ -203,7 +203,7 @@
                                             }
                                         });
 
-                                        if(data !== 0){
+                                        if(data.card_id !== 0){
                                             $.ajax({
                                                 url: '{{ route('admin.employee.regis-card') }}',
                                                 type: 'POST',
