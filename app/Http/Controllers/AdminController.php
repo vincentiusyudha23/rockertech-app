@@ -383,7 +383,7 @@ class AdminController extends Controller
     {
 
         $time = TimePrecense::where('type', 'settings')->latest()->first();
-        $token = Auth::user()->hasRole('admin')->tokens()->first();
+        $token = Auth::user()->tokens()->first();
         $settings = [
             [
                 'title' => 'Token API',
@@ -464,7 +464,7 @@ class AdminController extends Controller
 
     public function make_token_api()
     {
-        Auth::user()->hasRole('admin')->createToken('token')->plainTextToken;
+        Auth::user()->createToken('token')->plainTextToken;
 
         return redirect()->back()->with('success', 'Create Token Successfully');
     }
