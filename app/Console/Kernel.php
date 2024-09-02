@@ -38,7 +38,7 @@ class Kernel extends ConsoleKernel
         })->dailyAt(Carbon::parse($out_office)->format('H:i'));
 
         // $schedule->job(new BackupPrecenseJob())->dailyAt('11:30');
-        $schedule->job(new BackupPrecenseJob())->lastDayOfMonth('20:00');;
+        $schedule->job(new BackupPrecenseJob())->lastDayOfMonth('20:00');
     }
 
     /**
