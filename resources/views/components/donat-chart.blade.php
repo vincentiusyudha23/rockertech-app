@@ -1,3 +1,4 @@
+@props(['key_num', 'total', 'title'])
 <div>
     <style>
         #percent {
@@ -107,10 +108,10 @@
     <div id="specificChart_{{ $ranId }}" class="donut-size">
         <div class="pie-wrapper">
             <span class="label">
-                <p class="p-0 m-0 font-weight-normal text-sm">This Month</p>
+                <p class="p-0 m-0 font-weight-normal text-sm">{{ $title ?? '' }}</p>
                 <p style="font-size: 1em;" class="p-0 m-0">
                     <span class="num font-weight-bold">0</span>
-                    <span class="font-weight-bold">/ 20</span>
+                    <span class="font-weight-bold">/ {{ $key_num ?? '' }}</span>
                 </p>
             </span>
             <div class="pie">
@@ -162,7 +163,7 @@
         }
 
         // Pass in a number for the percent
-        updateDonutChart('#specificChart_{{ $ranId }}', '{{ $total ?? 0 }}', 20, true);
+        updateDonutChart('#specificChart_{{ $ranId }}', '{{ $total ?? 0 }}', '{{ $key_num ?? '' }}', true);
         //Ignore the rest, it's for the input and checkbox
 
         // $('#percent').change(function() {

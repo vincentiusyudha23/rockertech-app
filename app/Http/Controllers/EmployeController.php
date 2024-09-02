@@ -11,9 +11,14 @@ class EmployeController extends Controller
 {
     public function index()
     {
-        $total_precense = Precense::whereMonth('created_at', Carbon::now()->month)->where('type', 1)->count();
-
-        return view('employe.dashboard.index', compact('total_precense'));
+        $startOfWeek = Carbon::now()->startOfWeek(); // Senin
+        $endOfWeek = Carbon::now()->endOfWeek(); // Minggu
+        $total_this_week = Precense::whereBetween('created_at', [$startOfWeek, $endOfWeek])->whereIn('type', [1,3])->count();
+        $total_precense = Precense::whereMonth('created_at', Carbon::now()->month)->whereIn('type', [1,3])->count();
+        $precense = Precense::where('employe_id', auth()->user()->employee->id)
+                    ->whereBetween('created_at', [$startOfWeek, $endOfWeek])
+                    ->get();
+        return view('employe.dashboard.index', compact('total_precense','total_this_week', 'precense'));
     }
 
     public function myPrecense()
@@ -58,7 +63,7 @@ class EmployeController extends Controller
             }else{
                 return response()->json([
                     'type' => 'error',
-                    'msg' => `You Have Today's WFH Presence`
+                    'msg' => "You Have Today's WFH Presence"
                 ]);
             }
 

@@ -121,9 +121,10 @@
                             Swal.hideLoading();
                             if(response.type == 'success'){
                                 Swal.fire(response.msg, "", "success");
+                                location.reload();
                             }
 
-                            if($response.type == 'error'){
+                            if(response.type == 'error'){
                                 Swal.fire(response.msg, "", "error");
                             }
                         }
