@@ -7,6 +7,7 @@ use App\Models\User;
 use App\Models\Employee;
 use App\Models\Precense;
 use App\Models\Esp32Mode;
+use App\Models\BackupData;
 use App\Models\UserAddress;
 use Illuminate\Support\Str;
 use App\Models\StaticOption;
@@ -17,6 +18,7 @@ use App\Events\RegisterCardEvent;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Rap2hpoutre\FastExcel\FastExcel;
 use Illuminate\Support\Facades\Crypt;
 
 class AdminController extends Controller
@@ -340,11 +342,18 @@ class AdminController extends Controller
                         'time' => Carbon::now()->format('H:i'),
                     ]);
 
+                    $today_precense = Precense::todayPrecense()->get();
+
                     $data = [
                         'image' => get_data_image($new_precense->employe->image)['img_url'] ?? '',
                         'name' => $new_precense->employe->name,
-                        'time' => $new_precense->time,
-                        'today_total' => Precense::todayPrecense()->count()
+                        'time' => carbon::parse($new_precense->time)->format('H:i:s'),
+                        'timeHuman' => carbon::parse($new_precense->time)->diffForHumans(),
+                        'today_total' => $today_precense->count(),
+                        'status' => labelStatus($new_precense->status),
+                        'position' => $new_precense->employe->position,
+                        'late' => $today_precense->where('status', 2)->count(),
+                        'absen' => $today_precense->where('status', 3)->count()
                     ];
 
                     event(new PrecenseEvent($data));
@@ -375,8 +384,8 @@ class AdminController extends Controller
     public function presence()
     {
         $precenses = Precense::orderBy('created_at', 'desc')->get();
-
-        return view('admin.presence.index', compact('precenses'));
+        $employes = Employee::select('name', 'id')->get();
+        return view('admin.presence.index', compact('precenses', 'employes'));
     }
 
     public function settings()
@@ -384,22 +393,22 @@ class AdminController extends Controller
 
         $time = TimePrecense::where('type', 'settings')->latest()->first();
         $settings = [
-            [
-                'title' => 'Token API',
-                'icon' => 'fa-solid fa-key',
-                'key' => 'api-token',
-                'route' => '#',
-                'methode' => '',
-                'field' => [
-                    [
-                        'type' => 'text',
-                        'title' => 'Token',
-                        'option' => 'readonly',
-                        'value' => get_static_option('api_token', '')
-                    ]
-                ],
-                'button' => false
-            ],
+            // [
+            //     'title' => 'Token API',
+            //     'icon' => 'fa-solid fa-key',
+            //     'key' => 'api-token',
+            //     'route' => '#',
+            //     'methode' => '',
+            //     'field' => [
+            //         [
+            //             'type' => 'text',
+            //             'title' => 'Token',
+            //             'option' => 'readonly',
+            //             'value' => get_static_option('api_token', '')
+            //         ]
+            //     ],
+            //     'button' => false
+            // ],
             [
                 'title' => 'Alarm',
                 'icon' => 'fa-solid fa-bell',
@@ -455,8 +464,28 @@ class AdminController extends Controller
                     ],
                 ],
                 'button' => true
-            ]
+            ],
         ];
+
+        if(auth()->user()->can('edit_quote')){
+            $settings[] = 
+            [
+                'title' => 'Quote',
+                'icon' => 'fa-solid fa-quote-left',
+                'key' => 'time_precense_settings',
+                'route' => route('admin.update-static-option'),
+                'methode' => '',
+                'field' => [
+                    [
+                        'type' => 'textarea',
+                        'title' => 'Quote For Employee',
+                        'name' => 'quote_employe',
+                        'value' => get_static_option('quote_employe')
+                    ]
+                ],
+                'button' => true
+            ];
+        }
         
         return view('admin.settings.index', compact('settings'));
     }
@@ -548,5 +577,57 @@ class AdminController extends Controller
         );
 
         return true;
+    }
+
+    public function file_report()
+    {
+        $backup = BackupData::latest()->get();
+
+        return view('admin.file-report.index', compact('backup'));
+    }
+
+    public function export_precense(Request $request)
+    {
+        $this->validate($request,[
+            'employe' => 'required',
+            'from_date' => 'nullable',
+            'end_date' => 'nullable'
+        ]);
+
+        $employe = $request->employe;
+        $from_date = Carbon::parse($request->from_date)->format('Y-m-d');
+        $end_date =  Carbon::parse($request->end_date)->format('Y-m-d');
+
+        $precense = Precense::query()
+                ->when($employe, function($query, $employe){
+                    if(in_array('all', $employe)){
+                        return $query->latest();
+                    }else{
+                        return $query->whereIn('employe_id', $employe);
+                    }
+                })
+                ->when($from_date, function($query, $from_date){
+                    return $query->whereDate('created_at', '>=' , $from_date);
+                })
+                ->when($end_date, function($query, $end_date){
+                    return $query->whereDate('created_at', '<=' , $end_date);
+                })
+                ->get();
+        
+        $name_file = 'Precense_report.xlsx';
+        if($request->from_date || $request->end_date){
+            $name_file = 'Precense_'.($request->from_date ?? '0-0-0').'_to_'.($request->end_date ?? '0-0-0').'.xlsx';
+        }
+
+        return (new FastExcel($precense))->download($name_file, function($precense){
+            return [
+                'Name' => $precense?->employe?->name,
+                'Position' => $precense?->employe?->position,
+                'Type' => labelTypeString($precense->type),
+                'Status' => labelStatusString($precense->status),
+                'Time' => $precense?->time,
+                'Date' => $precense?->created_at->format('d-m-Y')
+            ];
+        });
     }
 }

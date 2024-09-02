@@ -4,6 +4,7 @@ namespace App\Console;
 
 use Carbon\Carbon;
 use App\Models\StaticOption;
+use App\Jobs\BackupPrecenseJob;
 use App\Jobs\ChangeAlarmStatusJob;
 use App\Http\Controllers\AdminController;
 use Illuminate\Console\Scheduling\Schedule;
@@ -35,6 +36,9 @@ class Kernel extends ConsoleKernel
         $schedule->call(function(){
             app(AdminController::class)->set_status_alarm(3);
         })->dailyAt(Carbon::parse($out_office)->format('H:i'));
+
+        // $schedule->job(new BackupPrecenseJob())->dailyAt('11:30');
+        $schedule->job(new BackupPrecenseJob())->monthlyOn(now()->endOfMonth()->day, '23:59');
     }
 
     /**

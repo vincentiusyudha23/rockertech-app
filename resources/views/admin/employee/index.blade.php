@@ -51,7 +51,7 @@
 
 @section('content')
     <x-navbar title_page="Employee">
-        <div class="container-fluid py-4">
+        <div class="py-4">
             @if (session('success'))
                 <div class="alert alert-success" role="alert">
                     {{ session('success') }}

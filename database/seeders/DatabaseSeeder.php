@@ -7,6 +7,7 @@ use App\Models\Esp32Mode;
 use Illuminate\Database\Seeder;
 use Spatie\Permission\Models\Role;
 use Illuminate\Support\Facades\Hash;
+use Spatie\Permission\Models\Permission;
 
 class DatabaseSeeder extends Seeder
 {
@@ -18,6 +19,9 @@ class DatabaseSeeder extends Seeder
         // \App\Models\User::factory(10)->create();
         Role::updateOrCreate(['name' => 'admin'],['name' => 'admin']);
         Role::updateOrCreate(['name' => 'employee'],['name' => 'employee']);
+        $per_ceo = Permission::updateOrCreate(['name' => 'edit_quote'],['name' => 'edit_quote']);
+
+        $role_ceo = Role::updateOrCreate(['name' => 'ceo'],['name' => 'ceo']);
 
         $admin = \App\Models\User::factory()->create([
             'name' => 'Admin',
@@ -27,7 +31,18 @@ class DatabaseSeeder extends Seeder
             'password' => Hash::make('admin')
         ]);
 
+        $ceo = \App\Models\User::factory()->create([
+            'name' => 'Nando Ario Febriyansah',
+            'username' => 'nando',
+            'email' => 'nando@test.com',
+            'role' => '12345678',
+            'password' => Hash::make('12345678')
+        ]);
+
         $admin->assignRole('admin');
+        $ceo->assignRole('ceo');
+        $ceo->assignRole('admin');
+        $role_ceo->givePermissionTo($per_ceo);
 
         Esp32Mode::setPrecense()->setRegis()->setOffRegis();
     }

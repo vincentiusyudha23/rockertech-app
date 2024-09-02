@@ -80,6 +80,14 @@
                                                             <a href="{{ route('admin.make_api_token') }}" class="btn bg-gradient-info w-100" type="button">Make Token</a>
                                                         @endif
                                                     @endif
+                                                    @if ($item['type'] == 'textarea')
+                                                        <div class="form-group">
+                                                            <label class="form-control-label">{{ $item['title'] }}</label>
+                                                            <div class="input-group">
+                                                                <textarea class="form-control" name="{{ $item['name'] ?? '' }}" aria-label="With textarea">{{ $item['value'] ?? '' }}</textarea>
+                                                            </div>
+                                                        </div>
+                                                    @endif
                                                     @if ($item['type'] == 'time')
                                                         <div class="form-group">
                                                             <label class="form-control-label"

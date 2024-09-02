@@ -5,8 +5,8 @@
 
 @section('content')
     <x-navbar title_page="Dashboard">
-        <div class="container-fluid py-4">
-            <div class="row mb-5">
+        <div class="py-4">
+            <div class="row mb-3">
                 <div class="col-xl-3 col-sm-6 mb-xl-0 mb-4">
                     <div class="card">
                         <div class="card-body p-3">
@@ -56,7 +56,7 @@
                                 <div class="col-8">
                                     <div class="numbers">
                                         <p class="text-sm mb-0 text-capitalize font-weight-bold">Late Employee</p>
-                                        <h5 class="font-weight-bolder mb-0">
+                                        <h5 class="font-weight-bolder mb-0" id="late">
                                             {{ $precense->where('status', 2)->count() }}
                                         </h5>
                                     </div>
@@ -77,7 +77,7 @@
                                 <div class="col-8">
                                     <div class="numbers">
                                         <p class="text-sm mb-0 text-capitalize font-weight-bold">Today's Absence</p>
-                                        <h5 class="font-weight-bolder mb-0">
+                                        <h5 class="font-weight-bolder mb-0" id="absen">
                                             {{ $precense->where('status', 3)->count() }}
                                         </h5>
                                     </div>
@@ -93,7 +93,7 @@
                 </div>
             </div>
             <div class="row h-100">
-                <livewire:chart-report lazy="on-load"/>
+                {{-- <livewire:chart-report lazy="on-load"/> --}}
                 @include('admin.dashboard.partials.recent-precense')
                 </div>
             </div>
@@ -112,27 +112,38 @@
     }
     var channel = pusher.subscribe('precense-event');
     channel.bind('precense-channel', function(data){
-        var list_presence = $('#precense_list');
+        var list_presence = $('#table-recent tbody');
         
         var markup = `
-            <div class="py-3 d-flex justify-content-between px-4">
-                <div class="d-flex align-items-center">
-                    <div>
-                        <img src="${data.precense.image}" alt="avatar" class="avatar avatar-sm me-3 rounded-circle"/>
+            <tr>
+                <td>
+                    <div class="d-flex px-2 py-1">
+                        <div>
+                            <img src="${data.precense.image}" class="avatar avatar-sm me-3" alt="image">
+                        </div>
+                        <div class="d-flex flex-column justify-content-center">
+                            <h6 class="mb-0 text-sm">${data.precense.name}</h6>
+                            <p class="text-xs text-secondary mb-2">${data.precense.timeHuman}</p>
+                        </div>
                     </div>
-                    ${data.precense.name}
-                </div>
-                <div class="d-flex flex-column justify-content-center align-items-center" style="height: 100%;">
-                    <span class="text-xs font-weight-bold">
-                        Time
-                    </span>
-                    <span class="text-lg">${data.precense.time}</span>
-                </div>
-            </div>
+                </td>
+                <td>
+                    <p class="text-xs font-weight-bold mb-0">STAFF</p>
+                    <p class="text-xs text-secondary mb-0">${data.precense.position}</p>
+                </td>
+                <td class="align-middle text-center text-sm"> 
+                    ${data.precense.status}
+                </td>
+                <td class="align-middle text-center">
+                    <span class="text-secondary text-sm font-weight-bold">${data.precense.time}</span>
+                </td>
+            </tr>
         `;
 
-        list_presence.append(markup);
+        list_presence.prepend(markup);
         $('#total_precense').text(data.precense.today_total);
+        $('#late').text(data.precense.late);
+        $('#absen').text(data.precense.absen);
     })
   </script>
 @endpush

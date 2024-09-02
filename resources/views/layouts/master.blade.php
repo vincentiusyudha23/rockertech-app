@@ -27,7 +27,8 @@
     <link href="https://cdn.datatables.net/v/bs5/jq-3.7.0/dt-2.1.0/datatables.min.css" rel="stylesheet">
     <link href="https://unpkg.com/dropzone@6.0.0-beta.1/dist/dropzone.css" rel="stylesheet" type="text/css" />
     <link href="https://cdn.jsdelivr.net/npm/toastr@2.1.4/build/toastr.min.css" rel="stylesheet">
-
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
     {{-- <link href="{{ assets('css/dropzone.css') }}" rel="stylesheet" type="text/css"> --}}
     @stack('styles')
 
@@ -60,8 +61,11 @@
     </style>
     <script src="https://js.pusher.com/8.2.0/pusher.min.js"></script>
     @if (Auth::check() && Auth::user()->hasRole('admin'))
+        @php
+            $pusher = env('APP_ENV') == 'local' ? true : false;
+        @endphp
         <script>
-            Pusher.logToConsole = true;
+            Pusher.logToConsole = '{{ $pusher }}';
 
             var pusher = new Pusher('c5cee67bd5404f589f4e', {
                 cluster: 'ap1'
@@ -82,7 +86,7 @@
         @endif
     @endif
     <main class="main-content position-relative max-height-vh-100 h-100 border-radius-lg">
-        <section class="@if (Auth::check()) pe-3 pt-2 @endif">
+        <section class="@if (Auth::check()) px-2 pt-2 @endif">
             @yield('content')
         </section>
     </main>
@@ -98,6 +102,8 @@
     <script src="https://unpkg.com/dropzone@6.0.0-beta.1/dist/dropzone-min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/toastr@2.1.4/toastr.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 
     <script src="{{ assets('js/soft-ui-dashboard.min.js') }}"></script>
     @stack('scripts')

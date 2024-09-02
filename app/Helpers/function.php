@@ -57,7 +57,7 @@ if(!function_exists('decryptPassword')){
 if(!function_exists('global_assets_path')){
     function global_assets_path($path)
     {
-        if(env('CPANEL')){
+        if(env('CPANEL') === true){
             $publicHtmlPath = '/home/vincenti/public_html'; 
             return str_replace(['core/public/', 'core\\public\\'], '', $publicHtmlPath . '/' .$path);
         }else{
@@ -106,7 +106,7 @@ if(!function_exists('labelType')){
         switch ($id) {
             case 1:
                 return '
-                    <div class="rounded-2 py-1 px-2 text-white text-center text-sm fw-bold bg-success">
+                    <div class="badge badge-sm bg-success">
                         IN OFFICE
                     </div>
                 ';
@@ -114,10 +114,39 @@ if(!function_exists('labelType')){
 
             case 2:
                 return '
-                    <div class="rounded-2 py-1 px-2 text-white text-center text-sm fw-bold bg-info">
+                    <div class="badge badge-sm bg-info">
                         OUT OFFICE
                     </div>
                 ';
+                break;
+
+            case 3:
+                return '
+                    <div class="badge badge-sm bg-warning">
+                        WFH
+                    </div>
+                ';
+                break;
+            
+            default:
+                return '';
+                break;
+        }
+    }
+}
+
+if(!function_exists('labelTypeString')){
+    function labelTypeString($id)
+    {
+        switch ($id) {
+            case 1:
+                return 'IN OFFICE';
+                break;
+            case 2:
+                return 'OUT OFFICE';
+                break;
+            case 3:
+                return 'WORK FROM HOME';
                 break;
             
             default:
@@ -133,7 +162,7 @@ if(!function_exists('labelStatus')){
         switch ($id) {
             case 1:
                 return '
-                    <div class="rounded-2 py-1 text-white text-center text-sm fw-bold bg-gradient-success">
+                    <div class="badge badge-sm bg-gradient-success">
                         ON TIME
                     </div>
                 ';
@@ -141,7 +170,7 @@ if(!function_exists('labelStatus')){
 
             case 2:
                 return '
-                    <div class="rounded-2 py-1 text-white text-center text-sm fw-bold bg-gradient-warning">
+                    <div class="badge badge-sm bg-gradient-warning">
                         LATE
                     </div>
                 ';
@@ -149,10 +178,31 @@ if(!function_exists('labelStatus')){
 
             case 3:
                 return '
-                    <div class="rounded-2 py-1 text-white text-center text-sm fw-bold bg-gradient-danger">
+                    <div class="badge badge-sm bg-gradient-danger">
                         ABSEN
                     </div>
                 ';
+                break;
+            
+            default:
+                return '';
+                break;
+        }
+    }
+}
+
+if(!function_exists('labelStatusString')){
+    function labelStatusString($id = '')
+    {
+        switch ($id) {
+            case 1:
+                return 'ON TIME';
+                break;
+            case 2:
+                return 'LATE';
+                break;
+            case 3:
+                return 'ABSEN';
                 break;
             
             default:
