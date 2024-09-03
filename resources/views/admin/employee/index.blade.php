@@ -114,7 +114,10 @@
 @push('scripts')
     <script>
         $(document).ready(function() {
-            $('#table-employee').DataTable();
+            $('#table-employee').DataTable({
+                scrollX: true,
+                responsive: false
+            });
 
             const employee = @json($select_employ);
             var channel = pusher.subscribe('my-channel');

@@ -37,6 +37,10 @@ class Kernel extends ConsoleKernel
             app(AdminController::class)->set_status_alarm(3);
         })->dailyAt(Carbon::parse($out_office)->format('H:i'));
 
+        $schedule->call(function(){
+            app(AdminController::class)->setAbsenPrecense();
+        })->dailyAt('18:00');
+
         // $schedule->command('backup:precense')->dailyAt('20:00');
         $schedule->command('backup:precense')->lastDayOfMonth('20:00');
     }

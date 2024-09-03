@@ -61,7 +61,10 @@
 @push('scripts')
     <script>
         $(document).ready(function(){
-            $('#table-precense').DataTable();
+            $('#table-precense').DataTable({
+                scrollX: true,
+                responsive: false
+            });
         });
     </script>
 @endpush

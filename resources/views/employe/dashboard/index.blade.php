@@ -21,7 +21,21 @@
 @push('scripts')
     <script src="https://cdnjs.cloudflare.com/ajax/libs/webcamjs/1.0.26/webcam.min.js"></script>
     <script>
+        function checkMediaQuery() {
+            const mediaQuery = window.matchMedia('(max-width: 992px)');
+
+            if(mediaQuery.matches){
+                $('#file-input').attr('accept', 'image/*;capture=camera');
+            }else{
+                $('#file-input').attr('accept', 'image/*');
+            }
+        }
         $(document).ready(function(){
+
+            checkMediaQuery();
+
+            $(window).resize(checkMediaQuery);
+
             function initCam(){
                 Webcam.set({
                     width: 450,
@@ -100,39 +114,39 @@
                 /* Read more about isConfirmed, isDenied below */
                 if (result.isConfirmed) {
 
-                    $.ajax({
-                        type: 'POST',
-                        url: '{{ route("employe.whf-precense") }}',
-                        data: {
-                            _token: '{{ csrf_token() }}',
-                            image: image_id
-                        },
-                        beforeSend: function(){
-                            Swal.fire({
-                                title: 'Please Wait...',
-                                allowOutsideClick: false,
-                                showConfirmButton: false,
-                                willOpen: () => {
-                                    Swal.showLoading();
+                        $.ajax({
+                            type: 'POST',
+                            url: '{{ route("employe.whf-precense") }}',
+                            data: {
+                                _token: '{{ csrf_token() }}',
+                                image: image_id
+                            },
+                            beforeSend: function(){
+                                Swal.fire({
+                                    title: 'Please Wait...',
+                                    allowOutsideClick: false,
+                                    showConfirmButton: false,
+                                    willOpen: () => {
+                                        Swal.showLoading();
+                                    }
+                                });
+                            },
+                            success: function(response){
+                                Swal.hideLoading();
+                                if(response.type == 'success'){
+                                    Swal.fire(response.msg, "", "success");
+                                    location.reload();
                                 }
-                            });
-                        },
-                        success: function(response){
-                            Swal.hideLoading();
-                            if(response.type == 'success'){
-                                Swal.fire(response.msg, "", "success");
-                                location.reload();
-                            }
 
-                            if(response.type == 'error'){
-                                Swal.fire(response.msg, "", "error");
+                                if(response.type == 'error'){
+                                    Swal.fire(response.msg, "", "error");
+                                }
                             }
-                        }
-                    });
-                } else if (result.isDenied) {
-                    Swal.fire("Changes are not saved", "", "info");
-                }
-});
+                        });
+                    } else if (result.isDenied) {
+                        Swal.fire("Changes are not saved", "", "info");
+                    }
+                });
             });
         });    
     </script>

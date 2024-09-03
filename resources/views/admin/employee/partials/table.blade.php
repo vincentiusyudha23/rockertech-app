@@ -32,7 +32,7 @@
                             </div>
                         </td>
                         <td>
-                            <p class="text-xs font-weight-bold mb-0">STAF</p>
+                            <p class="text-xs font-weight-bold mb-0">STAFF</p>
                             <p class="text-xs text-secondary mb-0">{{ $employ->position }}</p>
                         </td>
                         <td class="align-middle text-center text-sm">

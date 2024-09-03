@@ -649,4 +649,38 @@ class AdminController extends Controller
             ];
         });
     }
+
+    public function getPrecenseSheet()
+    {
+        return Precense::latest()->get()->transform(function($precense){
+            return [
+                'Name' => $precense?->employe?->name,
+                'Position' => $precense?->employe?->position,
+                'Type' => labelTypeString($precense->type),
+                'Status' => labelStatusString($precense->status),
+                'Time' => $precense?->time,
+                'Date' => $precense?->created_at->format('d-m-Y')
+            ];
+        })->toJson();
+    }
+
+    public function setAbsenPrecense()
+    {
+        $precense_today = Precense::todayPrecense()->pluck('employe_id')->toArray();
+
+        $employe = Employee::whereNotIn('id', $precense_today)->select('id')->get();
+
+        if($employe){
+            foreach($employe as $val){
+                Precense::create([
+                    'employe_id' => $val->id,
+                    'type' => 1,
+                    'status' => 3,
+                    'time' => Carbon::now()->format('H:i'),
+                ]);
+            }
+        }
+
+        return true;
+    }
 }

@@ -2665,6 +2665,7 @@ progress {
 }
 
 .table-responsive {
+  width: 100%;
   overflow-x: auto;
   -webkit-overflow-scrolling: touch;
 }
@@ -2934,9 +2935,9 @@ textarea.form-control-lg {
 }
 
 .form-select:focus {
-  border-color: #e293d3;
+  border-color: rgb(0, 3, 169);
   outline: 0;
-  box-shadow: 0 0 0 2px #e9aede;
+  box-shadow: 0 0 0 2px rgba(116, 119, 247, 0.5);
 }
 
 .form-select[multiple],

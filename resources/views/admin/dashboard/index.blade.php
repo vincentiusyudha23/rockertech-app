@@ -10,8 +10,8 @@
                 <div class="col-xl-3 col-sm-6 mb-xl-0 mb-4">
                     <div class="card">
                         <div class="card-body p-3">
-                            <div class="row">
-                                <div class="col-8">
+                            <div class="d-flex justify-content-between align-items-center px-md-2">
+                                <div>
                                     <div class="numbers">
                                         <p class="text-sm mb-0 text-capitalize font-weight-bold">Employee</p>
                                         <h5 class="font-weight-bolder mb-0">
@@ -19,7 +19,7 @@
                                         </h5>
                                     </div>
                                 </div>
-                                <div class="col-4 text-end">
+                                <div>
                                     <div class="icon icon-shape bg-gradient-info shadow d-flex justify-content-center align-items-center border-radius-md">
                                         <i class="fa-solid fa-users text-lg opacity-10" aria-hidden="true"></i>
                                     </div>
@@ -31,8 +31,8 @@
                 <div class="col-xl-3 col-sm-6 mb-xl-0 mb-4">
                     <div class="card">
                         <div class="card-body p-3">
-                            <div class="row">
-                                <div class="col-8">
+                            <div class="d-flex justify-content-between align-items-center px-md-2">
+                                <div class="">
                                     <div class="numbers">
                                         <p class="text-sm mb-0 text-capitalize font-weight-bold">Today's Presence</p>
                                         <h5 class="font-weight-bolder mb-0" id="total_precense">
@@ -40,7 +40,7 @@
                                         </h5>
                                     </div>
                                 </div>
-                                <div class="col-4 text-end">
+                                <div class="">
                                     <div class="icon icon-shape bg-gradient-info shadow d-flex justify-content-center align-items-center border-radius-md">
                                         <i class="fa-solid fa-user-check text-lg opacity-10" aria-hidden="true"></i>
                                     </div>
@@ -52,8 +52,8 @@
                 <div class="col-xl-3 col-sm-6 mb-xl-0 mb-4">
                     <div class="card">
                         <div class="card-body p-3">
-                            <div class="row">
-                                <div class="col-8">
+                            <div class="d-flex justify-content-between align-items-center px-md-2">
+                                <div>
                                     <div class="numbers">
                                         <p class="text-sm mb-0 text-capitalize font-weight-bold">Late Employee</p>
                                         <h5 class="font-weight-bolder mb-0" id="late">
@@ -61,7 +61,7 @@
                                         </h5>
                                     </div>
                                 </div>
-                                <div class="col-4 text-end">
+                                <div>
                                     <div class="icon icon-shape bg-gradient-info shadow d-flex justify-content-center align-items-center border-radius-md">
                                         <i class="fa-solid fa-user-clock text-lg opacity-10" aria-hidden="true"></i>
                                     </div>
@@ -73,8 +73,8 @@
                 <div class="col-xl-3 col-sm-6 mb-xl-0 mb-4">
                     <div class="card">
                         <div class="card-body p-3">
-                            <div class="row">
-                                <div class="col-8">
+                            <div class="d-flex justify-content-between align-items-center px-md-2">
+                                <div>
                                     <div class="numbers">
                                         <p class="text-sm mb-0 text-capitalize font-weight-bold">Today's Absence</p>
                                         <h5 class="font-weight-bolder mb-0" id="absen">
@@ -82,7 +82,7 @@
                                         </h5>
                                     </div>
                                 </div>
-                                <div class="col-4 text-end">
+                                <div>
                                     <div class="icon icon-shape bg-gradient-info shadow d-flex justify-content-center align-items-center border-radius-md">
                                         <i class="fa-solid fa-user-slash text-lg opacity-10" aria-hidden="true"></i>
                                     </div>

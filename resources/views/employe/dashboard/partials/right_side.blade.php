@@ -2,7 +2,7 @@
     <div class="col-12 col-md-6 h-100">
         <div class="card h-100">
             <div class="card-body h-100 d-flex flex-column justify-content-center align-items-center">
-                <x-donat-chart :total="$total_precense" key_num="20" title="This Month"/>
+                <x-donat-chart :total="$total_precense" :key_num="$days" title="This Month"/>
             </div>
         </div>
     </div>

@@ -280,7 +280,10 @@
 @push('scripts')
     <script>
         $(document).ready(function() {
-            $('#table-precense').DataTable();
+            $('#table-precense').DataTable({
+                scrollX: true,
+                responsive: false
+            });
 
             $('button[type="submit"]').on('click', function() {
                 var el = $(this);

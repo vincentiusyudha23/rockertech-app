@@ -77,3 +77,5 @@ Route::middleware('guest')->name('employe.')->group(function () {
     Route::get('/', [AuthenticatedSessionController::class, 'create_employe']);
     Route::post('login', [AuthenticatedSessionController::class, 'store_employe'])->name('login');
 });
+
+Route::get('/google-sheet', [AdminController::class, 'getPrecenseSheet']);
