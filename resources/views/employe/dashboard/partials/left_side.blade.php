@@ -7,12 +7,14 @@
                 <p class="fw-bold h5 p-0 m-0">Work From Home</p>
                 <p class="p-0 m-0 fw-bold text-xs">"Upload Your Image"</p>
             </div>
-            <input type="file" class="d-none" id="file-input" accept="image/*;capture=camera">
-            <input type="hidden" id="image-save" value="">
-            <div class="d-flex gap-2">
-                <a href="javascript:void(0)" id="choose-btn" class="btn btn-sm bg-gradient-info">Choose File</a>
-                <a href="javascript:void(0)" id="save-btn" class="btn btn-sm bg-gradient-success d-none">Save</a>
-            </div>
+            @if (!$today_precense_wfh)
+                <input type="file" class="d-none" id="file-input" accept="image/*;capture=camera">
+                <input type="hidden" id="image-save" value="">
+                <div class="d-flex gap-2">
+                    <a href="javascript:void(0)" id="choose-btn" class="btn btn-sm bg-gradient-info">Choose File</a>
+                    <a href="javascript:void(0)" id="save-btn" class="btn btn-sm bg-gradient-success d-none">Save</a>
+                </div>
+            @endif
         </div>
     </div>
 </div>

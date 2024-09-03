@@ -204,63 +204,54 @@
                                         <table class="table align-items-center mb-0" id="table-precense">
                                             <thead>
                                                 <tr>
-                                                    <th
-                                                        class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
-                                                        Name</th>
-                                                    <th
-                                                        class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
-                                                        Position</th>
-                                                    <th
-                                                        class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
-                                                        Type</th>
-                                                    <th
-                                                        class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
-                                                        Status</th>
-                                                    <th
-                                                        class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
-                                                        Time</th>
-                                                    <th
-                                                        class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
-                                                        Date</th>
-                                                    {{-- <th class="text-secondary opacity-7"></th> --}}
+                                                    <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Date</th>
+                                                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Name</th>
+                                                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Position</th>
+                                                    <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Type</th>
+                                                    <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Status</th>
+                                                    <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Image</th>
                                                 </tr>
                                             </thead>
                                             <tbody>
                                                 @if (!empty($employe?->precense))
                                                     @foreach ($employe?->precense as $precense)
                                                         <tr>
+                                                            <td class="text-bold text-center">
+                                                                <p class="text-sm font-weight-bold mb-0">
+                                                                    {{ $precense->created_at->format('d-m-Y') }}
+                                                                </p>
+                                                                <p class="text-sm text-secondary mb-0">
+                                                                    {{ Carbon\Carbon::parse($precense->time)->format('H:i') }}
+                                                                </p>
+                                                            </td>
                                                             <td>
                                                                 <div class="d-flex px-2 py-1">
                                                                     <div>
                                                                         @php
-                                                                            $image = get_data_image(
-                                                                                $precense?->employe?->image,
-                                                                            );
+                                                                            $image = get_data_image($precense?->employe?->image);
                                                                         @endphp
                                                                         <img src="{{ $image['img_url'] ?? '' }}"
                                                                             class="avatar avatar-md avatar-scale-up me-3"
                                                                             alt="{{ $image['alt'] ?? '' }}">
                                                                     </div>
                                                                     <div class="d-flex flex-column justify-content-center">
-                                                                        <h6 class="mb-0 text-sm">
-                                                                            {{ $precense?->employe?->name }}</h6>
+                                                                        <h6 class="mb-0 text-sm">{{ $precense?->employe?->name }}</h6>
                                                                     </div>
                                                                 </div>
                                                             </td>
                                                             <td>
-                                                                <p class="text-xs font-weight-bold mb-0">
-                                                                    {{ $precense?->employe?->position }}</p>
-                                                                <p class="text-xs text-secondary mb-0">Programmer</p>
+                                                                <p class="text-xs font-weight-bold mb-0">STAFF</p>
+                                                                <p class="text-xs text-secondary mb-0">{{ $precense?->employe?->position }}</p>
                                                             </td>
-                                                            <td class="align-middle px-3">
+                                                            <td class="align-middle text-center">
                                                                 {!! labelType($precense->type) !!}
                                                             </td>
-                                                            <td class="px-3">{!! labelStatus($precense->status) !!}</td>
+                                                            <td class="align-middle text-center">{!! labelStatus($precense->status) !!}</td>
                                                             <td class="text-center text-bold">
-                                                                {{ Carbon\Carbon::parse($precense->time)->format('H:i') }}</td>
-                                                            <td class="text-center text-bold">
-                                                                {{ $precense->created_at->format('d-m-Y') }}</td>
-                                                            {{-- <td></td> --}}
+                                                                <a href="javascript:void(0)" data-bs-toggle="modal" data-bs-target="#open-img-modal" class="open-image" data-src="{{ get_data_image($precense->image)['img_url'] }}">
+                                                                    <img class="avatar avatar-xl avatar-scale-up" src="{{ get_data_image($precense->image)['img_url'] }}" alt="image">
+                                                                </a>
+                                                            </td>
                                                         </tr>
                                                     @endforeach
                                                 @endif
@@ -280,9 +271,26 @@
 @push('scripts')
     <script>
         $(document).ready(function() {
-            $('#table-precense').DataTable({
-                scrollX: true,
-                responsive: false
+
+            function declarTable(status){
+                if(status){
+                    $('#table-precense').DataTable({
+                        scrollX: true,
+                        responsive: false
+                    });
+                }else{
+                    $('#table-precense').DataTable().destroy();
+                }
+            };
+
+            // declarTable();
+
+            $(document).on('click', '#precense-tab', function(){
+                declarTable(true);
+            });
+
+            $(document).on('click', '#profile-tab', function(){
+                declarTable(false);
             });
 
             $('button[type="submit"]').on('click', function() {

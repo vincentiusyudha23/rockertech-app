@@ -41,7 +41,12 @@ class EmployeController extends Controller
             }
         }
 
-        return view('employe.dashboard.index', compact('total_precense','total_this_week', 'precense', 'days'));
+        $today_precense_wfh = Precense::where('employe_id', auth()->user()->employee->id)
+                    ->todayPrecense()
+                    ->where('type' , 3)
+                    ->first() ? true : false;
+
+        return view('employe.dashboard.index', compact('total_precense','total_this_week', 'precense', 'days', 'today_precense_wfh'));
     }
 
     public function myPrecense()
