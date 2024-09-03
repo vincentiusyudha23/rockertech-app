@@ -66,6 +66,16 @@ if(!function_exists('global_assets_path')){
     }
 }
 
+if(!function_exists('route_prefix')){
+    function route_prefix(){
+        if(auth()->user()->hasRole('admin')){
+            return 'admin.';
+        }else{
+            return 'employe.';
+        }
+    }
+}
+
 
 if(!function_exists('update_static_option')){
     function update_static_option($key,$value) : bool

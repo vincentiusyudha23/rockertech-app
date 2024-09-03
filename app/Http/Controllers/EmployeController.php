@@ -3,9 +3,15 @@
 namespace App\Http\Controllers;
 
 use Carbon\Carbon;
+use App\Models\Employee;
 use App\Models\Precense;
+use Illuminate\View\View;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Facades\Crypt;
+use Illuminate\Validation\Rules\Password;
 
 class EmployeController extends Controller
 {
@@ -26,6 +32,29 @@ class EmployeController extends Controller
         $precenses = Precense::where('employe_id', Auth::user()->employee->id)->latest()->get();
 
         return view('employe.precense.index', compact('precenses'));
+    }
+
+    public function profile(Request $request): View
+    {
+        return view('admin.auth.profile');
+    }
+
+    public function change_password(Request $request): RedirectResponse
+    {
+        $validated = $request->validate([
+            'current_password' => ['required', 'current_password'],
+            'password' => ['required', Password::defaults(), 'confirmed'],
+        ]);
+
+        $request->user()->update([
+            'password' => Hash::make($validated['password']),
+        ]);
+
+        $employe = Employee::find($request->user()->employee->id);
+        $employe->enc_password = Crypt::encryptString($validated['password']);
+        $employe->save();
+
+        return back()->with('success', 'Password Update Successfully');
     }
 
     public function workFromHome()

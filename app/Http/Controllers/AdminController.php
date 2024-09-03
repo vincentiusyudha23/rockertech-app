@@ -7,6 +7,7 @@ use App\Models\User;
 use App\Models\Employee;
 use App\Models\Precense;
 use App\Models\Esp32Mode;
+use Illuminate\View\View;
 use App\Models\BackupData;
 use App\Models\UserAddress;
 use Illuminate\Support\Str;
@@ -14,12 +15,15 @@ use App\Models\StaticOption;
 use App\Models\TimePrecense;
 use Illuminate\Http\Request;
 use App\Events\PrecenseEvent;
+use Illuminate\Validation\Rules;
 use App\Events\RegisterCardEvent;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Rap2hpoutre\FastExcel\FastExcel;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Crypt;
+use Illuminate\Validation\Rules\Password;
 
 class AdminController extends Controller
 {
@@ -33,6 +37,25 @@ class AdminController extends Controller
         $precense = Precense::todayPrecense()->latest()->get();
         $employe = Employee::all()->count();
         return view('admin.dashboard.index', compact('precense','employe'));
+    }
+
+    public function profile(Request $request): View
+    {
+        return view('admin.auth.profile');
+    }
+
+    public function change_password(Request $request): RedirectResponse
+    {
+        $validated = $request->validate([
+            'current_password' => ['required', 'current_password'],
+            'password' => ['required', Password::defaults(), 'confirmed'],
+        ]);
+
+        $request->user()->update([
+            'password' => Hash::make($validated['password']),
+        ]);
+
+        return back()->with('success', 'Password Update Successfully');
     }
 
     public function employee_acct()
@@ -465,10 +488,6 @@ class AdminController extends Controller
                 ],
                 'button' => true
             ],
-        ];
-
-        if(auth()->user()->can('edit_quote')){
-            $settings[] = 
             [
                 'title' => 'Quote',
                 'icon' => 'fa-solid fa-quote-left',
@@ -484,8 +503,8 @@ class AdminController extends Controller
                     ]
                 ],
                 'button' => true
-            ];
-        }
+            ]
+        ];
         
         return view('admin.settings.index', compact('settings'));
     }

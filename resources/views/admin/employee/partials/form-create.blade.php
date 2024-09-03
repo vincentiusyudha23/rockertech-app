@@ -24,34 +24,34 @@
                                 <div class="col-6">
                                     <div class="d-flex flex-column justify-content-center">
                                         <div class="form-group mb-2">
-                                            <label for="name">Name</label>
-                                            <input type="text" class="form-control" id="name" name="name" value="{{ old('name') }}">
+                                            <label for="name">Name<sup class="text-danger">*</sup></label>
+                                            <input type="text" class="form-control" id="name" name="name" value="{{ old('name') }}" required>
                                         </div>
                                         <div class="form-group mb-2">
-                                            <label for="position">Position</label>
-                                            <input type="text" class="form-control" id="position" name="position" value="{{ old('position') }}">
+                                            <label for="position">Position<sup class="text-danger">*</sup></label>
+                                            <input type="text" class="form-control" id="position" name="position" value="{{ old('position') }}" required>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                             <div class="form-group mb-2">
-                                <label for="email">Email</label>
-                                <input type="email" class="form-control" id="email" name="email" value="{{ old('email') }}">
+                                <label for="email">Email<sup class="text-danger">*</sup></label>
+                                <input type="email" class="form-control" id="email" required name="email" value="{{ old('email') }}">
                             </div>
                             <div class="form-group mb-2">
-                                <label for="mobile">Mobile Number</label>
-                                <input type="number" class="form-control" id="mobile" name="mobile" value="{{ old('mobile') }}">
+                                <label for="mobile">Mobile Number<sup class="text-danger">*</sup></label>
+                                <input type="number" class="form-control" id="mobile" required name="mobile" value="{{ old('mobile') }}">
                             </div>
                             <div class="form-group mb-2">
-                                <label for="nik">NIK</label>
-                                <input type="number" class="form-control" id="nik" name="nik" value="{{ old('nik') }}">
+                                <label for="nik">NIK<sup class="text-danger">*</sup></label>
+                                <input type="number" class="form-control" id="nik" required name="nik" value="{{ old('nik') }}">
                             </div>
                             <div class="form-group mb-2">
-                                <label for="date_birth">Date of Birth</label>
-                                <input type="date" class="form-control" id="date_birth" name="date_birth" value="{{ old('date_birth') }}">
+                                <label for="date_birth">Date of Birth<sup class="text-danger">*</sup></label>
+                                <input type="date" class="form-control" id="date_birth" required name="date_birth" value="{{ old('date_birth') }}">
                             </div>
                             <div class="form-group mb-4">
-                                <label for="address">Address</label>
+                                <label for="address">Address <small class="text-xxs font-italic text-secondary opacity-9">(Optional)</small></label>
                                 <input type="text" class="form-control" id="address" name="address" value="{{ old('address') }}"
                                     placeholder="Street Address">
                                 <div class="row mt-2">

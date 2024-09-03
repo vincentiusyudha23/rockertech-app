@@ -23,6 +23,7 @@ Route::middleware(['web', 'role:admin'])->prefix('admin')->name('admin.')->group
     
     Route::controller(AdminController::class)->group(function(){
         Route::get('/dashboard', 'index')->name('dashboard');
+        Route::get('/profile', 'profile')->name('profile');
         Route::get('/employee', 'employee_acct')->name('employee');
         Route::post('/employee-store', 'employee_store')->name('employee.store');
         Route::get('/edit-page/{id}', 'edit_employe')->name('employee.edit');
@@ -38,6 +39,7 @@ Route::middleware(['web', 'role:admin'])->prefix('admin')->name('admin.')->group
         Route::get('/make-api-token', 'make_token_api')->name('make_api_token');
         Route::get('/file-report', 'file_report')->name('file_report');
         Route::post('/export-precense', 'export_precense')->name('export');
+        Route::put('/change-password', 'change_password')->name('change_password');
     });
 
     Route::controller(MediaController::class)->group(function(){
@@ -60,6 +62,8 @@ Route::middleware(['web', 'role:employee'])->prefix('employe')->name('employe.')
         Route::get('/my-precense', 'myPrecense')->name('myprecense');
         Route::get('/work-from-home', 'workFromHome')->name('wfh');
         Route::post('/_wfhPrecense', 'wfh_request')->name('whf-precense');
+        Route::get('/profile', 'profile')->name('profile');
+        Route::put('/change-password', 'change_password')->name('change_password');
     });
 
     Route::controller(MediaController::class)->group(function(){

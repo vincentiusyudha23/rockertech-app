@@ -106,17 +106,17 @@
                                                     </a>
                                                 </div>
                                                 <div class="form-group">
-                                                    <label class="form-control-label" for="basic-url">Name</label>
+                                                    <label class="form-control-label" for="basic-url">Name<sup class="text-danger">*</sup></label>
                                                     <div class="input-group">
-                                                        <input type="text" class="form-control"
+                                                        <input type="text" class="form-control" required
                                                             value="{{ $employe->name }}" name="name" id="basic-url"
                                                             aria-describedby="basic-addon3">
                                                     </div>
                                                 </div>
                                                 <div class="form-group">
-                                                    <label class="form-control-label" for="basic-url">Position</label>
+                                                    <label class="form-control-label" for="basic-url">Position<sup class="text-danger">*</sup></label>
                                                     <div class="input-group">
-                                                        <input type="text" class="form-control"
+                                                        <input type="text" class="form-control" required
                                                             value="{{ $employe->position }}" name="position" id="basic-url"
                                                             aria-describedby="basic-addon3">
                                                     </div>
@@ -124,17 +124,17 @@
                                             </div>
                                             <div class="col-12 col-lg-6">
                                                 <div class="form-group">
-                                                    <label class="form-control-label" for="basic-url">Email</label>
+                                                    <label class="form-control-label" for="basic-url">Email<sup class="text-danger">*</sup></label>
                                                     <div class="input-group">
-                                                        <input type="email" class="form-control"
+                                                        <input type="email" class="form-control" required
                                                             value="{{ $employe->email }}" name="email" id="basic-url"
                                                             aria-describedby="basic-addon3">
                                                     </div>
                                                 </div>
                                                 <div class="form-group">
-                                                    <label class="form-control-label" for="basic-url">Mobile Number</label>
+                                                    <label class="form-control-label" for="basic-url">Mobile Number<sup class="text-danger">*</sup></label>
                                                     <div class="input-group">
-                                                        <input type="number" class="form-control"
+                                                        <input type="number" class="form-control" required
                                                             value="{{ $employe->mobile }}" name="mobile" id="basic-url"
                                                             aria-describedby="basic-addon3">
                                                     </div>
@@ -142,18 +142,17 @@
                                             </div>
                                             <div class="col-12 col-lg-6">
                                                 <div class="form-group">
-                                                    <label class="form-control-label" for="basic-url">NIK</label>
+                                                    <label class="form-control-label" for="basic-url">NIK<sup class="text-danger">*</sup></label>
                                                     <div class="input-group">
-                                                        <input type="number" class="form-control"
+                                                        <input type="number" class="form-control" required
                                                             value="{{ $employe->nik }}" name="nik" id="basic-url"
                                                             aria-describedby="basic-addon3">
                                                     </div>
                                                 </div>
                                                 <div class="form-group">
-                                                    <label class="form-control-label" for="basic-url">Date of
-                                                        Birth</label>
+                                                    <label class="form-control-label" for="basic-url">Date of Birth<sup class="text-danger">*</sup></label>
                                                     <div class="input-group">
-                                                        <input type="date" class="form-control" name="date_birth"
+                                                        <input type="date" class="form-control" required name="date_birth"
                                                             value="{{ $employe->birthday->format('Y-m-d') }}"
                                                             id="basic-url" aria-describedby="basic-addon3">
                                                     </div>
@@ -161,7 +160,7 @@
                                             </div>
                                             <div class="col-12">
                                                 <div class="form-group mb-4">
-                                                    <label for="address">Address</label>
+                                                    <label for="address">Address<small class="text-xxs text-secondary opacity-8 font-italic"> (Optional)</small></label>
                                                     <input type="text" class="form-control" id="address"
                                                         name="address" value="{{ $employe?->address?->street_address }}"
                                                         placeholder="Street Address">

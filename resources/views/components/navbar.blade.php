@@ -37,6 +37,12 @@
                         <ul class="dropdown-menu  dropdown-menu-end  px-2 py-3 me-sm-n4"
                             aria-labelledby="navbar-dropdown">
                             <li class="mb-2">
+                                <a href="{{ route(route_prefix().'profile') }}" class="dropdown-item border-radius-md p-1 d-flex align-items-center">
+                                    <i class="fa-solid fa-user px-2"></i>
+                                    Profile
+                                </a>
+                            </li>
+                            <li class="mb-2">
                                 <form class="dropdown-item border-radius-md p-1 d-flex flex-row align-items-center"
                                     action="{{ Auth::user()->hasRole('admin') ? route('admin.logout') : route('employe.logout') }}"
                                     method="POST">
