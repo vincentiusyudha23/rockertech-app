@@ -22,7 +22,13 @@ class BackupPrecenseJob implements ShouldQueue
     public function __construct()
     {
         Carbon::setLocale('id');
+    }
 
+    /**
+     * Execute the job.
+     */
+    public function handle(): void
+    {
         $precense = Precense::whereMonth('created_at', now()->month)->whereYear('created_at', now()->year)->get();
 
         $file_name = 'Precense_'.now()->translatedFormat('F').'_'.now()->year.'.xlsx';
@@ -45,13 +51,5 @@ class BackupPrecenseJob implements ShouldQueue
                 'path' => $file_name
             ]);
         }
-    }
-
-    /**
-     * Execute the job.
-     */
-    public function handle(): void
-    {
-        //
     }
 }
