@@ -24,7 +24,24 @@ class EmployeController extends Controller
         $precense = Precense::where('employe_id', auth()->user()->employee->id)
                     ->whereBetween('created_at', [$startOfWeek, $endOfWeek])
                     ->get();
-        return view('employe.dashboard.index', compact('total_precense','total_this_week', 'precense'));
+
+        $now = Carbon::now();
+
+        $totalDays = $now->daysInMonth;
+
+        $days = 0;
+
+        for ($day = 1; $day <= $totalDays; $day++) {
+            // Buat tanggal dengan hari saat ini
+            $currentDate = Carbon::create($now->year, $now->month, $day);
+
+            // Cek apakah hari ini bukan Minggu
+            if ($currentDate->dayOfWeek !== Carbon::SUNDAY) {
+                $days++;
+            }
+        }
+
+        return view('employe.dashboard.index', compact('total_precense','total_this_week', 'precense', 'days'));
     }
 
     public function myPrecense()
