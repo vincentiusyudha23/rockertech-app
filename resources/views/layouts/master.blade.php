@@ -11,7 +11,7 @@
 
     <!-- Fonts -->
     <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700" rel="stylesheet">
-
+    <link rel="icon" type="image/png" href="{{ assets('img/logo-2.png') }}">
 
     <!-- Icons -->
     <link href="{{ assets('css/nucleo-icons.css') }}" rel="stylesheet" />

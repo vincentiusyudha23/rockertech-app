@@ -26,7 +26,7 @@
                             </select>
                         </div>
                         <div>
-                            <button type="button" class="btn btn-info btn-sm" data-bs-toggle="modal" data-bs-target="#exampleModal">Export</button>
+                            <button type="button" class="btn btn-info btn-sm m-0" data-bs-toggle="modal" data-bs-target="#exampleModal">Export</button>
                         </div>
                     </div>
                     <div class="table-responsive p-0">

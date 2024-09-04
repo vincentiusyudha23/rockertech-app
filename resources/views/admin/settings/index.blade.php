@@ -37,6 +37,14 @@
             <div class="card">
                 <div class="card-body">
                     <div class="row">
+                        <div class="col-12 col-sm-6 col-lg-4 p-2 mb-3">
+                            <a href="https://docs.google.com/spreadsheets/d/1tEb0r3TOlFbDtAdlVCL4Y4hvwTKjtcz7iTQsQuSrHFA/edit?usp=sharing" target="_blank" class="card-item border rounded-3 w-100">
+                                <div class="icon-item bg-gradient-info shadow">
+                                    <i class="fa-solid fa-sheet-plastic fa-lg"></i>
+                                </div>
+                                <span class="fs-5 fw-bold">Google SpreadSheet</span>
+                            </a>
+                        </div>
                         @foreach ($settings as $setting)
                             <div class="col-12 col-sm-6 col-lg-4 p-2 mb-3">
                                 <a href="javascript:void(0)" class="card-item border rounded-3 w-100" data-bs-toggle="modal"
