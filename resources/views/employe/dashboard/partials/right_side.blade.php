@@ -42,7 +42,7 @@
                                     <td class="align-middel text-start">
                                         <div>
                                             <h6 class="m-0 p-0 text-sm">{{ $item?->employe?->name }}</h6>
-                                            <p class="m-0 p-0 text-xs text-secondary">{{ Carbon\carbon::parse($item->time)->diffForHumans() }}</p>
+                                            <p class="m-0 p-0 text-xs text-secondary">{{ Carbon\carbon::parse($item->created_at)->diffForHumans() }}</p>
                                         </div>
                                     </td>
                                     <td>

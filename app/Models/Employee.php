@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Models\User;
 use App\Models\Precense;
+use App\Models\Todolist;
 use App\Models\UserAddress;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -32,5 +33,10 @@ class Employee extends Model
     public function precense(): HasMany
     {
         return $this->hasMany(Precense::class, 'employe_id', 'id');
+    }
+
+    public function todolist(): HasMany
+    {
+        return $this->hasMany(Todolist::class, 'employee_id', 'id');
     }
 }

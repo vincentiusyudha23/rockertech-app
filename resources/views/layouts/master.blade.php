@@ -29,6 +29,7 @@
     <link href="https://cdn.jsdelivr.net/npm/toastr@2.1.4/build/toastr.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.snow.css" rel="stylesheet" />
     {{-- <link href="{{ assets('css/dropzone.css') }}" rel="stylesheet" type="text/css"> --}}
     @stack('styles')
 
@@ -53,6 +54,14 @@
             /* display: none; */
         }
 
+        .dvh-100 {
+            height: 100dvh;
+        }
+
+        .min-dvh-100{
+            min-height: 100vh;
+        }
+
         .no-arrow {
             -webkit-appearance: none;
             -moz-appearance: none;
@@ -72,6 +81,7 @@
             });
         </script>
     @endif
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
     {{-- @vite(['resources/css/app.css', 'resources/js/app.js']) --}}
 </head>
 
@@ -85,8 +95,8 @@
             @include('employe.partials.sidebar')
         @endif
     @endif
-    <main class="main-content position-relative max-height-vh-100 h-100 border-radius-lg">
-        <section class="@if (Auth::check()) px-2 pt-2 @endif">
+    <main class="main-content position-relative">
+        <section>
             @yield('content')
         </section>
     </main>
@@ -104,6 +114,7 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script src="https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.js"></script>
 
     <script src="{{ assets('js/soft-ui-dashboard.min.js') }}"></script>
     @stack('scripts')

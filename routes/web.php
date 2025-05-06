@@ -6,6 +6,7 @@ use App\Http\Controllers\AdminController;
 use App\Http\Controllers\MediaController;
 use App\Http\Controllers\EmployeController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\TodolistController;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
 
 /*
@@ -64,6 +65,10 @@ Route::middleware(['web', 'role:employee'])->prefix('employe')->name('employe.')
         Route::post('/_wfhPrecense', 'wfh_request')->name('whf-precense');
         Route::get('/profile', 'profile')->name('profile');
         Route::put('/change-password', 'change_password')->name('change_password');
+    });
+
+    Route::controller(TodolistController::class)->group(function(){
+        Route::get('/todo-list', 'index')->name('todolist');
     });
 
     Route::controller(MediaController::class)->group(function(){

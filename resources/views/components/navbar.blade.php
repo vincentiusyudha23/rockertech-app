@@ -1,6 +1,6 @@
 @props(['title_page'])
-<div class="main-content position-relative max-height-vh-100 h-100 border-radius-lg">
-    <nav class="navbar navbar-main navbar-expand-lg px-0 shadow-sm border-radius-xl bg-white" id="navbarBlur"
+<div class="d-flex flex-column min-dvh-100 overflow-hidden">
+    <nav class="navbar navbar-main navbar-expand-lg px-0 m-2 shadow-sm border-radius-xl bg-white border" id="navbarBlur"
         navbar-scroll="true">
         <div class="container-fluid py-1">
             <nav aria-label="breadcrumb">
@@ -60,7 +60,7 @@
             </div>
         </div>
     </nav>
-    <div class="min-vh-50">
+    <div class="flex-fill">
         {{ $slot }}
     </div>
 </div>

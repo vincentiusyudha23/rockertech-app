@@ -19,11 +19,11 @@ class EmployeController extends Controller
     {
         $startOfWeek = Carbon::now()->startOfWeek(); // Senin
         $endOfWeek = Carbon::now()->endOfWeek(); // Minggu
-        $total_this_week = Precense::whereBetween('created_at', [$startOfWeek, $endOfWeek])->whereIn('type', [1,3])->count();
-        $total_precense = Precense::whereMonth('created_at', Carbon::now()->month)->whereIn('type', [1,3])->count();
+        $total_this_week = Precense::where('employe_id', auth()->user()->employee->id)->whereBetween('created_at', [$startOfWeek, $endOfWeek])->whereIn('type', [1,3])->count();
+        $total_precense = Precense::where('employe_id', auth()->user()->employee->id)->whereMonth('created_at', Carbon::now()->month)->whereIn('type', [1,3])->count();
         $precense = Precense::where('employe_id', auth()->user()->employee->id)
                     ->whereBetween('created_at', [$startOfWeek, $endOfWeek])
-                    ->get();
+                    ->latest()->get();
 
         $now = Carbon::now();
 

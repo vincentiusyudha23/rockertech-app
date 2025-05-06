@@ -4,6 +4,8 @@
 /public/hot
 /public/storage
 /public/assets/employes/
+/public/assets/img/employes/
+/public/assets/backup/
 /storage/*.key
 /vendor
 .env
