@@ -20,7 +20,7 @@ use App\Http\Controllers\Auth\AuthenticatedSessionController;
 |
 */
 
-Route::middleware(['web', 'role:admin'])->prefix('admin')->name('admin.')->group(function(){
+Route::middleware(['web', 'auth','role:admin'])->prefix('admin')->name('admin.')->group(function(){
     
     Route::controller(AdminController::class)->group(function(){
         Route::get('/dashboard', 'index')->name('dashboard');
@@ -56,7 +56,7 @@ Route::middleware('guest')->prefix('admin')->name('admin.')->group(function () {
 });
 
 
-Route::middleware(['web', 'role:employee'])->prefix('employe')->name('employe.')->group(function(){
+Route::middleware(['web','auth', 'role:employee'])->prefix('employe')->name('employe.')->group(function(){
     
     Route::controller(EmployeController::class)->group(function(){
         Route::get('/dashboard', 'index')->name('dashboard');
@@ -69,6 +69,10 @@ Route::middleware(['web', 'role:employee'])->prefix('employe')->name('employe.')
 
     Route::controller(TodolistController::class)->group(function(){
         Route::get('/todo-list', 'index')->name('todolist');
+        Route::post('/todo-list/store', 'store')->name('todolist.store');
+        Route::post('/todo-list/update-index', 'updateTaskIndex')->name('todolist.updateindex');
+        Route::post('/todo-list/update', 'update')->name('todolist.update');
+        Route::post('/todo-list/delete', 'delete')->name('todolist.delete');
     });
 
     Route::controller(MediaController::class)->group(function(){

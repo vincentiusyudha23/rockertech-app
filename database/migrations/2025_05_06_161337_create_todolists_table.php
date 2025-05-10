@@ -17,7 +17,6 @@ return new class extends Migration
             $table->string('title');
             $table->text('desc')->nullable();
             $table->date('due_date');
-            $table->string('day');
             $table->enum('priority', [1,2,3])->default(1);
             $table->enum('status', [1,2,3,4])->default(1);
             $table->integer('index_task')->default(0);
