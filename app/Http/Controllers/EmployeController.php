@@ -6,7 +6,10 @@ use Carbon\Carbon;
 use App\Models\Employee;
 use App\Models\Precense;
 use Illuminate\View\View;
+use Illuminate\Support\Str;
 use Illuminate\Http\Request;
+use App\Models\MediaUploader;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Http\RedirectResponse;
@@ -124,6 +127,76 @@ class EmployeController extends Controller
                 'file' => $e->getFile(),
                 'line' => $e->getLine(),
             ]);
+        }
+    }
+
+    public function permitView()
+    {
+        return view('employe.permit.index');
+    }
+
+    public function storePermit(Request $request)
+    {
+        $request->validate([
+            'permitType' => 'required',
+            'from_date' => 'required',
+            'to_date' => 'required',
+            'file' => 'nullable|mimes:jpg,jpeg,png,gif,webp,pdf|max:5000',
+            'reason' => 'required'
+        ]);
+
+        if(Carbon::parse($request->to_date)->lte(Carbon::parse($request->from_date))){
+            return response()->json([
+                'type' => 'error',
+                'errors' => ['To Date is Invalid']
+            ], 422);
+        }
+
+        try {
+            DB::beginTransaction();
+
+            if($request->hasFile('file')){
+                $file = $request->file;
+                $file_extension = $file->extension();
+                $file_name_with_ext = $file->getClientOriginalName();
+
+                $file_name = pathinfo($file_name_with_ext, PATHINFO_FILENAME);
+                $file_name = strtolower(Str::slug($file_name));
+
+                $file_db = $file_name.time().'.'.$file_extension;
+                $folderPath = global_assets_path('assets/file_permit/employes');
+                $file->move($folderPath, $file_db);
+
+                if($file){
+                    $mediaData = MediaUploader::create([
+                        'title' => $file_name_with_ext,
+                        'path' => $file_db,
+                        'size' => null,
+                        'user_id' => Auth::user()->id
+                    ]);
+                }
+            }
+
+            Auth::user()->employee->permit()->create([
+                'type' => $request->permitType,
+                'from_date' => $request->from_date,
+                'to_date' => $request->to_date,
+                'reason' => $request->reason,
+                'file_id' => isset($mediaData) && !empty($mediaData) ? $mediaData->id : null
+            ]);
+            
+            DB::commit();
+            return response()->json([
+                'type' => 'success',
+            ], 200);
+
+        } catch (\Exception $e){
+            DB::rollBack();
+
+            return response()->json([
+                'type' => 'error',
+                'msg' => $e->getMessage()
+            ], 422);
         }
     }
 }

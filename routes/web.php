@@ -65,6 +65,8 @@ Route::middleware(['web','auth', 'role:employee'])->prefix('employe')->name('emp
         Route::post('/_wfhPrecense', 'wfh_request')->name('whf-precense');
         Route::get('/profile', 'profile')->name('profile');
         Route::put('/change-password', 'change_password')->name('change_password');
+        Route::get('/permit-submission', 'permitView')->name('permit');
+        Route::post('/permit-submission/store', 'storePermit')->name('permit.store');
     });
 
     Route::controller(TodolistController::class)->group(function(){

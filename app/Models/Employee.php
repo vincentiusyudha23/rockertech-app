@@ -6,6 +6,7 @@ use App\Models\User;
 use App\Models\Precense;
 use App\Models\Todolist;
 use App\Models\UserAddress;
+use App\Models\PermitSubmission;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -38,5 +39,10 @@ class Employee extends Model
     public function todolist(): HasMany
     {
         return $this->hasMany(Todolist::class, 'employee_id', 'id');
+    }
+
+    public function permit(): HasMany
+    {
+        return $this->hasMany(PermitSubmission::class, 'employee_id', 'id');
     }
 }

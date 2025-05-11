@@ -5,6 +5,7 @@
 /public/storage
 /public/assets/employes/
 /public/assets/img/employes/
+/public/assets/file_permit/employes/
 /public/assets/backup/
 /storage/*.key
 /vendor
