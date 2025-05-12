@@ -6,6 +6,7 @@ use Carbon\Carbon;
 use App\Models\User;
 use App\Models\Employee;
 use App\Models\Precense;
+use App\Models\Todolist;
 use App\Models\Esp32Mode;
 use Illuminate\View\View;
 use App\Models\BackupData;
@@ -678,5 +679,27 @@ class AdminController extends Controller
         }
 
         return true;
+    }
+
+    // private function getTodolistData()
+    // {
+    //     return Todolist::orderBy('created_at', 'desc')->get()->map(function($item){
+    //         return [
+    //             'id' => $item->id,
+    //             'user_image' => get_data_image($item->employe?->image)['img_url'],
+    //             'user_name' => $item->employe->name,
+    //             'title' => $item->title,
+    //             'dueDate' => $item->due_date->format('D, d M Y'),
+    //             'priority' => $item->priority,
+    //             'status' => $item->status,
+    //             'description' => $item->desc
+    //         ];
+    //     });
+    // }
+
+    public function todolist()
+    {
+        $todolist = Todolist::orderBy('created_at', 'desc')->get();
+        return view('admin.todolist.index', compact('todolist'));
     }
 }

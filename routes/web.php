@@ -41,6 +41,7 @@ Route::middleware(['web', 'auth','role:admin'])->prefix('admin')->name('admin.')
         Route::get('/file-report', 'file_report')->name('file_report');
         Route::post('/export-precense', 'export_precense')->name('export');
         Route::put('/change-password', 'change_password')->name('change_password');
+        Route::get('/todolist-employe', 'todolist')->name('todolist');
     });
 
     Route::controller(MediaController::class)->group(function(){
