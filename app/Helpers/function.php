@@ -48,6 +48,19 @@ if(!function_exists('get_data_image')){
     }
 }
 
+if(!function_exists('get_data_file')){
+    function get_data_file($id){
+        $file = MediaUploader::find($id);
+        
+        $data = [
+            'title' => $file?->path ?? 'no-file',
+            'file_url' => isset($file?->path) ? assets('file_permit/employes/'.$file?->path) : null
+        ];
+
+        return $data;
+    }
+}
+
 if(!function_exists('decryptPassword')){
     function decryptPassword($password = ''){
         return Crypt::decryptString($password);

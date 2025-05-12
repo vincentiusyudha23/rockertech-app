@@ -8,7 +8,9 @@ use App\Models\Precense;
 use Illuminate\View\View;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
+use App\Enums\PermitTypeEnum;
 use App\Models\MediaUploader;
+use App\Enums\PermitStatusEnum;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -198,5 +200,95 @@ class EmployeController extends Controller
                 'msg' => $e->getMessage()
             ], 422);
         }
+    }
+
+    public function listPermit()
+    {
+        $permits = Auth::user()->employee?->permit()?->latest()?->get()->map(function($item){
+            $item->file = get_data_file($item->file_id);
+            return $item;
+        });
+
+        return view('employe.permit.list_permit', compact('permits'));
+    }
+
+    public function updatePermit(Request $request)
+    {
+        $request->validate([
+            'id' => 'required',
+            'permitType' => 'required',
+            'from_date' => 'required',
+            'to_date' => 'required',
+            'file' => 'nullable|mimes:jpg,jpeg,png,gif,webp,pdf|max:5000',
+            'reason' => 'required'
+        ]);
+
+        if(Carbon::parse($request->to_date)->lte(Carbon::parse($request->from_date))){
+            return redirect()->back()->with('errors', 'To Date is invalid!');
+        }
+
+        $oldPermit = Auth::user()->employee->permit()->findOrFail($request->id);
+
+        if($oldPermit->status == PermitStatusEnum::APPROVED->value){
+            return redirect()->back()->with('errors', 'You can no longer edit');
+        }
+
+        try {
+            DB::beginTransaction();
+
+            if($request->hasFile('file')){
+                $file = $request->file;
+                $file_extension = $file->extension();
+                $file_name_with_ext = $file->getClientOriginalName();
+
+                $file_name = pathinfo($file_name_with_ext, PATHINFO_FILENAME);
+                $file_name = strtolower(Str::slug($file_name));
+
+                $file_db = $file_name.time().'.'.$file_extension;
+                $folderPath = global_assets_path('assets/file_permit/employes');
+                $file->move($folderPath, $file_db);
+
+                if($file){
+                    $mediaData = MediaUploader::create([
+                        'title' => $file_name_with_ext,
+                        'path' => $file_db,
+                        'size' => null,
+                        'user_id' => Auth::user()->id
+                    ]);
+                }
+            }
+
+            $oldPermit->update([
+                'type' => $request->permitType,
+                'from_date' => $request->from_date,
+                'to_date' => $request->to_date,
+                'reason' => $request->reason,
+                'file_id' => isset($mediaData) && !empty($mediaData) ? $mediaData->id : ($oldPermit?->file_id ?? null)
+            ]);
+            
+            DB::commit();
+            return redirect()->back()->with('success', 'Update Permit is Successfully');
+
+        } catch (\Exception $e){
+            DB::rollBack();
+
+            if(env('APP_ENV') == 'local'){
+                dd($e->getMessage());
+            }
+
+            return redirect()->back()->with('errors', 'Something Went Wrong!');
+        }
+    }
+
+    public function deletePermit($id)
+    {
+        $permit = Auth::user()->employee->permit()->findOrFail($id);
+        if($permit->status == PermitStatusEnum::APPROVED->value){
+            return redirect()->back()->with('errors', 'You can no longer delete Permit Submissions');
+        }
+
+        return $permit->delete() ?
+            redirect()->back()->with('success', 'Deleted Permit is Successfully') :
+            redirect()->back()->with('errors', 'Deleted Permit is Failed');
     }
 }

@@ -17,7 +17,7 @@ class PermitSubmission extends Model
         'to_date' => 'date',
     ];
 
-    public function employe(): BelongsTo
+    public function employe()
     {
         return $this->belongsTo(Employee::class, 'employee_id', 'id');
     }

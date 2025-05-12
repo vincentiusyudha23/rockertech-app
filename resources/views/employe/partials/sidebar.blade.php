@@ -40,6 +40,14 @@
             <span class="nav-link-text ms-1">Permit Submission</span>
           </a>
         </li>
+        <li class="nav-item mb-2">
+          <a class="nav-link {{ request()->routeIs('employe.permit.list') ? 'active' : '' }}" href="{{ route('employe.permit.list') }}">
+            <div class="icon icon-shape icon-sm shadow border-radius-md bg-white me-2 text-center d-flex align-items-center justify-content-center">
+                <i class="fa-solid fa-list fa-sm"></i>
+            </div>
+            <span class="nav-link-text ms-1">List Permit</span>
+          </a>
+        </li>
       </ul>
     </div>
   </aside>

@@ -67,6 +67,9 @@ Route::middleware(['web','auth', 'role:employee'])->prefix('employe')->name('emp
         Route::put('/change-password', 'change_password')->name('change_password');
         Route::get('/permit-submission', 'permitView')->name('permit');
         Route::post('/permit-submission/store', 'storePermit')->name('permit.store');
+        Route::post('/permit-submission/update', 'updatePermit')->name('permit.update');
+        Route::delete('/permit-submission/{id}/delete', 'deletePermit')->name('permit.delete');
+        Route::get('/permit-submission/list', 'listPermit')->name('permit.list');
     });
 
     Route::controller(TodolistController::class)->group(function(){
