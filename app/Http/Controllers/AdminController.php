@@ -16,6 +16,7 @@ use App\Models\StaticOption;
 use App\Models\TimePrecense;
 use Illuminate\Http\Request;
 use App\Events\PrecenseEvent;
+use App\Models\PermitSubmission;
 use Illuminate\Validation\Rules;
 use App\Events\RegisterCardEvent;
 use Illuminate\Support\Facades\DB;
@@ -717,5 +718,29 @@ class AdminController extends Controller
         return response()->json([
             'type' => 'success'
         ]);
+    }
+
+    public function permit_submission_list()
+    {
+        $permits = PermitSubmission::latest()->get();
+        return view('admin.permit.index', compact('permits'));
+    }
+
+    public function set_approved_permit($id)
+    {
+        $permit = PermitSubmission::findOrFail($id);
+        $permit->status = 3;
+        $permit->save();
+
+        return redirect()->back()->with('success', 'Approved Permit Submission is Successfully');
+    }
+
+    public function set_not_approved_permit($id)
+    {
+        $permit = PermitSubmission::findOrFail($id);
+        $permit->status = 2;
+        $permit->save();
+
+        return redirect()->back()->with('success', 'Set as Not Approved Permit Submission is Successfully');
     }
 }

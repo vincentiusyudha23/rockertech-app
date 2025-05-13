@@ -64,7 +64,7 @@
                                     <div class="modal-content">
                                         <div class="modal-header">
                                             <div class="d-flex align-items-center gap-2">
-                                                <h5 class="modal-title font-weight-normal">To-do List</h5>
+                                                <h5 class="modal-title font-weight-bolder opacity-7">To-do List</h5>
                                                 @if ($item->priority == 1)
                                                     <span class="badge badge-sm bg-gradient-info">Low</span>
                                                 @endif

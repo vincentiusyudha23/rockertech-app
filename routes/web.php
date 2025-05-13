@@ -43,6 +43,9 @@ Route::middleware(['web', 'auth','role:admin'])->prefix('admin')->name('admin.')
         Route::put('/change-password', 'change_password')->name('change_password');
         Route::get('/todolist-employe', 'todolist')->name('todolist');
         Route::post('/todolist/set-completed', 'set_completed_todolist')->name('todolist.completed');
+        Route::get('/permit-submission-list', 'permit_submission_list')->name('permit');
+        Route::put('/permit-submission/{id}/approved', 'set_approved_permit')->name('permit.set-approved');
+        Route::put('/permit-submission/{id}/not-approved', 'set_not_approved_permit')->name('permit.set-not-approved');
     });
 
     Route::controller(MediaController::class)->group(function(){
