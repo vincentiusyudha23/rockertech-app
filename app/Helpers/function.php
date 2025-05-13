@@ -234,3 +234,44 @@ if(!function_exists('labelStatusString')){
         }
     }
 }
+
+if(!function_exists('sendToEmail')){
+    function sendToEmail($data = [])
+    {
+        if (!isset($data['to']) || !isset($data['subject']) || !isset($data['view'])) {
+            return false;
+        }
+
+        dispatch(function () use ($data) {
+            try {
+                $viewData = $data['viewData'] ?? [];
+                $viewData['direction'] = ($data['direction'] ?? 'rtl');
+                \Mail::send('emails.'.$data['view'], $viewData, function($message) use ($data) {
+                    if(isset($data['viewData']['from_name']) && !is_null($data['viewData']['from_name'])){
+                        $message->from(($data['viewData']['from_address'] ?? env('MAIL_FROM_ADDRESS','email@email.com')) , ($data['viewData']['from_name'] ?? env('MAIL_FROM_NAME','RockerTech')));
+                    }
+                    $message->to($data['to'])->subject($data['subject']);
+                    foreach ($data['attachments'] ?? [] as $attachment) {
+                        $message->attach($attachment['path'], [
+                            'as' => $attachment['name'],
+                        ]);
+                    }
+                });
+
+                \Log::channel('info')->info('Email sending',[
+                    'to' => $data['to'],
+                    'subject' => $data['subject'],
+                ]);
+
+            } catch (\Exception $e) {
+                if(app()->environment('local')){
+                    dd($e->getMessage());
+                }
+
+                \Log::error('Error while sending email: ' . $e->getMessage());
+            }
+        });
+
+        return true;
+    }
+}

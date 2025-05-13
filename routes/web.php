@@ -59,6 +59,11 @@ Route::middleware(['web', 'auth','role:admin'])->prefix('admin')->name('admin.')
 Route::middleware('guest')->prefix('admin')->name('admin.')->group(function () {
     Route::get('/', [AuthenticatedSessionController::class, 'create']);
     Route::post('login', [AuthenticatedSessionController::class, 'store'])->name('login');
+    Route::get('/forget-password', [AuthenticatedSessionController::class, 'forgetPassword'])->name('forget-password');
+    Route::post('/forget-password/send-otp', [AuthenticatedSessionController::class, 'sendOtpToEmail'])->name('forget-password.send-otp');
+    Route::post('/forget-password/verify-otp', [AuthenticatedSessionController::class, 'verifyOtp'])->name('forget-password.verify-otp');
+    Route::post('/forget-password/resend-otp', [AuthenticatedSessionController::class, 'resendOTP'])->name('forget-password.resend-otp');
+    Route::post('/forget-password/reset-password', [AuthenticatedSessionController::class, 'changePassword'])->name('forget-password.reset-password');
 });
 
 
