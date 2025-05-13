@@ -100,15 +100,28 @@
                                             </button>
                                         </div>
                                         <div class="modal-body">
-                                            <div class="mb-2">
-                                                <div class="mb-1">
-                                                    <span class="text-sm">Assigned To:</span>
+                                            <div class="mb-2 d-flex justify-content-between align-items-center px-2">
+                                                <div>
+                                                    <div class="mb-1">
+                                                        <span class="text-sm">Assigned To:</span>
+                                                    </div>
+                                                    <div class="d-flex align-items-center gap-2">
+                                                        <a href="javascript:;" class="avatar avatar-sm">
+                                                            <img alt="image" src="{{ get_data_image($item->employe->image)['img_url'] }}">
+                                                        </a>
+                                                        <span class="text-sm">{{ $item->employe->name }}</span>
+                                                    </div>
                                                 </div>
-                                                <div class="d-flex align-items-center gap-2">
-                                                    <a href="javascript:;" class="avatar avatar-sm">
-                                                        <img alt="image" src="{{ get_data_image($item->employe->image)['img_url'] }}">
-                                                    </a>
-                                                    <span class="text-sm">{{ $item->employe->name }}</span>
+                                                <div class="pt-3">
+                                                    @if ($item->status == 4)
+                                                        <button type="button" class="btn btn-sm bg-gradient-success d-flex gap-1 justify-content-center align-items-center disabled" data-id="{{ $item->id }}" style="width: 200px;">
+                                                            <i class="fa-solid fa-check text-xs"></i> <span class="text-xs">Done</span>
+                                                        </button>
+                                                    @else
+                                                        <button type="button" class="btn btn-sm bg-gradient-success d-flex gap-1 justify-content-center align-items-center btn-completed" data-id="{{ $item->id }}" style="width: 200px;">
+                                                            <span class="text-xs">Set as Completed / Done</span>
+                                                        </button>
+                                                    @endif
                                                 </div>
                                             </div>
 
@@ -172,6 +185,33 @@
                 quill.root.innerHTML = item.desc;
             });
             
+            $('.btn-completed').on('click', function(e){
+                e.preventDefault();
+                let el = $(this);
+                let id = el.data('id');
+
+                $.ajax({
+                    url: '{{ route("admin.todolist.completed") }}',
+                    type: 'POST',
+                    data: {
+                        _token: '{{ csrf_token() }}',
+                        id: id
+                    },
+                    beforeSend: function(){
+                        el.addClass('disabled');
+                        el.html('<i class="fa-solid fa-spinner text-xs fa-spin"></i>');
+                    },
+                    success: function(res){
+                        if(res.type == 'success'){
+                            location.reload();
+                        }
+                    },
+                    error: function(err){
+                        el.removeClass('disabled');
+                        el.text('SAVE');
+                    }
+                });
+            })
         });
     </script>
 @endpush

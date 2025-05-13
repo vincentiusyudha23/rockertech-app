@@ -702,4 +702,20 @@ class AdminController extends Controller
         $todolist = Todolist::orderBy('created_at', 'desc')->get();
         return view('admin.todolist.index', compact('todolist'));
     }
+
+    public function set_completed_todolist(Request $request)
+    {
+        $request->validate([
+            'id' => 'required'
+        ]);
+        
+        $id = $request->id;
+        $todolist = Todolist::findOrFail($id);
+        $todolist->status = 4;
+        $todolist->save();
+
+        return response()->json([
+            'type' => 'success'
+        ]);
+    }
 }
