@@ -24,10 +24,17 @@
                         <td class="text-center">{{ $permit->to_date->format('D, d M Y') }}</td>
                         <td class="text-center">{!! \App\Enums\PermitTypeEnum::from($permit->type)->badgeType() !!}</td>
                         <td class="text-center">{!! \App\Enums\PermitStatusEnum::from($permit->status)->badgeStatus() !!}</td>
-                        <td class="d-flex align-items-center justify-content-center">
+                        <td class="d-flex align-items-center justify-content-center gap-1">
                             <button class="btn btn-icon bg-gradient-info m-0 px-3 py-2" data-bs-toggle="modal" data-bs-target="#modal-permit-{{ $permit->id }}">
                                 <i class="fa-solid fa-eye"></i>
                             </button>
+                            <form action="{{ route('admin.permit.delete', ['id' => $permit->id]) }}" method="POST">
+                                @csrf
+                                @method('DELETE')
+                                <button class="btn btn-icon bg-gradient-danger m-0 px-3 py-2">
+                                    <i class="fa-solid fa-trash"></i>
+                                </button>
+                            </form>
                             <div class="modal fade" id="modal-permit-{{ $permit->id }}">
                                 <div class="modal-dialog modal-dialog-centered modal-md" role="document">
                                     <div class="modal-content">

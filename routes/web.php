@@ -46,6 +46,7 @@ Route::middleware(['web', 'auth','role:admin'])->prefix('admin')->name('admin.')
         Route::get('/permit-submission-list', 'permit_submission_list')->name('permit');
         Route::put('/permit-submission/{id}/approved', 'set_approved_permit')->name('permit.set-approved');
         Route::put('/permit-submission/{id}/not-approved', 'set_not_approved_permit')->name('permit.set-not-approved');
+        Route::delete('/permit-submission/{id}/delete', 'delete_permit')->name('permit.delete');
     });
 
     Route::controller(MediaController::class)->group(function(){

@@ -25,8 +25,8 @@
                                     <tr>
                                         <td class="text-bold text-center">{{ $loop->index + 1 }}.</td>
                                         <td class="text-center">{{ $permit->employe->name }}</td>
-                                        <td class="text-center">{{ $permit->from_date->format('d-m-Y') }}</td>
-                                        <td class="text-center">{{ $permit->to_date->format('d-m-Y') }}</td>
+                                        <td class="text-center">{{ $permit->from_date->format('D, d M Y') }}</td>
+                                        <td class="text-center">{{ $permit->to_date->format('D, d M Y') }}</td>
                                         <td class="text-center">{!! \App\Enums\PermitTypeEnum::from($permit->type)->badgeType() !!}</td>
                                         <td class="text-center">{!! \App\Enums\PermitStatusEnum::from($permit->status)->badgeStatus() !!}</td>
                                         <td>

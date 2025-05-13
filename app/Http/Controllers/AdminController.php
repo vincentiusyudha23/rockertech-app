@@ -741,6 +741,14 @@ class AdminController extends Controller
         $permit->status = 2;
         $permit->save();
 
-        return redirect()->back()->with('success', 'Set as Not Approved Permit Submission is Successfully');
+        return redirect()->back()->with('success', 'Not Approved Permit Submission is Successfully');
+    }
+
+    public function delete_permit($id)
+    {
+        $permit = PermitSubmission::findOrFail($id);
+        $permit->delete();
+
+        return redirect()->back()->with('success', 'Deleted Permit Submission is Successfully');
     }
 }

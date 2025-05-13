@@ -147,7 +147,7 @@ class EmployeController extends Controller
             'reason' => 'required'
         ]);
 
-        if(Carbon::parse($request->to_date)->lte(Carbon::parse($request->from_date))){
+        if(Carbon::parse($request->to_date)->lt(Carbon::parse($request->from_date))){
             return response()->json([
                 'type' => 'error',
                 'errors' => ['To Date is Invalid']
