@@ -12,7 +12,7 @@ class TodolistObserver
      */
     public function created(Todolist $todolist): void
     {
-        DB::table('todolists')->where('status', 1)->increment('index_task');
+        DB::table('todolists')->where('status', 1)->where('employee_id', $todolist->employe->id)->increment('index_task');
 
         $todolist->index_task = 1;
     }

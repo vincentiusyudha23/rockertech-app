@@ -175,7 +175,7 @@
                 <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
                     <div class="modal-content">
                         <div class="modal-header">
-                            <h5 class="modal-title font-weight-normal">Add New To-do List</h5>
+                            <h5 class="modal-title font-weight-normal">Add New Task</h5>
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
                                 <span aria-hidden="true">&times;</span>
                             </button>
@@ -212,6 +212,19 @@
                                     </div>
                                 </div>
                             </div>
+
+                            <div class="form-group">
+                                <label class="form-control-label" for="type-todolist">Type Task</label>
+                                <div class="input-group">
+                                    <select class="form-select" id="type-todolist" x-model="newForm.type">
+                                        <option value="" selected>Select Type Task</option>
+                                        <option value="1">New Client</option>
+                                        <option value="2">Design</option>
+                                        <option value="3">Content</option>
+                                        <option value="4">Closing</option>
+                                    </select>
+                                </div>
+                            </div>
     
                             <div class="form-group">
                                 <label class="form-control-label" for="quill-desc">Description</label>
@@ -236,7 +249,7 @@
                     <div class="modal-content">
                         <div class="modal-header">
                             <div class="d-flex gap-2 align-items-center">
-                                <h5 class="modal-title font-weight-normal">Edit To-do List</h5>
+                                <h5 class="modal-title font-weight-normal">Edit Task</h5>
                                 <template x-if="editForm.priority == 1">
                                     <span class="badge bg-gradient-info">Low</span>
                                 </template>
@@ -316,6 +329,19 @@
                                     </div>
                                 </div>
                             </div>
+
+                            <div class="form-group">
+                                <label class="form-control-label" for="edit-type-todolist">Type Task</label>
+                                <div class="input-group">
+                                    <select class="form-select" id="edit-type-todolist" x-model="editForm.type">
+                                        <option value="" selected>Select Type Task</option>
+                                        <option value="1">New Client</option>
+                                        <option value="2">Design</option>
+                                        <option value="3">Content</option>
+                                        <option value="4">Closing</option>
+                                    </select>
+                                </div>
+                            </div>
     
                             <div class="form-group">
                                 <label class="form-control-label" for="edit-quill-desc">Description</label>
@@ -352,7 +378,8 @@
             title : null,
             description : null,
             priority : null,
-            dueDate : null
+            dueDate : null,
+            type: null
         };
 
         const editForm = {
@@ -363,7 +390,8 @@
             dueDate : null,
             status: null,
             image: null,
-            name: null
+            name: null,
+            type: null
         };
 
         document.addEventListener('alpine:init', () => {
@@ -399,7 +427,8 @@
                                 title: this.newForm.title,
                                 priority: this.newForm.priority,
                                 due_date: this.newForm.dueDate,
-                                description: this.newForm.description
+                                description: this.newForm.description,
+                                type: this.newForm.type
                             })
                         });
 
@@ -420,7 +449,8 @@
                                 title: '',
                                 priority: '',
                                 dueDate: '',
-                                description: ''
+                                description: '',
+                                type: ''
                             };
 
                             this.todolistData = res.data;
@@ -519,7 +549,8 @@
                                 title: this.editForm.title,
                                 priority: this.editForm.priority,
                                 due_date: this.editForm.dueDate,
-                                description: this.editForm.description
+                                description: this.editForm.description,
+                                type: this.editForm.type
                             })
                         });
 
@@ -552,7 +583,8 @@
                         dueDate : item.due_date_for_edit,
                         status : item.status,
                         image: item.image,
-                        name: item.name
+                        name: item.name,
+                        type: item.type
                     };
 
                     this.editQuillForm.root.innerHTML = item.description;

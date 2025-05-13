@@ -22,10 +22,11 @@ class TodolistController extends Controller
                     'priority' => $item->priority,
                     'status' => $item->status,
                     'description' => $item->desc,
-                    'due_date' => $item->due_date->format('d/m/Y'),
+                    'due_date' => $item->due_date->format('D, d M Y'),
                     'due_date_for_edit' => $item->due_date->format('Y-m-d'),
                     'image' => get_data_image($item->employe->image)['img_url'],
-                    'name' => $item->employe->name
+                    'name' => $item->employe->name,
+                    'type' => $item->type ?? null
                 ];
             })->groupBy('status');
         return $todolist;
@@ -45,6 +46,7 @@ class TodolistController extends Controller
             'priority' => 'required',
             'due_date' => 'required',
             'description' => 'required',
+            'type' => 'required'
         ]);
 
         try{
@@ -57,6 +59,7 @@ class TodolistController extends Controller
                 'priority' => $request->priority,
                 'due_date' => $request->due_date,
                 'desc' => $request->description,
+                'type' => $request->type
             ]);
 
             DB::commit();
@@ -108,7 +111,8 @@ class TodolistController extends Controller
             'title' => 'required',
             'priority' => 'required',
             'due_date' => 'required',
-            'description' => 'required'
+            'description' => 'required',
+            'type' => 'required'
         ]);
 
         $user = Auth::user()->employee;
@@ -122,7 +126,8 @@ class TodolistController extends Controller
                     'title' => $request->title,
                     'priority' => $request->priority,
                     'due_date' => $request->due_date,
-                    'desc' => $request->description
+                    'desc' => $request->description,
+                    'type' => $request->type
                 ]);
 
             DB::commit();

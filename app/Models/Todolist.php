@@ -12,7 +12,7 @@ class Todolist extends Model
     use HasFactory;
 
     protected $table = 'todolists';
-    protected $fillable = ['employee_id','title', 'desc', 'due_date', 'priority', 'status', 'index_task'];
+    protected $fillable = ['employee_id','title', 'desc', 'due_date', 'priority', 'status', 'index_task', 'type'];
     protected $casts = [
         'due_date' => 'date'
     ];
