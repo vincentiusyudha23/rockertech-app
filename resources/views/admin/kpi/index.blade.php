@@ -141,8 +141,82 @@
             </div>
             <div class="col-12 col-md-4 mb-3 align-items-stretch">
                 <div class="card h-100">
+                    <div class="card-header pb-0">
+                        <span class="text-sm">Target Achievment (Client, Design, Content, Closing)</span>
+                    </div>
                     <div class="card-body">
-                        s
+                        <div class="w-100 mb-3 d-flex gap-2 align-items-center">
+                            <div class="bg-gradient-info rounded text-white d-flex justify-content-center align-items-center" style="width: 50px; height: 50px;">
+                                <i class="fa-solid fa-users text-lg"></i>
+                            </div>
+                            <div class="d-flex flex-column justify-content-between w-75">
+                                <span class="text-bold text-sm m-0 p-0">Target Client</span>
+                                <div class="progress-wrapper w-100 m-0 p-0">
+                                    <div class="progress-info">
+                                        <div class="progress-percentage">
+                                            <span class="text-xs font-weight-bold">{{ $targetData['client']['value'] }}</span>
+                                        </div>
+                                    </div>
+                                    <div class="progress w-100">
+                                        <div class="progress-bar bg-gradient-{{ $targetData['client']['color'] }}" role="progressbar" style="width: {{ $targetData['client']['percentage'] }}%" aria-valuenow="{{ $targetData['client']['percentage'] }}" aria-valuemin="0" aria-valuemax="100"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="w-100 mb-3 d-flex gap-2 align-items-center">
+                            <div class="bg-gradient-info rounded text-white d-flex justify-content-center align-items-center" style="width: 50px; height: 50px;">
+                                <i class="fa-solid fa-images text-lg"></i>
+                            </div>
+                            <div class="d-flex flex-column justify-content-between w-75">
+                                <span class="text-bold text-sm m-0 p-0">Target Design</span>
+                                <div class="progress-wrapper w-100 m-0 p-0">
+                                    <div class="progress-info">
+                                        <div class="progress-percentage">
+                                            <span class="text-xs font-weight-bold">{{ $targetData['design']['value'] }}</span>
+                                        </div>
+                                    </div>
+                                    <div class="progress w-100">
+                                        <div class="progress-bar bg-gradient-{{ $targetData['design']['color'] }}" role="progressbar" style="width: {{ $targetData['design']['percentage'] }}%" aria-valuenow="{{ $targetData['design']['percentage'] }}" aria-valuemin="0" aria-valuemax="100"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="w-100 mb-3 d-flex gap-2 align-items-center">
+                            <div class="bg-gradient-info rounded text-white d-flex justify-content-center align-items-center" style="width: 50px; height: 50px;">
+                                <i class="fa-solid fa-tv text-lg"></i>
+                            </div>
+                            <div class="d-flex flex-column justify-content-between w-75">
+                                <span class="text-bold text-sm m-0 p-0">Target Content</span>
+                                <div class="progress-wrapper w-100 m-0 p-0">
+                                    <div class="progress-info">
+                                        <div class="progress-percentage">
+                                            <span class="text-xs font-weight-bold">{{ $targetData['content']['value'] }}</span>
+                                        </div>
+                                    </div>
+                                    <div class="progress w-100">
+                                        <div class="progress-bar bg-gradient-{{ $targetData['content']['color'] }}" role="progressbar" style="width: {{ $targetData['content']['percentage'] }}%" aria-valuenow="{{ $targetData['content']['percentage'] }}" aria-valuemin="0" aria-valuemax="100"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="w-100 mb-3 d-flex gap-2 align-items-center">
+                            <div class="bg-gradient-info rounded text-white d-flex justify-content-center align-items-center" style="width: 50px; height: 50px;">
+                                <i class="fa-solid fa-circle-check text-lg"></i>
+                            </div>
+                            <div class="d-flex flex-column justify-content-between w-75">
+                                <span class="text-bold text-sm m-0 p-0">Target Closing</span>
+                                <div class="progress-wrapper w-100 m-0 p-0">
+                                    <div class="progress-info">
+                                        <div class="progress-percentage">
+                                            <span class="text-xs font-weight-bold">{{ $targetData['closing']['value'] }}</span>
+                                        </div>
+                                    </div>
+                                    <div class="progress w-100">
+                                        <div class="progress-bar bg-gradient-{{ $targetData['closing']['color'] }}" role="progressbar" style="width: {{ $targetData['closing']['percentage'] }}%" aria-valuenow="{{ $targetData['closing']['percentage'] }}" aria-valuemin="0" aria-valuemax="100"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>

@@ -11,6 +11,9 @@
                 <li class="nav-item">
                     <a class="h6 nav-link text-secondary" href="javascript:;" role="tab" aria-selected="true" data-bs-toggle="tab" data-bs-target="#target-achiev">Target Achievment</a>
                 </li>
+                <li class="nav-item">
+                    <a class="h6 nav-link text-secondary" href="javascript:;" role="tab" aria-selected="true" data-bs-toggle="tab" data-bs-target="#total-kpi">Total KPI</a>
+                </li>
             </ul>
         </div>
     </div>
@@ -124,7 +127,7 @@
                     </table>
                 </div>
             </div>
-            <div class="tab-pane fade" id="target-achiev" role="tabpanel" aria-labelledby="precense-tab">
+            <div class="tab-pane fade" id="target-achiev" role="tabpanel" aria-labelledby="target-achiev-tab">
                 <div class="table-responsive">
                     <table class="table align-items-center mb-0">
                         <thead>
@@ -143,24 +146,24 @@
                                     <td>
                                         <div class="d-flex px-2 py-1">
                                             <div>
-                                                <img src="{{ get_data_image($item->image)['img_url'] }}" class="avatar avatar-sm me-3" alt="xd">
+                                                <img src="{{ get_data_image($item['image'])['img_url'] }}" class="avatar avatar-sm me-3" alt="xd">
                                             </div>
                                             <div class="d-flex flex-column justify-content-center">
-                                                <h6 class="mb-0 text-sm">{{ $item->name }}</h6>
+                                                <h6 class="mb-0 text-sm">{{ $item['name'] }}</h6>
                                             </div>
                                         </div>
                                     </td>
                                     <td class="align-middle text-center text-sm">
-                                        <span class="text-xs font-weight-bold">{{ $item->total_achiev }}</span>
+                                        <span class="text-xs font-weight-bold">{{ $item['total_achiev'] }}</span>
                                     </td>
                                     <td class="align-middle text-center text-sm">
                                         @php
                                             $total = 0;
-                                            if($item->position == 1){
+                                            if($item['position'] == 1){
                                                 $total = get_static_option('target_content', 0);
-                                            } else if($item->position == 2){
+                                            } else if($item['position'] == 2){
                                                 $total = get_static_option('target_design', 0);
-                                            } else if($item->position == 4){
+                                            } else if($item['position'] == 4){
                                                 $total = get_static_option('target_client', 0);
                                             } else {
                                                 $total = get_static_option('target_closing', 0);
@@ -169,17 +172,63 @@
                                         <span class="text-xs font-weight-bold">{{ $total }}</span>
                                     </td>
                                     <td class="align-middle text-center text-sm">
-                                        <span class="text-xs font-weight-bold">{{ $item->target_achiev }}</span>
+                                        <span class="text-xs font-weight-bold">{{ $item['target_achiev'] }}</span>
                                     </td>
                                     <td class="align-middle">
                                         <div class="progress-wrapper w-75 mx-auto">
                                             <div class="progress-info">
                                                 <div class="progress-percentage">
-                                                    <span class="text-xs font-weight-bold">{{ $item->percentage }}%</span>
+                                                    <span class="text-xs font-weight-bold">{{ $item['percentage'] }}%</span>
                                                 </div>
                                             </div>
                                             <div class="progress">
-                                                <div class="progress-bar bg-gradient-{{ $item->color }}" role="progressbar" style="width: {{ $item->percentage }}%" aria-valuenow="{{ $item->percentage }}" aria-valuemin="0" aria-valuemax="100"></div>
+                                                <div class="progress-bar bg-gradient-{{ $item['color'] }}" role="progressbar" style="width: {{ $item['percentage'] }}%" aria-valuenow="{{ $item['percentage'] }}" aria-valuemin="0" aria-valuemax="100"></div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                                @endforeach
+                            @endif
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="tab-pane fade" id="total-kpi" role="tabpanel" aria-labelledby="total-kpi-tab">
+                <div class="table-responsive">
+                    <table class="table align-items-center mb-0">
+                        <thead>
+                            <tr>
+                                <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Employe Name</th>
+                                <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Final Score</th>
+                                <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Percentage</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (!empty($employes))
+                                @foreach ($employes ?? [] as $item)  
+                                <tr>
+                                    <td>
+                                        <div class="d-flex px-2 py-1">
+                                            <div>
+                                                <img src="{{ get_data_image($item['image'])['img_url'] }}" class="avatar avatar-sm me-3" alt="xd">
+                                            </div>
+                                            <div class="d-flex flex-column justify-content-center">
+                                                <h6 class="mb-0 text-sm">{{ $item['name'] }}</h6>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="align-middle text-center text-sm">
+                                        <span class="text-xs font-weight-bold">{{ $item['final_score'] }}</span>
+                                    </td>
+                                    <td class="align-middle w-75">
+                                        <div class="progress-wrapper w-100 mx-auto">
+                                            <div class="progress-info">
+                                                <div class="progress-percentage">
+                                                    <span class="text-xs font-weight-bold">{{ $item['final_score'] }}%</span>
+                                                </div>
+                                            </div>
+                                            <div class="progress w-100">
+                                                <div class="progress-bar bg-gradient-{{ $item['color'] }}" role="progressbar" style="width: {{ $item['final_score'] }}%" aria-valuenow="{{ $item['final_score'] }}" aria-valuemin="0" aria-valuemax="100"></div>
                                             </div>
                                         </div>
                                     </td>

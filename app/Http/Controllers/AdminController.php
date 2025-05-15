@@ -756,7 +756,36 @@ class AdminController extends Controller
         $todolists = $this->kpi_todolist();
         $precenses = $this->kpi_precense();
         $achiev = $this->kpi_target_achiev();
-        return view('admin.kpi.index', compact('todolists', 'precenses', 'achiev'));
+        $employes = Employee::latest()->get()->map(function($employe) use ($todolists, $precenses, $achiev){
+            $todolist = collect($todolists)->where('employe_id', $employe->id)->first()['nilaiAkhir'] ?? 0;
+            $precens = collect($precenses)->where('employe_id', $employe->id)->first()['nilaiAkhir'] ?? 0;
+            $achiev = $achiev->find($employe->id)?->target_achiev ?? 0;
+            $finalScore = $todolist + $precens + $achiev;
+
+            $employe->final_score = $finalScore;
+            $employe->color = $this->getColorPercentage($finalScore);
+            return $employe;
+        })->sortByDesc('final_score')->values();
+        
+        $targetData = [
+            'client' => $this->formatedData(Todolist::whereMonth('created_at', now()->month)->where('type', 1)->count(), get_static_option('target_client', 0)),
+            'design' => $this->formatedData(Todolist::whereMonth('created_at', now()->month)->where('type', 2)->count(), get_static_option('target_design', 0)),
+            'content' => $this->formatedData(Todolist::whereMonth('created_at', now()->month)->where('type', 3)->count(), get_static_option('target_content', 0)),
+            'closing' => $this->formatedData(Todolist::whereMonth('created_at', now()->month)->where('type', 4)->count(), get_static_option('target_closing', 0))
+        ];
+
+        return view('admin.kpi.index', compact('todolists', 'precenses', 'achiev', 'employes', 'targetData'));
+    }
+
+    private function formatedData($value, $target)
+    {
+        $percentage = $value > 0 ? ($value / $target) * 100 : 0;
+        $percentage = round($percentage, 2);
+        return [
+            'value' => $value.'/'.$target,
+            'percentage' => $percentage,
+            'color' => $this->getColorPercentage($percentage)
+        ];
     }
 
     public function kpi_settings(Request $request)
@@ -868,6 +897,7 @@ class AdminController extends Controller
             $task = collect($task)->where('employe_id', $employe->id)->first();
             if($task){
                 return [
+                    'employe_id' => $employe->id,
                     'name' => $employe->name,
                     'image' => get_data_image($employe->image)['img_url'],
                     ...$task
@@ -875,6 +905,7 @@ class AdminController extends Controller
             }
 
             return [
+                'employe_id' => $employe->id,
                 'name' => $employe->name,
                 'image' => get_data_image($employe->image)['img_url'],
                 'totalTask' => 0,
@@ -899,10 +930,10 @@ class AdminController extends Controller
                 $totalPrecense = $precense->where('status', '!=', 3)->count();
                 $totalOnTime = $precense->where('status', 1)->count();
 
-                $nilaiPrecense = $totalPrecense > 0 ? ($totalPrecense / $daysInMonth) * (20 * 0.7) : 0;
-                $nilaiOnTime = $totalOnTime > 0 ? ($totalOnTime / $daysInMonth) * (20 * 0.3) : 0;
+                $nilaiPrecense = $totalPrecense > 0 ? ($totalPrecense / $daysInMonth) * (30 * 0.7) : 0;
+                $nilaiOnTime = $totalOnTime > 0 ? ($totalOnTime / $daysInMonth) * (30 * 0.3) : 0;
                 $nilaiAkhir = $nilaiPrecense + $nilaiOnTime;
-                $percentage = $nilaiAkhir > 0 ? ($nilaiAkhir / 20) * 100 : 0;
+                $percentage = $nilaiAkhir > 0 ? ($nilaiAkhir / 30) * 100 : 0;
 
                 return [
                     'employe_id' => $employe_id,
@@ -970,6 +1001,6 @@ class AdminController extends Controller
             $employe->percentage = round($percentage, 2);
             $employe->color = $this->getColorPercentage($percentage);
             return $employe;
-        });
+        })->sortByDesc('percentage')->values();
     }
 }
