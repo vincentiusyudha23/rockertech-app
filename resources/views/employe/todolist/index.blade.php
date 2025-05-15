@@ -133,7 +133,7 @@
                                                 </blockquote>
                 
                                                 <div class="mb-1 px-1">
-                                                    <span class="fs-13px fw-bold">Due Date : <span x-text="item.due_date"></span></span>
+                                                    <span class="fs-13px fw-bold">Created at : <span x-text="item.created_at"></span></span>
                     
                                                     <div class="d-flex align-items-center gap-2">
                                                         <span class="fw-bold fs-13px">Assigned To:</span>
@@ -189,28 +189,16 @@
                                 </div>    
                             </div>
 
-                            <div class="row">
-                                <div class="col-12 col-md-6">
-                                    <div class="form-group">
-                                        <label class="form-control-label" for="priority">Priority<sup class="text-danger">*</sup></label>
-                                        <div class="input-group">
-                                            <select class="form-select" x-model="newForm.priority" id="priority" aria-describedby="basic-addon3">
-                                                <option value="" selected>Select Priority</option>
-                                                <option value="1">Low</option>
-                                                <option value="2">Normal</option>
-                                                <option value="3">High</option>
-                                            </select>
-                                        </div>    
-                                    </div>
-                                </div>
-                                <div class="col-12 col-md-6">
-                                    <div class="form-group">
-                                        <label class="form-control-label" for="due-date">Due Date<sup class="text-danger">*</sup></label>
-                                        <div class="input-group">
-                                            <input type="date" id="due-date" class="form-control" x-model="newForm.dueDate">
-                                        </div>
-                                    </div>
-                                </div>
+                            <div class="form-group">
+                                <label class="form-control-label" for="priority">Priority<sup class="text-danger">*</sup></label>
+                                <div class="input-group">
+                                    <select class="form-select" x-model="newForm.priority" id="priority" aria-describedby="basic-addon3">
+                                        <option value="" selected>Select Priority</option>
+                                        <option value="1">Low</option>
+                                        <option value="2">Normal</option>
+                                        <option value="3">High</option>
+                                    </select>
+                                </div>    
                             </div>
 
                             <div class="form-group">
@@ -306,28 +294,16 @@
                                 </div>    
                             </div>
 
-                            <div class="row">
-                                <div class="col-12 col-md-6">
-                                    <div class="form-group">
-                                        <label class="form-control-label" for="edit-priority">Priority<sup class="text-danger">*</sup></label>
-                                        <div class="input-group">
-                                            <select class="form-select" x-model="editForm.priority" id="edit-priority" aria-describedby="basic-addon3">
-                                                <option value="" selected>Select Priority</option>
-                                                <option value="1">Low</option>
-                                                <option value="2">Normal</option>
-                                                <option value="3">High</option>
-                                            </select>
-                                        </div>    
-                                    </div>
-                                </div>
-                                <div class="col-12 col-md-6">
-                                    <div class="form-group">
-                                        <label class="form-control-label" for="edit-due-date">Due Date<sup class="text-danger">*</sup></label>
-                                        <div class="input-group">
-                                            <input type="date" x-model="editForm.dueDate" id="edit-due-date" class="form-control">
-                                        </div>
-                                    </div>
-                                </div>
+                            <div class="form-group">
+                                <label class="form-control-label" for="edit-priority">Priority<sup class="text-danger">*</sup></label>
+                                <div class="input-group">
+                                    <select class="form-select" x-model="editForm.priority" id="edit-priority" aria-describedby="basic-addon3">
+                                        <option value="" selected>Select Priority</option>
+                                        <option value="1">Low</option>
+                                        <option value="2">Normal</option>
+                                        <option value="3">High</option>
+                                    </select>
+                                </div>    
                             </div>
 
                             <div class="form-group">
@@ -378,7 +354,6 @@
             title : null,
             description : null,
             priority : null,
-            dueDate : null,
             type: null
         };
 
@@ -387,7 +362,6 @@
             title : null,
             description : null,
             priority : null,
-            dueDate : null,
             status: null,
             image: null,
             name: null,
@@ -409,7 +383,7 @@
                     this.modal_create = $(this.$refs.modal_create);
                     this.loadingSaveNew = true;
 
-                    if (!this.newForm.title || !this.newForm.priority || !this.newForm.dueDate) {
+                    if (!this.newForm.title || !this.newForm.priority) {
                         alert('Please fill all required fields');
                         this.loadingSaveNew = false;
                         return;
@@ -426,7 +400,6 @@
                             body: JSON.stringify({
                                 title: this.newForm.title,
                                 priority: this.newForm.priority,
-                                due_date: this.newForm.dueDate,
                                 description: this.newForm.description,
                                 type: this.newForm.type
                             })
@@ -448,7 +421,6 @@
                             this.newForm = {
                                 title: '',
                                 priority: '',
-                                dueDate: '',
                                 description: '',
                                 type: ''
                             };
@@ -530,7 +502,7 @@
                 async saveEditTodolist() {
                     this.loadingSaveEdit = true;
 
-                    if (!this.editForm.title || !this.editForm.priority || !this.editForm.dueDate) {
+                    if (!this.editForm.title || !this.editForm.priority) {
                         alert('Please fill all required fields');
                         this.loadingSaveEdit = false;
                         return;
@@ -548,7 +520,6 @@
                                 id: this.editForm.todolist_id,
                                 title: this.editForm.title,
                                 priority: this.editForm.priority,
-                                due_date: this.editForm.dueDate,
                                 description: this.editForm.description,
                                 type: this.editForm.type
                             })
@@ -580,7 +551,6 @@
                         title : item.title,
                         description : item.description,
                         priority : item.priority,
-                        dueDate : item.due_date_for_edit,
                         status : item.status,
                         image: item.image,
                         name: item.name,

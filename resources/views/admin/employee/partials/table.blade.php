@@ -32,8 +32,7 @@
                             </div>
                         </td>
                         <td>
-                            <p class="text-xs font-weight-bold mb-0">STAFF</p>
-                            <p class="text-xs text-secondary mb-0">{{ $employ->position }}</p>
+                            <p class="text-xs text-secondary mb-0">{{ labelPosition($employ->position) }}</p>
                         </td>
                         <td class="align-middle text-center text-sm">
                             <p class="text-sm text-secondary mb-0">{{ $employ->user->username }}</p>

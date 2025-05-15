@@ -7,6 +7,7 @@ use App\Models\User;
 use App\Models\Employee;
 use App\Models\Precense;
 use App\Models\Todolist;
+use Carbon\CarbonPeriod;
 use App\Models\Esp32Mode;
 use Illuminate\View\View;
 use App\Models\BackupData;
@@ -66,9 +67,7 @@ class AdminController extends Controller
             if(empty($item?->card_id)){
                 $select_employ[$item->id] = $item->name;
             }
-        }   
-        
-        // dd(Auth::user()->createToken('admin')->plainTextToken);
+        }
 
         return view('admin.employee.index', compact('employees', 'select_employ'));
     }
@@ -750,5 +749,227 @@ class AdminController extends Controller
         $permit->delete();
 
         return redirect()->back()->with('success', 'Deleted Permit Submission is Successfully');
+    }
+
+    public function kpi_view()
+    {
+        $todolists = $this->kpi_todolist();
+        $precenses = $this->kpi_precense();
+        $achiev = $this->kpi_target_achiev();
+        return view('admin.kpi.index', compact('todolists', 'precenses', 'achiev'));
+    }
+
+    public function kpi_settings(Request $request)
+    {
+        $validate = $request->validate([
+            'target_client' => 'required',
+            'target_content' => 'required',
+            'target_design' => 'required',
+            'target_closing' => 'required'
+        ]);
+
+        foreach($validate as $key => $item){
+            update_static_option($key, $item);
+        }
+
+        return redirect()->back()->with('success', 'Saving KPI settings successfully');
+    }
+
+    private function getTotalDays()
+    {
+        $dayStart = Carbon::now()->startOfMonth();
+        $dayEnd = Carbon::now()->endOfMonth();
+
+        $daysInMonth = collect(CarbonPeriod::create($dayStart, $dayEnd))
+            ->filter(function ($date){
+                return !$date->isSunday();
+            })->count();
+
+        return $daysInMonth;
+    }
+
+    private function getColorPercentage($percentage)
+    {
+        switch (true) {
+            case $percentage >= 80:
+                $color = 'success';
+                break;
+            case $percentage >= 50:
+                $color = 'info';
+                break;
+            case $percentage >= 25:
+                $color = 'warning';
+                break;
+            case $percentage < 25 || $percentage == 0;
+                $color = 'danger';
+                break;
+        }
+
+        return $color ? $color : 'danger';
+    }
+
+    private function kpi_todolist()
+    {
+        $daysInMonth = $this->getTotalDays();
+
+        $task = Todolist::whereMonth('created_at', now()->month)
+            ->whereYear('created_at', now()->year)
+            ->get()
+            ->groupBy('employee_id')
+            ->map(function($task,$employe_id) use ($daysInMonth){
+                $totalNilai = 0;
+
+                $perhari = $task->groupBy(function($item){
+                    return Carbon::parse($item->created_at)->format('Y-m-d');
+                });
+
+                collect($perhari)->map(function($item, $tanggal) use (&$totalNilai){
+                    $totalTask = $item->count();
+                    $totalSelesai = $item->where('status', 4)->count();
+                    $nilai = 0;
+
+                    if($totalTask == 0){
+                        $nilai = 0;
+                    } else if($totalSelesai == 0){
+                        $nilai = 20;
+                    } else {
+                        $persen = ($totalSelesai / $totalTask) * 100;
+
+                        if($persen < 50){
+                            $nilai = 40;
+                        } else if( $persen <= 80){
+                            $nilai = 70;
+                        } else {
+                            $nilai = 100;
+                        }
+                    }
+
+                    $totalNilai += $nilai;
+                });
+
+                $nilaiAkhir = ($totalNilai / $daysInMonth) / 100 * 30;
+                $percentage = round(($nilaiAkhir / 30) * 100, 0);
+
+                $totalTask = $task->count();
+                $totalDone = $task->where('status', 4)->count();
+
+                return [
+                    'employe_id' => $employe_id,
+                    'totalTask' => $totalTask,
+                    'totalDone' => $totalDone,
+                    'nilaiAkhir' => round($nilaiAkhir, 2),
+                    'percentage' => $percentage,
+                    'color' => $this->getColorPercentage($percentage),
+                    'totalDays' => $daysInMonth
+                ];
+            })->values();
+        
+        return Employee::latest()->get()->map(function($employe) use ($task, $daysInMonth){
+            $task = collect($task)->where('employe_id', $employe->id)->first();
+            if($task){
+                return [
+                    'name' => $employe->name,
+                    'image' => get_data_image($employe->image)['img_url'],
+                    ...$task
+                ];
+            }
+
+            return [
+                'name' => $employe->name,
+                'image' => get_data_image($employe->image)['img_url'],
+                'totalTask' => 0,
+                'totalDone' => 0,
+                'nilaiAkhir' => 0,
+                'percentage' => 0,
+                'color' => $this->getColorPercentage(0),
+                'totalDays' => $daysInMonth
+            ];
+        })->sortByDesc('percentage')->values();
+    }
+
+    private function kpi_precense()
+    {
+        $daysInMonth = $this->getTotalDays();
+        
+        $precense = Precense::whereMonth('created_at', now()->month)
+            ->whereYear('created_at', now()->year)
+            ->get()
+            ->groupBy('employe_id')
+            ->map(function($precense, $employe_id) use ($daysInMonth){
+                $totalPrecense = $precense->where('status', '!=', 3)->count();
+                $totalOnTime = $precense->where('status', 1)->count();
+
+                $nilaiPrecense = $totalPrecense > 0 ? ($totalPrecense / $daysInMonth) * (20 * 0.7) : 0;
+                $nilaiOnTime = $totalOnTime > 0 ? ($totalOnTime / $daysInMonth) * (20 * 0.3) : 0;
+                $nilaiAkhir = $nilaiPrecense + $nilaiOnTime;
+                $percentage = $nilaiAkhir > 0 ? ($nilaiAkhir / 20) * 100 : 0;
+
+                return [
+                    'employe_id' => $employe_id,
+                    'totalPrecense' => $totalPrecense,
+                    'totalOnTime' => $totalOnTime,
+                    'nilaiPrecense' => round($nilaiPrecense, 2),
+                    'nilaiOnTime' => round($nilaiOnTime, 2),
+                    'nilaiAkhir' => round($nilaiAkhir, 2),
+                    'percentage' => round($percentage, 2),
+                    'color' => $this->getColorPercentage($percentage),
+                    'totalDays' => $daysInMonth 
+                ];
+            })->values();
+
+        return Employee::latest()->get()->map(function($employe) use ($precense, $daysInMonth) {
+            $precense = collect($precense)->where('employe_id', $employe->id)->first();
+
+            if($precense){
+                return [
+                    'name' => $employe->name,
+                    'image' => get_data_image($employe->image)['img_url'],
+                    ...$precense
+                ];
+            }
+
+            return [
+                'employe_id' => $employe->id,
+                'name' => $employe->name,
+                'image' => get_data_image($employe->image)['img_url'],
+                'totalPrecense' => 0,
+                'totalOnTime' => 0,
+                'nilaiPrecense' => 0,
+                'nilaiOnTime' => 0,
+                'nilaiAkhir' => 0,
+                'percentage' => 0,
+                'color' => $this->getColorPercentage(0),
+                'totalDays' => $daysInMonth
+            ];
+        })->sortByDesc('percentage')->values();
+    }
+
+    private function kpi_target_achiev()
+    {
+        return Employee::latest()->get()->map(function($employe){
+            $target = 0;
+            $targetAchiev = 0;
+            if($employe->position == 1){
+                $target = $employe->todolist()->whereMonth('created_at', now()->month)->where('type', 3)->count();
+                $targetAchiev = $target > 0 ? ($target / get_static_option('target_content', 0)) * 40 : 0;
+            } else if($employe->position == 2){
+                $target = $employe->todolist()->whereMonth('created_at', now()->month)->where('type', 2)->count();
+                $targetAchiev = $target > 0 ? ($target / get_static_option('target_design', 0)) * 40 : 0;
+            } else if($employe->position == 4){
+                $target = $employe->todolist()->whereMonth('created_at', now()->month)->where('type', 1)->count();
+                $targetAchiev = $target > 0 ? ($target / get_static_option('target_client', 0)) * 40 : 0;
+            } else {
+                $target = $employe->todolist()->whereMonth('created_at', now()->month)->where('type', 4)->count();
+                $targetAchiev = $target > 0 ? ($target / get_static_option('target_closing', 0)) * 40 : 0;
+            }
+
+            $percentage = $targetAchiev > 0 ? ($targetAchiev / 40) * 100 : 0; 
+            
+            $employe->total_achiev = $target;
+            $employe->target_achiev = round($targetAchiev, 2);
+            $employe->percentage = round($percentage, 2);
+            $employe->color = $this->getColorPercentage($percentage);
+            return $employe;
+        });
     }
 }

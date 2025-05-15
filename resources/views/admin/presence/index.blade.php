@@ -35,7 +35,7 @@
                                 <tr>
                                     <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Date</th>
                                     <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Name</th>
-                                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Position</th>
+                                    <th class="text-uppercase text-center text-secondary text-xxs font-weight-bolder opacity-7">Position</th>
                                     <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Type</th>
                                     <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Status</th>
                                     <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Image</th>
@@ -67,9 +67,8 @@
                                                 </div>
                                             </div>
                                         </td>
-                                        <td>
-                                            <p class="text-xs font-weight-bold mb-0">STAFF</p>
-                                            <p class="text-xs text-secondary mb-0">{{ $precense?->employe?->position }}</p>
+                                        <td class="text-center">
+                                            <p class="text-xs text-secondary font-weight-bold mb-0">{{  labelPosition($precense?->employe?->position) }}</p>
                                         </td>
                                         <td class="align-middle text-center">
                                             {!! labelType($precense->type) !!}

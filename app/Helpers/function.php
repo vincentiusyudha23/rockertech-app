@@ -235,6 +235,33 @@ if(!function_exists('labelStatusString')){
     }
 }
 
+if(!function_exists('labelPosition')){
+    function labelPosition($val)
+    {
+        switch (true) {
+            case $val == 1:
+                return 'Content Planner';
+                break;
+            case $val == 2:
+                return 'Designer';
+                break;
+            case $val == 3:
+                return 'Business Admin';
+                break;
+            case $val == 4:
+                return 'Sales';
+                break;
+            case $val == 5:
+                return 'Assistant Manager';
+                break;
+            
+            default:
+                return $val ?? '';
+                break;
+        }
+    }
+}
+
 if(!function_exists('sendToEmail')){
     function sendToEmail($data = [])
     {

@@ -86,10 +86,11 @@
   --bs-border-radius-xl: 1rem;
   --bs-border-radius-2xl: 1.5rem;
   --bs-border-radius-pill: 50rem;
-  --bs-link-color: #cb0c9f;
-  --bs-link-hover-color: #830866;
-  --bs-code-color: #d63384;
-  --bs-highlight-bg: #fcf8e3;
+  --bs-link-color: #146cff;
+  --bs-link-hover-color: #0e5ad8;  
+  --bs-link-active-color: #0c4cb7;
+  --bs-code-color: #146cff; 
+  --bs-highlight-bg: #e8f0fe;
 }
 
 *,
@@ -4652,6 +4653,11 @@ fieldset:disabled .btn {
   color: var(--bs-nav-tabs-link-active-color);
   background-color: var(--bs-nav-tabs-link-active-bg);
   border-color: var(--bs-nav-tabs-link-active-border-color);
+}
+
+.nav-underline .nav-link.active {
+  border-bottom: 4px solid #6c757d; /* Warna sama dengan text-secondary Bootstrap */
+  font-weight: 600;
 }
 
 .nav-tabs .dropdown-menu {

@@ -15,7 +15,7 @@
             <span class="text-center text-secondary font-weight-bolder opacity-7">Recent's Precense</span>
             <div class="text-center text-secondary font-weight-bolder opacity-7">
                 <i class="fa-solid fa-calendar-days pe-2"></i>
-                <span>{{ Carbon\Carbon::now()->format('d/m/Y') }}</span>
+                <span>{{ Carbon\Carbon::now()->format('D, d M Y') }}</span>
             </div>
         </div>
     <div class="card-body px-0 pt-0 pb-2" id="sidenav-scrollbar">

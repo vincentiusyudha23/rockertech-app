@@ -22,11 +22,10 @@ class TodolistController extends Controller
                     'priority' => $item->priority,
                     'status' => $item->status,
                     'description' => $item->desc,
-                    'due_date' => $item->due_date->format('D, d M Y'),
-                    'due_date_for_edit' => $item->due_date->format('Y-m-d'),
                     'image' => get_data_image($item->employe->image)['img_url'],
                     'name' => $item->employe->name,
-                    'type' => $item->type ?? null
+                    'type' => $item->type ?? null,
+                    'created_at' => $item->created_at->format('D, d M Y')
                 ];
             })->groupBy('status');
         return $todolist;
@@ -44,7 +43,6 @@ class TodolistController extends Controller
         $request->validate([
             'title' => 'required|string',
             'priority' => 'required',
-            'due_date' => 'required',
             'description' => 'required',
             'type' => 'required'
         ]);
@@ -57,7 +55,6 @@ class TodolistController extends Controller
             $user->employee->todolist()->create([
                 'title' => $request->title,
                 'priority' => $request->priority,
-                'due_date' => $request->due_date,
                 'desc' => $request->description,
                 'type' => $request->type
             ]);
@@ -110,7 +107,6 @@ class TodolistController extends Controller
             'id' => 'required',
             'title' => 'required',
             'priority' => 'required',
-            'due_date' => 'required',
             'description' => 'required',
             'type' => 'required'
         ]);
@@ -125,7 +121,6 @@ class TodolistController extends Controller
                 ->update([
                     'title' => $request->title,
                     'priority' => $request->priority,
-                    'due_date' => $request->due_date,
                     'desc' => $request->description,
                     'type' => $request->type
                 ]);

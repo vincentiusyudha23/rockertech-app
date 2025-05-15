@@ -86,7 +86,7 @@
                                             </ul>
                                         </div>
                                     @endif
-                                    <form class="px-3" action="{{ route('admin.employee.update') }}" method="POST">
+                                    <form class="px-3" action="{{ route('admin.employee.update') }}" id="form-edit-employe" method="POST">
                                         @csrf
                                         <input type="hidden" name="id" value="{{ $employe->id }}">
                                         <div class="row">
@@ -116,9 +116,14 @@
                                                 <div class="form-group">
                                                     <label class="form-control-label" for="basic-url">Position<sup class="text-danger">*</sup></label>
                                                     <div class="input-group">
-                                                        <input type="text" class="form-control" required
-                                                            value="{{ $employe->position }}" name="position" id="basic-url"
-                                                            aria-describedby="basic-addon3">
+                                                        <select class="form-select" name="position" required>
+                                                            <option value="">Select Positon</option>
+                                                            <option value="1" {{ $employe->position == 1 ? 'selected' : 0 }}>Content Planner</option>
+                                                            <option value="2" {{ $employe->position == 2 ? 'selected' : 0 }}>Designer</option>
+                                                            <option value="3" {{ $employe->position == 3 ? 'selected' : 0 }}>Business Admin</option>
+                                                            <option value="4" {{ $employe->position == 4 ? 'selected' : 0 }}>Sales</option>
+                                                            <option value="5" {{ $employe->position == 5 ? 'selected' : 0 }}>Assistant Manager</option>
+                                                        </select>
                                                     </div>
                                                 </div>
                                             </div>
@@ -241,7 +246,7 @@
                                                             </td>
                                                             <td>
                                                                 <p class="text-xs font-weight-bold mb-0">STAFF</p>
-                                                                <p class="text-xs text-secondary mb-0">{{ $precense?->employe?->position }}</p>
+                                                                <p class="text-xs text-secondary mb-0">{{ labelPosition($precense?->employe?->position) }}</p>
                                                             </td>
                                                             <td class="align-middle text-center">
                                                                 {!! labelType($precense->type) !!}
@@ -292,10 +297,8 @@
             $(document).on('click', '#profile-tab', function(){
                 declarTable(false);
             });
-
-            $('button[type="submit"]').on('click', function() {
-                var el = $(this);
-                el.html('<i class="fa-solid fa-spinner fa-spin fa-xl px-4"></i>').addClass('disabled');
+            $('#form-edit-employe').on('submit', function(){
+                $('button[type="submit"]').html('<i class="fa-solid fa-spinner fa-spin fa-xl px-4"></i>').addClass('disabled');
             });
 
             $('.btn-remove-card').on('click', function() {

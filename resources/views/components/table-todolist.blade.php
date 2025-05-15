@@ -6,7 +6,7 @@
                     <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">No.</th>
                     <th class="text-start text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Title</th>
                     <th class="text-start text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Assign To</th>
-                    <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Due Date</th>
+                    <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Created At</th>
                     <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Priority</th>
                     <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Status</th>
                     <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Action</th>
@@ -21,7 +21,7 @@
                             <img alt="image" class="avatar avatar-sm me-2" src="{{ get_data_image($item->employe->image)['img_url'] }}">
                             <span class="text-sm">{{ $item->employe->name }}</span>
                         </td>
-                        <td class="text-center">{{ $item->due_date->format('D, d M Y') }}</td>
+                        <td class="text-center">{{ $item->created_at->format('D, d M Y') }}</td>
                         <td class="text-center">
                             @if ($item->priority == 1)
                                 <span class="badge badge-sm bg-gradient-info">Low</span>
@@ -106,10 +106,10 @@
                                                         <span class="text-sm">Assigned To:</span>
                                                     </div>
                                                     <div class="d-flex align-items-center gap-2">
-                                                        <a href="javascript:;" class="avatar avatar-sm">
-                                                            <img alt="image" src="{{ get_data_image($item->employe->image)['img_url'] }}">
-                                                        </a>
-                                                        <span class="text-sm">{{ $item->employe->name }}</span>
+                                                        <img alt="image" class="avatar avatar-md me-2" src="{{ get_data_image($item->employe->image)['img_url'] }}">
+                                                        <span class="text-sm text-bold">
+                                                            {{ $item->employe->name }}
+                                                        </span>
                                                     </div>
                                                 </div>
                                                 <div class="pt-3">
@@ -132,23 +132,18 @@
                                                 </div>    
                                             </div>
 
-                                            <div class="row">
-                                                <div class="col-12 col-md-6">
-                                                    <div class="form-group">
-                                                        <label class="form-control-label" for="edit-priority">Priority</label>
-                                                        <div class="input-group">
-                                                            <input type="text" readonly class="form-control" value="{{ \App\Enums\TodolistPriorityEnum::from($item->priority)->label() }}">
-                                                        </div>    
-                                                    </div>
-                                                </div>
-                                                <div class="col-12 col-md-6">
-                                                    <div class="form-group">
-                                                        <label class="form-control-label" for="edit-due-date">Due Date</label>
-                                                        <div class="input-group">
-                                                            <input type="date" value="{{ $item->due_date->format('Y-m-d') }}" class="form-control">
-                                                        </div>
-                                                    </div>
-                                                </div>
+                                            <div class="form-group">
+                                                <label class="form-control-label" for="edit-priority">Priority</label>
+                                                <div class="input-group">
+                                                    <input type="text" readonly class="form-control" value="{{ \App\Enums\TodolistPriorityEnum::from($item->priority)->label() }}">
+                                                </div>    
+                                            </div>
+
+                                            <div class="form-group">
+                                                <label class="form-control-label" for="edit-priority">Type task</label>
+                                                <div class="input-group">
+                                                    <input type="text" readonly class="form-control" value="{{ \App\Enums\TodolistTypeEnum::from($item->type)->label() }}">
+                                                </div>    
                                             </div>
 
                                             <div class="form-group">

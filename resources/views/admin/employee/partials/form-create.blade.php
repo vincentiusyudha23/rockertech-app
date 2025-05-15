@@ -29,7 +29,14 @@
                                         </div>
                                         <div class="form-group mb-2">
                                             <label for="position">Position<sup class="text-danger">*</sup></label>
-                                            <input type="text" class="form-control" id="position" name="position" value="{{ old('position') }}" required>
+                                            <select class="form-select" name="position" required>
+                                                <option value="">Select Positon</option>
+                                                <option value="1">Content Planner</option>
+                                                <option value="2">Designer</option>
+                                                <option value="3">Business Admin</option>
+                                                <option value="4">Sales</option>
+                                                <option value="5">Assistant Manager</option>
+                                            </select>
                                         </div>
                                     </div>
                                 </div>

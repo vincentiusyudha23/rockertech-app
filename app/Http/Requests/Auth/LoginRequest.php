@@ -50,7 +50,7 @@ class LoginRequest extends FormRequest
         }
 
         if (!Auth::user()->hasRole('admin')) {
-            Auth::guard('web')->logout(); // Logout jika role tidak sesuai
+            Auth::guard('web')->logout();
             RateLimiter::hit($this->throttleKey());
 
             throw ValidationException::withMessages([
