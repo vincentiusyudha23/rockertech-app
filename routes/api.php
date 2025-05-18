@@ -22,3 +22,5 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 Route::post('/send-card-id', [AdminController::class, 'requestEsp'])->name('send_card_id');
 Route::get('/get-status-alarm', [AdminController::class, 'get_status_alarm'])->name('get_status_alarm');
 Route::get('/alarm-status-zero', [AdminController::class, 'alarm_status_zero'])->name('alarm_status_zero');
+
+Route::post('/send-request-precense', [AdminController::class, 'requestPresence'])->name('request_precense');

@@ -17,6 +17,7 @@ use App\Models\StaticOption;
 use App\Models\TimePrecense;
 use Illuminate\Http\Request;
 use App\Events\PrecenseEvent;
+use App\Models\MediaUploader;
 use App\Models\PermitSubmission;
 use Illuminate\Validation\Rules;
 use App\Events\RegisterCardEvent;
@@ -26,6 +27,7 @@ use Illuminate\Support\Facades\Hash;
 use Rap2hpoutre\FastExcel\FastExcel;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Crypt;
+use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rules\Password;
 
 class AdminController extends Controller
@@ -69,7 +71,7 @@ class AdminController extends Controller
             }
         }
 
-        return view('admin.employee.index', compact('employees', 'select_employ'));
+        return view('admin.employee.new-view', compact('employees', 'select_employ'));
     }
 
     public function employee_store(Request $request)
@@ -399,6 +401,152 @@ class AdminController extends Controller
             'message' => 'Register Success',
             'sound' => 0
         ], 200);
+    }
+
+    public function requestPresence(Request $request)
+    {
+        $validator = Validator::make($request->all(),[
+            'file' => 'required|file|mimes:jpeg,png,jpg,gif,pdf,doc,docx|max:5120',
+            'nik' => 'required'
+        ]);
+
+        if($validator->fails()){
+            return response()->json([
+                'status' => true,
+                'type' => 'error',
+                'message' => 'Validation is Failed',
+                'errors' => $validator->errors() 
+            ], 422);
+        }
+
+        try {
+            $time = TimePrecense::where('type', 'settings')->first();
+            $employe = Employee::where('nik', $request->input('nik'))->first();
+
+            if(!$time){
+                return response()->json([
+                    'status' => true,
+                    'type' => 'error',
+                    'message' => 'Need Settings Time Precense First',
+                ], 422);
+            }
+
+            if(!$employe){
+                return response()->json([
+                    'status' => true,
+                    'type' => 'error',
+                    'message' => 'Employee is Not Found',
+                ], 422);
+            }
+
+            $precense = $employe->precense()
+                ->where('type', 1)
+                ->where(function($query){
+                    $query->where('status', 1)->orWhere('status', 2);
+                })
+                ->whereDate('created_at', Carbon::now())
+                ->exists();
+            if($precense && Carbon::now()->format('H:i') <= $time?->min_out_office){
+                return response()->json([
+                    'status' => true,
+                    'type' => 'error',
+                    'message' => 'Not Valid'
+                ], 422);
+            } else {
+                $status = 0;
+                $type = 1;
+                $image_id = null;
+
+                if(Carbon::now()->format('H:i') <= $time?->min_in_office || Carbon::now()->format('H:i') >= $time?->min_in_office && Carbon::now()->format('H:i') <= $time?->max_in_office){
+                    $status = 1;
+                }
+                if(Carbon::now()->format('H:i') >= $time?->max_in_office && Carbon::now()->format('H:i') <= $time?->min_out_office){
+                    $status = 2;
+                }
+                if(Carbon::now()->format('H:i') >= $time?->min_out_office){
+                    $out_today = $employe->precenese()
+                                ->where('type', 2)
+                                ->whereDate('created_at', Carbon::now())
+                                ->exists();
+
+                    if($out_today){
+                        return response()->json([
+                            'status' => true,
+                            'type' => 'error',
+                            'message' => 'Not Valid',
+                        ], 422);
+                    }
+
+                    $type = 2;
+                    $status = 1;
+                }
+
+                if($request->hasFile('file')){
+                    $image = $request->file;
+                    $image_extension = $image->extension();
+                    $image_name_with_ext = $image->getClientOriginalName();
+    
+                    $image_name = pathinfo($image_name_with_ext, PATHINFO_FILENAME);
+                    $image_name = strtolower(Str::slug($image_name));
+    
+                    $image_db = $image_name.time().'.'.$image_extension;
+                    $folder_path = global_assets_path('assets/img/employes');
+                    $image->move($folder_path, $image_db);
+    
+                    if($image) {
+                        $mediaData = MediaUploader::create([
+                            'title' => $image_name_with_ext,
+                            'path' => $image_db,
+                            'size' => null,
+                            'user_id' => $employe->user->id
+                        ]);
+
+                        if($mediaData){
+                            $image_id = $mediaData->id;
+                        }
+                    }
+                }
+
+                $new_precense = $employe->precense()->create([
+                    'type' => $type,
+                    'status' => $status,
+                    'time' => Carbon::now()->format('H:i'),
+                    'image' => $image_id,
+                ]);
+
+                $today_precense = Precense::todayPrecense()->get();
+
+                $data = [
+                    'image' => get_data_image($new_precense->employe->image)['img_url'] ?? '',
+                    'name' => $new_precense->employe->name,
+                    'time' => carbon::parse($new_precense->time)->format('H:i:s'),
+                    'timeHuman' => carbon::parse($new_precense->time)->diffForHumans(),
+                    'today_total' => $today_precense->count(),
+                    'status' => labelStatus($new_precense->status),
+                    'position' => $new_precense->employe->position,
+                    'late' => $today_precense->where('status', 2)->count(),
+                    'absen' => $today_precense->where('status', 3)->count()
+                ];
+
+                event(new PrecenseEvent($data));
+
+                return response()->json([
+                    'status' => true,
+                    'type' => 'success',
+                    'message' => 'Precense is Successfully',
+                    'status_time' => $status
+                ], 200);
+            }
+            
+        } catch (\Exception $e){
+            return response()->json([
+                'status' => true,
+                'type' => 'error',
+                'message' => 'Something Went Wrong',
+                'errors' => $e->getMessage(),
+                'line' => $e->getLine()
+            ], 422);
+        }
     }
 
     public function presence()

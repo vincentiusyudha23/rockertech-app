@@ -2,21 +2,17 @@
     <table class="table align-items-center mb-0" id="table-employee">
         <thead>
             <tr>
-                <th class="text-uppercase text-secondary text-center text-xxs font-weight-bolder opacity-7">Card ID</th>
                 <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Name</th>
                 <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Position</th>
                 <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Username</th>
                 <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Password</th>
-                <th class="text-secondary opacity-7"></th>
+                <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-center">Action</th>
             </tr>
         </thead>
         <tbody>
             @if (!empty($employees))
                 @foreach ($employees as $employ)
                     <tr>
-                        <td class="align-middle text-center">
-                            <span class="text-secondary text-sm font-weight-bold" id="card_id-{{ $employ->id }}">{{ $employ->card_id }}</span>
-                        </td>
                         <td>
                             <div class="d-flex px-2 py-1">
                                 <a>
@@ -37,15 +33,25 @@
                         <td class="align-middle text-center text-sm">
                             <p class="text-sm text-secondary mb-0">{{ $employ->user->username }}</p>
                         </td>
-                        <td class="align-center text-center show-password">
-                            <span class="text-secondary text-xs font-weight-bold  active">{{ decryptPassword($employ->enc_password) }}</span>
-                            <i class="fa-solid fa-eye mx-1"></i>
+                        <td class="align-middle  text-center">
+                            <div class="w-100 position-relative">
+                                <div class="password active text-center position-absolute top-50 start-50 translate-middle z-1">
+                                    <span class="text-secondary text-xs font-weight-bold">{{ decryptPassword($employ->enc_password) }}</span>
+                                </div>
+                                <div class="eye-password text-center position-absolute top-50 start-50 translate-middle z-2">
+                                    <i class="fa-solid fa-eye text-sm"></i>
+                                </div>
+                            </div>
                         </td>
-                        <td class="d-flex justify-content-center align-items-center gap-2">
+                        <td class="text-center">
                             {{-- <x-modal-edit :employe="$employ"/> --}}
-                            <a href="{{ route('admin.employee.edit', ['id' => $employ->id]) }}" class="bg-gradient-info border-0 rounded-2 text-white d-flex justify-content-center align-items-center" style="width: 30px; height: 30px;"><i class="fa-solid fa-eye fa-xs"></i></a>
-                            <a href="{{ route('admin.employee.delete', ['id' => $employ->id]) }}" class="bg-gradient-danger border-0 rounded-2 text-white d-flex justify-content-center align-items-center" style="width: 30px; height: 30px;">
-                                <i class="fa-solid fa-trash fa-xs"></i>
+                            <a href="{{ route('admin.employee.edit', ['id' => $employ->id]) }}" 
+                                class="btn btn-icon bg-gradient-info m-0 px-3 py-2">
+                                <i class="fa-solid fa-eye text-sm"></i>
+                            </a>
+                            <a href="{{ route('admin.employee.delete', ['id' => $employ->id]) }}"
+                                class="btn btn-icon bg-gradient-danger m-0 px-3 py-2">
+                                <i class="fa-solid fa-trash text-sm"></i>
                             </a>
                         </td>
                     </tr>
