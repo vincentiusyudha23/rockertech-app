@@ -464,7 +464,7 @@ class AdminController extends Controller
                     $status = 2;
                 }
                 if(Carbon::now()->format('H:i') >= $time?->min_out_office){
-                    $out_today = $employe->precenese()
+                    $out_today = $employe->precense()
                                 ->where('type', 2)
                                 ->whereDate('created_at', Carbon::now())
                                 ->exists();
