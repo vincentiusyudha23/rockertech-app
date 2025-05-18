@@ -71,7 +71,7 @@ if(!function_exists('global_assets_path')){
     function global_assets_path($path)
     {
         if(env('CPANEL') === true){
-            $publicHtmlPath = '/home/u334784060/vincentiusyudha23.my.id/public_html'; 
+            $publicHtmlPath = '/home/u334784060/domains/vincentiusyudha23.my.id/public_html'; 
             return str_replace(['core/public/', 'core\\public\\'], '', $publicHtmlPath . '/' .$path);
         }else{
             return str_replace(['core/public/', 'core\\public\\'], '', public_path($path));
