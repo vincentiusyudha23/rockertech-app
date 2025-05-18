@@ -927,7 +927,7 @@ class AdminController extends Controller
 
     private function formatedData($value, $target)
     {
-        $percentage = $value > 0 ? ($value / $target) * 100 : 0;
+        $percentage = $value > 0 && $target > 0 ? ($value / $target) * 100 : 0;
         $percentage = round($percentage, 2);
         return [
             'value' => $value.'/'.$target,
