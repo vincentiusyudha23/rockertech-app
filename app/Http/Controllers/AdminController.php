@@ -1128,18 +1128,24 @@ class AdminController extends Controller
         return Employee::latest()->get()->map(function($employe){
             $target = 0;
             $targetAchiev = 0;
+
+            $target_content = get_static_option('target_content', 0);
+            $target_design = get_static_option('target_design', 0);
+            $target_client = get_static_option('target_client', 0);
+            $target_closing = get_static_option('target_closing', 0);
+
             if($employe->position == 1){
                 $target = $employe->todolist()->whereMonth('created_at', now()->month)->where('type', 3)->count();
-                $targetAchiev = $target > 0 ? ($target / get_static_option('target_content', 0)) * 40 : 0;
+                $targetAchiev = $target > 0 && $target_content > 0 ? ($target / $target_content) * 40 : 0;
             } else if($employe->position == 2){
                 $target = $employe->todolist()->whereMonth('created_at', now()->month)->where('type', 2)->count();
-                $targetAchiev = $target > 0 ? ($target / get_static_option('target_design', 0)) * 40 : 0;
+                $targetAchiev = $target > 0 && $target_design > 0 ? ($target / $target_design) * 40 : 0;
             } else if($employe->position == 4){
                 $target = $employe->todolist()->whereMonth('created_at', now()->month)->where('type', 1)->count();
-                $targetAchiev = $target > 0 ? ($target / get_static_option('target_client', 0)) * 40 : 0;
+                $targetAchiev = $target > 0 && $target_client > 0 ? ($target / $target_client) * 40 : 0;
             } else {
                 $target = $employe->todolist()->whereMonth('created_at', now()->month)->where('type', 4)->count();
-                $targetAchiev = $target > 0 ? ($target / get_static_option('target_closing', 0)) * 40 : 0;
+                $targetAchiev = $target > 0 && $target_closing > 0 ? ($target / $target_closing) * 40 : 0;
             }
 
             $percentage = $targetAchiev > 0 ? ($targetAchiev / 40) * 100 : 0; 
