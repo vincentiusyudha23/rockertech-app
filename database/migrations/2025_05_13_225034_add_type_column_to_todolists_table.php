@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('todolists', function (Blueprint $table) {
-            $table->enum('type', [1,2,3,4])->after('due_date')->nullable();
+            $table->enum('type', [1,2,3,4])->nullable();
         });
     }
 
