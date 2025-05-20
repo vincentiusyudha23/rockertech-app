@@ -91,6 +91,7 @@ Route::middleware(['web','auth', 'role:employee'])->prefix('employe')->name('emp
         Route::post('/todo-list/update-index', 'updateTaskIndex')->name('todolist.updateindex');
         Route::post('/todo-list/update', 'update')->name('todolist.update');
         Route::post('/todo-list/delete', 'delete')->name('todolist.delete');
+        Route::post('/todo-list/send-comment', 'sendComments')->name('todolist.send-comment');
     });
 
     Route::controller(MediaController::class)->group(function(){

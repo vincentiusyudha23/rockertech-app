@@ -63,7 +63,7 @@
             min-height: 75%;
         }
         .parent-btn-add{
-            z-index: 9999;
+            z-index: 500;
             position: absolute;
             bottom: 0;
             right: 20px;
@@ -137,8 +137,8 @@
                     
                                                     <div class="d-flex align-items-center gap-2">
                                                         <span class="fw-bold fs-13px">Assigned To:</span>
-                                                        <a href="javascript:;" class="avatar avatar-xs rounded-circle" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Yudha" data-container="body" data-animation="true">
-                                                            <img alt="image" :src="item.image">
+                                                        <a href="javascript:;" data-bs-toggle="tooltip"  data-bs-placement="bottom" :title="item.name" data-container="body" data-animation="true">
+                                                            <img alt="image" class="avatar avatar-xs rounded-circle" :src="item.image">
                                                         </a>
                                                     </div>
                                                 </div>
@@ -275,18 +275,12 @@
                         </div>
                         <div class="modal-body">
 
-                            <div class="row mb-2">
-                                <div class="col-12 col-md-2 d-flex justify-content-start align-items-center">
-                                    <span class="fw-bold fs-6">Assigned To:</span>
-                                </div>
-                                <div class="col-12 col-md-10 d-flex align-items-center gap-1">
-                                    <a href="javascript:;" class="avatar avatar-sm rounded-circle" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Yudha" data-container="body" data-animation="true">
-                                        <img alt="image" :src="editForm.image">
-                                    </a>
-                                    <span x-text="editForm.name"></span>
-                                </div>
+                            <div class="mb-2 d-flex align-items-center gap-2">
+                                <span class="font-weight-bolder text-xs text-uppercase">Assigned To:</span>
+                                <img alt="image" class="avatar avatar-xs rounded-circle" :src="editForm.image">
+                                <span class="font-weight-bolder text-xs text-uppercase" x-text="editForm.name"></span>
                             </div>
-    
+
                             <div class="form-group">
                                 <label class="form-control-label" for="edit-title">Title<sup class="text-danger">*</sup></label>
                                 <div class="input-group">
@@ -332,6 +326,46 @@
                                     <i x-show="loadingSaveEdit" class="fa-solid fa-spinner fa-spin fs-5"></i>
                                 </button>
                             </div>
+
+                            <div class="w-100 mb-2 rounded-3 px-2 py-3 border border-2" style="height: 300px; overflow-y: auto; display: flex; flex-direction: column-reverse;">
+                                <template x-if="commentArr && commentArr.length > 0">
+                                    <template x-for="(item, index) in commentArr" :key="index">
+                                        <div>
+                                            <template x-if="item.user_id == userId">
+                                                <div class="w-100 mb-2 d-flex justify-content-end align-items-center gap-2">
+                                                    <div style="max-width: 70%;" class="text-end">
+                                                        <div class="border border-2 rounded-2 py-1 px-2 bg-light">
+                                                            <span class="text-xs text-bold" x-text="item.content"></span>
+                                                        </div>
+                                                        <small class="text-xxs text-bold" x-text="item.name"></small>
+                                                        <small class="text-xxs text-uppercase text-bold opacity-7" x-text="item.created_at"></small>
+                                                    </div>
+                                                </div>
+                                            </template>
+                                            <template x-if="item.user_id != userId">
+                                                <div class="w-100 mb-2 d-flex justify-content-start align-items-center gap-2">
+                                                    <img alt="image" class="avatar avatar-xs rounded-circle" :src="item.image">
+                                                    <div style="max-width: 70%;">
+                                                        <div class="border border-2 rounded-2 py-1 px-2" >
+                                                            <span class="text-xs text-bold" x-text="item.content"></span>
+                                                        </div>
+                                                        <small class="text-xxs text-bold" x-text="item.name"></small>
+                                                        <small class="text-xxs text-uppercase text-bold opacity-7" x-text="item.created_at"></small>
+                                                    </div>
+                                                </div>
+                                            </template>
+                                        </div>
+                                    </template>
+                                </template>
+                            </div>
+                            <div class="w-100 position-relative">
+                                <div class="input-group">
+                                    <input class="form-control" x-on:keydown.enter="handleSendComment" x-model="commentForm.content" type="text" placeholder="Send Comment...">
+                                </div>
+                                <button :disabled="loadingComment" x-on:click="handleSendComment" style="z-index: 999;" class="btn btn-icon bg-gradient-info position-absolute top-50 end-0 translate-middle-y py-2 px-3 me-2">
+                                    <i class="fa-solid fa-paper-plane text-xs"></i>
+                                </button>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -368,17 +402,27 @@
             type: null
         };
 
+        const commentForm = {
+            todolist_id: null,
+            content: null,
+        };
+
         document.addEventListener('alpine:init', () => {
             Alpine.data('todoList', () => ({
+                userId : '{{ Auth::user()->id }}',
                 statusArr: status,
                 newForm: newForm,
                 editForm: editForm,
+                commentForm: commentForm,
+                commentArr: [],
                 todolistData: @json($todolist),
                 loadingSaveNew: false,
                 newQuillForm: null,
                 editQuillForm: null,
                 isUpdating: false,
                 loadingSaveEdit: false,
+                loadingComment: false,
+                allComments: @json($allComments),
                 async saveTodolist() {
                     this.modal_create = $(this.$refs.modal_create);
                     this.loadingSaveNew = true;
@@ -545,6 +589,31 @@
                         this.loadingSaveEdit = false;
                     }
                 },
+                async handleSendComment(){
+                    this.loadingComment = true;
+
+                    try {
+                        const response = await fetch('{{ route("employe.todolist.send-comment") }}', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'X-CSRF-TOKEN': "{{ csrf_token() }}",
+                                'Accept': 'application/json'
+                            },
+                            body: JSON.stringify({
+                                todolist_id: this.commentForm.todolist_id,
+                                content: this.commentForm.content,
+                            })
+                        });
+
+                        const res = await response.json();
+
+                        if(response.ok){
+                            this.loadingComment = false;
+                            this.commentForm.content = null;
+                        }
+                    } catch(err){}
+                },
                 openModalEdit(item){
                     this.editForm = {
                         todolist_id: item.id,
@@ -556,6 +625,13 @@
                         name: item.name,
                         type: item.type
                     };
+
+                    this.commentForm = {
+                        todolist_id: item.id,
+                        content: null
+                    };
+
+                    this.commentArr = this.allComments[item.id];
 
                     this.editQuillForm.root.innerHTML = item.description;
                 },
@@ -625,10 +701,24 @@
                         }
                     });
                 },
+                hanldePusher(){
+                    var $this = this;
+                    var pusher = new Pusher('c5cee67bd5404f589f4e', {
+                        cluster: 'ap1'
+                    });
+                    var channel = pusher.subscribe('todo-comments');
+                    channel.bind('comment-channel', function(data){
+                        $this.allComments = data.comment;
+                        $this.commentArr = $this.allComments[$this.commentForm.todolist_id];
+                    });
+                },
                 init(){
                     const $this = this;
+                    
+                    $this.hanldePusher();
 
                     this.$nextTick(() => {
+
                         $this.intiallizeSortable('#status-1');
                         $this.intiallizeSortable('#status-2');
                         $this.intiallizeSortable('#status-3');

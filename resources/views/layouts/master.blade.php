@@ -45,7 +45,7 @@
         .vh-30 {
             height: 30vh;
         }
-
+        
         .dt-length {
             width: max-content;
         }

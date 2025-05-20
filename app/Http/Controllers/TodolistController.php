@@ -2,7 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Comments;
+use App\Models\Todolist;
 use Illuminate\Support\Str;
+use App\Events\CommentEvent;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
@@ -12,8 +15,7 @@ class TodolistController extends Controller
     private function getTodolistData()
     {
         $user = Auth::user()->employee;
-        $todolist = $user->todolist()
-            ->orderBy('index_task')
+        $todolist = Todolist::orderBy('index_task')
             ->get()
             ->transform(function($item){
                 return [
@@ -25,16 +27,33 @@ class TodolistController extends Controller
                     'image' => get_data_image($item->employe->image)['img_url'],
                     'name' => $item->employe->name,
                     'type' => $item->type ?? null,
-                    'created_at' => $item->created_at->format('D, d M Y')
+                    'created_at' => $item->created_at->format('D, d M Y'),
                 ];
             })->groupBy('status');
+
         return $todolist;
+    }
+
+    private function getAllComment()
+    {
+        return Comments::latest()
+            ->get()->map(function($comment){
+                return [
+                    'todo_id' => $comment->todo_id,
+                    'user_id' => $comment->user_id,
+                    'name' => $comment->user?->employee?->name,
+                    'image' => get_data_image($comment->user?->employee?->image)['img_url'],
+                    'content' => $comment->content,
+                    'created_at' => $comment->created_at->format('H:i'),
+                ];
+            })->groupBy('todo_id')->toArray();
     }
 
     public function index()
     {
         return view('employe.todolist.index')->with([
-            'todolist' => $this->getTodolistData()
+            'todolist' => $this->getTodolistData(),
+            'allComments' => $this->getAllComment()
         ]);
     }
 
@@ -81,9 +100,9 @@ class TodolistController extends Controller
         $data = $request->data;
 
         if(!empty($data)){
-            $user = Auth::user()->employee;
-            collect($data)->each(function($item) use ($user){
-                $user->todolist()->find($item['todolist_id'])
+
+            collect($data)->each(function($item){
+                Todolist::find($item['todolist_id'])
                     ->update([
                         'index_task' => $item['index_task'],
                         'status' => $item['status']
@@ -165,6 +184,37 @@ class TodolistController extends Controller
             return response()->json([
                 'status' => 'error',
                 'msg' => 'Delete To-do List Failed'
+            ], 422);
+        }
+    }
+
+    public function sendComments(Request $request)
+    {
+        $request->validate([
+            'todolist_id' => 'required',
+            'content' => 'required'
+        ]);
+
+        $todolist = Todolist::find($request->todolist_id);
+        $user = Auth::user();
+
+        if($todolist){
+            $comments = $todolist->comments()->create([
+                'user_id' => $user->id,
+                'content' => $request->content
+            ]);
+
+            $comments->load('user');
+
+            broadcast(new CommentEvent($this->getAllComment()))->toOthers();
+            
+            return response()->json([
+                'data' => $this->getAllComment(),
+            ], 200);
+        } else {
+            return response()->json([
+                'type' => 'error',
+                'msg' => 'Todolist is not found'
             ], 422);
         }
     }
