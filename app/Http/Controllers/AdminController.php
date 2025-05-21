@@ -928,6 +928,32 @@ class AdminController extends Controller
         return view('admin.kpi.index', compact('todolists', 'precenses', 'achiev', 'employes', 'targetData', 'initiative'));
     }
 
+    public function kpiAllEmploye()
+    {
+        $todolists = $this->kpi_todolist();
+        $precenses = $this->kpi_precense();
+        $achiev = $this->kpi_target_achiev();
+        $initiative = $this->kpi_initiative();
+
+        $employes = Employee::latest()->get()->map(function($employe) use ($todolists, $precenses, $achiev, $initiative){
+            $todolist = collect($todolists)->where('employe_id', $employe->id)->first()['nilaiAkhir'] ?? 0;
+            $precens = collect($precenses)->where('employe_id', $employe->id)->first()['nilaiAkhir'] ?? 0;
+            $initiativ = collect($initiative)->where('employe_id', $employe->id)->first()['score'] ?? 0;
+            $achiev = $achiev->find($employe->id)?->target_achiev ?? 0;
+            $finalScore = $todolist + $precens + $achiev + $initiativ;
+
+            $employe->final_score = $finalScore;
+            $employe->color = $this->getColorPercentage($finalScore);
+            $employe->todolist = $todolist;
+            $employe->achiev = $achiev;
+            $employe->precense = $precens;
+            $employe->initiativ = $initiativ;
+            return $employe;
+        })->sortByDesc('final_score')->values()->toArray();
+
+        return $employes;
+    }
+
     private function formatedData($value, $target)
     {
         $percentage = $value > 0 && $target > 0 ? ($value / $target) * 100 : 0;

@@ -43,6 +43,7 @@ class Kernel extends ConsoleKernel
 
         // $schedule->command('backup:precense')->dailyAt('20:00');
         $schedule->command('backup:precense')->lastDayOfMonth('20:00');
+        $schedule->command('app:saved-key-performance')->lastDayOfMonth('20:00');
     }
 
     /**

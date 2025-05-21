@@ -6,6 +6,7 @@ use App\Models\User;
 use App\Models\Precense;
 use App\Models\Todolist;
 use App\Models\UserAddress;
+use App\Models\KeyPerformance;
 use App\Models\PermitSubmission;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -44,5 +45,10 @@ class Employee extends Model
     public function permit(): HasMany
     {
         return $this->hasMany(PermitSubmission::class, 'employee_id', 'id');
+    }
+
+    public function key_performance(): HasMany
+    {
+        return $this->hasMany(KeyPerformance::class, 'employee_id', 'id');
     }
 }
