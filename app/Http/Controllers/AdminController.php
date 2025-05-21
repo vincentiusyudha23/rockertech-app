@@ -904,11 +904,14 @@ class AdminController extends Controller
         $todolists = $this->kpi_todolist();
         $precenses = $this->kpi_precense();
         $achiev = $this->kpi_target_achiev();
-        $employes = Employee::latest()->get()->map(function($employe) use ($todolists, $precenses, $achiev){
+        $initiative = $this->kpi_initiative();
+
+        $employes = Employee::latest()->get()->map(function($employe) use ($todolists, $precenses, $achiev, $initiative){
             $todolist = collect($todolists)->where('employe_id', $employe->id)->first()['nilaiAkhir'] ?? 0;
             $precens = collect($precenses)->where('employe_id', $employe->id)->first()['nilaiAkhir'] ?? 0;
+            $initiativ = collect($initiative)->where('employe_id', $employe->id)->first()['score'] ?? 0;
             $achiev = $achiev->find($employe->id)?->target_achiev ?? 0;
-            $finalScore = $todolist + $precens + $achiev;
+            $finalScore = $todolist + $precens + $achiev + $initiativ;
 
             $employe->final_score = $finalScore;
             $employe->color = $this->getColorPercentage($finalScore);
@@ -922,7 +925,7 @@ class AdminController extends Controller
             'closing' => $this->formatedData(Todolist::whereMonth('created_at', now()->month)->where('type', 4)->count(), get_static_option('target_closing', 0))
         ];
 
-        return view('admin.kpi.index', compact('todolists', 'precenses', 'achiev', 'employes', 'targetData'));
+        return view('admin.kpi.index', compact('todolists', 'precenses', 'achiev', 'employes', 'targetData', 'initiative'));
     }
 
     private function formatedData($value, $target)
@@ -1078,10 +1081,10 @@ class AdminController extends Controller
                 $totalPrecense = $precense->where('status', '!=', 3)->count();
                 $totalOnTime = $precense->where('status', 1)->count();
 
-                $nilaiPrecense = $totalPrecense > 0 ? ($totalPrecense / $daysInMonth) * (30 * 0.7) : 0;
-                $nilaiOnTime = $totalOnTime > 0 ? ($totalOnTime / $daysInMonth) * (30 * 0.3) : 0;
+                $nilaiPrecense = $totalPrecense > 0 ? ($totalPrecense / $daysInMonth) * (20 * 0.7) : 0;
+                $nilaiOnTime = $totalOnTime > 0 ? ($totalOnTime / $daysInMonth) * (20 * 0.3) : 0;
                 $nilaiAkhir = $nilaiPrecense + $nilaiOnTime;
-                $percentage = $nilaiAkhir > 0 ? ($nilaiAkhir / 30) * 100 : 0;
+                $percentage = $nilaiAkhir > 0 ? ($nilaiAkhir / 20) * 100 : 0;
 
                 return [
                     'employe_id' => $employe_id,
@@ -1155,6 +1158,36 @@ class AdminController extends Controller
             $employe->percentage = round($percentage, 2);
             $employe->color = $this->getColorPercentage($percentage);
             return $employe;
+        })->sortByDesc('percentage')->values();
+    }
+
+    private function kpi_initiative()
+    {
+        return Employee::latest()->get()->map(function($employe){
+            $todolist = Todolist::whereMonth('created_at', now()->month)->where('employee_id', '!=', $employe->id)->get();
+            $totalTodo = $todolist->count();
+            
+            $totalComment = 0;
+            $todolist->each(function($todo) use ($employe, &$totalComment){
+                $comment = $todo->comments()->where('user_id', $employe->user->id)->count();
+                if($comment >= 2){
+                    $totalComment++;
+                }
+            });
+
+            $score = $totalTodo > 0 && $totalComment > 0 ? $totalComment / $totalTodo * 10 : 0;
+            $percentage = $score > 0 ? $score / 10 * 100 : 0;
+
+            return [
+                'employe_id' => $employe->id,
+                'name' => $employe->name,
+                'image' => get_data_image($employe->image)['img_url'],
+                'total_comment' => $totalComment,
+                'total_todo' => $todolist->count(),
+                'score' => $score,
+                'percentage' => $percentage,
+                'color' => $this->getColorPercentage($percentage)
+            ];
         })->sortByDesc('percentage')->values();
     }
 }

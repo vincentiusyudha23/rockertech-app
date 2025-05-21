@@ -21,6 +21,7 @@
                             <div class="flip-card-back">
                                 <div class="fs-3 text-bold">1</div>
                                 <div class="text-xs text-center">{{ $top1['name'] }}</div>
+                                <div class="text-xs text-center opacity-7">{{ $top1['final_score'] }}</div>
                             </div>
                         </div>
                     </div>
@@ -38,6 +39,7 @@
                             <div class="flip-card-back">
                                 <div class="fs-3 text-bold">2</div>
                                 <div class="text-xs text-center">{{ $top2['name'] }}</div>
+                                <div class="text-xs text-center opacity-7">{{ $top2['final_score'] }}</div>
                             </div>
                         </div>
                     </div>
@@ -52,6 +54,7 @@
                             <div class="flip-card-back">
                                 <div class="fs-3 text-bold">3</div>
                                 <div class="text-xs text-center">{{ $top3['name'] }}</div>
+                                <div class="text-xs text-center opacity-7">{{ $top3['final_score'] }}</div>
                             </div>
                         </div>
                     </div>
