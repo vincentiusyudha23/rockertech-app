@@ -9,6 +9,11 @@
     </div>
 </div>
 
+@php
+    $monthArr = $avg->pluck('month')->toArray();
+    $avgArr = $avg->pluck('avg')->toArray();
+@endphp
+
 @push('scripts')
     <script>
         var ctx2 = document.getElementById("chart-line").getContext("2d");
@@ -22,7 +27,7 @@
         new Chart(ctx2, {
         type: "line",
         data: {
-            labels: ["Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
+            labels: @json($monthArr),
             datasets: [
                 {
                     label: "Average per month",
@@ -33,7 +38,7 @@
                     borderWidth: 3,
                     backgroundColor: gradientStroke1,
                     fill: true,
-                    data: [50, 40, 300, 220, 500, 250, 400, 230, 500],
+                    data: @json($avgArr),
                     maxBarThickness: 6
 
                 },

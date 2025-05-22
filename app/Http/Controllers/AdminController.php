@@ -18,6 +18,7 @@ use App\Models\TimePrecense;
 use Illuminate\Http\Request;
 use App\Events\PrecenseEvent;
 use App\Models\MediaUploader;
+use App\Models\KeyPerformance;
 use App\Models\PermitSubmission;
 use Illuminate\Validation\Rules;
 use App\Events\RegisterCardEvent;
@@ -905,6 +906,7 @@ class AdminController extends Controller
         $precenses = $this->kpi_precense();
         $achiev = $this->kpi_target_achiev();
         $initiative = $this->kpi_initiative();
+        $avg = $this->chartDataKpi();
 
         $employes = Employee::latest()->get()->map(function($employe) use ($todolists, $precenses, $achiev, $initiative){
             $todolist = collect($todolists)->where('employe_id', $employe->id)->first()['nilaiAkhir'] ?? 0;
@@ -925,7 +927,7 @@ class AdminController extends Controller
             'closing' => $this->formatedData(Todolist::whereMonth('created_at', now()->month)->where('type', 4)->count(), get_static_option('target_closing', 0))
         ];
 
-        return view('admin.kpi.index', compact('todolists', 'precenses', 'achiev', 'employes', 'targetData', 'initiative'));
+        return view('admin.kpi.index', compact('todolists', 'precenses', 'achiev', 'employes', 'targetData', 'initiative', 'avg'));
     }
 
     public function kpiAllEmploye()
@@ -952,6 +954,48 @@ class AdminController extends Controller
         })->sortByDesc('final_score')->values()->toArray();
 
         return $employes;
+    }
+
+    private function chartDataKpi()
+    {
+        $data = KeyPerformance::latest()
+            ->whereYear('created_at', now()->year)
+            ->get()
+            ->groupBy(function($item){
+                return $item->created_at->format('Y-m');
+            })
+            ->map(function($item){
+                return [
+                    'count' => $item->count(),
+                    'avg' => $item->avg('final_score'),
+                    'month' => $item->first()->created_at->format('M')
+                ];
+            });
+
+        $months = collect();
+        $year = now()->year;
+
+        for($month = 1; $month <= 12; $month++){
+            $date = Carbon::create($year, $month, 1);
+            $monthKey = $date->format('Y-m');
+            $monthName = $date->format('M');
+
+            $months->put($monthKey, [
+                'count' => 0,
+                'avg' => 0,
+                'month' => $monthName
+            ]);
+        }
+
+        $result = $months->map(function($monthData, $key) use ($data){
+            if($data->has($key)){
+                return $data->get($key);
+            }
+
+            return $monthData;
+        })->values();
+
+        return $result;
     }
 
     private function formatedData($value, $target)
