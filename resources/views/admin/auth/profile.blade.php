@@ -34,21 +34,27 @@
                             </div>
                         </div>
                         <div class="form-group mb-3">
-                            <label class="form-control-label" for="update_password_current_password">Current Password<sup class="text-danger">*</sup></label>
+                            <label class="form-control-label" for="email">Email<sup class="text-danger">*</sup></label>
                             <div class="input-group">
-                                <input class="form-control input-password" name="current_password" type="password" id="update_password_current_password" required autocomplete="new-password">
+                                <input class="form-control" id="email" type="email" name="email" value="{{ auth()->user()->email }}">
                             </div>
                         </div>
                         <div class="form-group mb-3">
-                            <label class="form-control-label" for="password">Password<sup class="text-danger">*</sup></label>
+                            <label class="form-control-label" for="update_password_current_password">Current Password</label>
                             <div class="input-group">
-                                <input class="form-control input-password" name="password" type="password" id="password" required autocomplete="new-password">
+                                <input class="form-control input-password" name="current_password" type="password" id="update_password_current_password" autocomplete="new-password">
                             </div>
                         </div>
                         <div class="form-group mb-3">
-                            <label class="form-control-label" for="confirm_password">Confirmation Password<sup class="text-danger">*</sup></label>
+                            <label class="form-control-label" for="password">Password</label>
                             <div class="input-group">
-                                <input class="form-control input-password" name="password_confirmation" autocomplete="new-password" type="password" id="confirm_password" required>
+                                <input class="form-control input-password" name="password" type="password" id="password" autocomplete="new-password">
+                            </div>
+                        </div>
+                        <div class="form-group mb-3">
+                            <label class="form-control-label" for="confirm_password">Confirmation Password</label>
+                            <div class="input-group">
+                                <input class="form-control input-password" name="password_confirmation" autocomplete="new-password" type="password" id="confirm_password">
                             </div>
                         </div>
                         <div class="form-group mb-3">

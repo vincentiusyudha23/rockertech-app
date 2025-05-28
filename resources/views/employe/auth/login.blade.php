@@ -59,6 +59,9 @@
                     <div class="text-center">
                         <button type="submit" class="btn w-100 mt-4 mb-0 text-white text-md" style="background-color: #2d5abf;">Sign in</button>
                     </div>
+                    <div class="text-center mt-1">
+                        <a href="{{ route('employe.forget-password') }}" class="font-weight-bolder text-sm">Forget Password?</a>
+                    </div>
                 </form>
             </div>
         </div>

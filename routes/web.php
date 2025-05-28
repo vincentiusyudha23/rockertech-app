@@ -104,6 +104,11 @@ Route::middleware(['web','auth', 'role:employee'])->prefix('employe')->name('emp
 Route::middleware('guest')->name('employe.')->group(function () {
     Route::get('/', [AuthenticatedSessionController::class, 'create_employe']);
     Route::post('login', [AuthenticatedSessionController::class, 'store_employe'])->name('login');
+    Route::get('/forget-password', [EmployeController::class, 'forgetPassword'])->name('forget-password');
+    Route::post('/forget-password/send-otp', [EmployeController::class, 'sendOtpToEmail'])->name('forget-password.send-otp');
+    Route::post('/forget-password/verify-otp', [EmployeController::class, 'verifyOtp'])->name('forget-password.verify-otp');
+    Route::post('/forget-password/resend-otp', [EmployeController::class, 'resendOTP'])->name('forget-password.resend-otp');
+    Route::post('/forget-password/reset-password', [EmployeController::class, 'changePassword'])->name('forget-password.reset-password');
 });
 
 Route::get('/google-sheet', [AdminController::class, 'getPrecenseSheet']);

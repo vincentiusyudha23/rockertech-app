@@ -49,15 +49,25 @@ class AdminController extends Controller
     public function change_password(Request $request): RedirectResponse
     {
         $validated = $request->validate([
-            'current_password' => ['required', 'current_password'],
-            'password' => ['required', Password::defaults(), 'confirmed'],
+            'email' => ['required'],
+            'current_password' => ['nullable', 'current_password'],
+            'password' => ['required_with:current_password', 'exclude_if:current_password,null',Password::defaults(), 'confirmed'],
         ]);
 
-        $request->user()->update([
-            'password' => Hash::make($validated['password']),
-        ]);
+        $data = [
+            'email' => $request->email,
+        ];
 
-        return back()->with('success', 'Password Update Successfully');
+        if($request->input('password')){
+            $data = [
+                ...$data,
+                'password' => Hash::make($validated['password'])
+            ];
+        }
+
+        $request->user()->update($data);
+
+        return back()->with('success', 'Update profile is Successfully');
     }
 
     public function employee_acct()
@@ -578,34 +588,34 @@ class AdminController extends Controller
             //     ],
             //     'button' => false
             // ],
-            [
-                'title' => 'Alarm',
-                'icon' => 'fa-solid fa-bell',
-                'key' => '',
-                'route' => route('admin.update-static-option'),
-                'methode' => '',
-                'field' => [
-                    [
-                        'type' => 'time',
-                        'title' => 'Rest Time',
-                        'name' => 'alarm_rest_time',
-                        'value' => get_static_option('alarm_rest_time', ''),
-                    ],
-                    [
-                        'type' => 'time',
-                        'title' => 'Off Rest Time',
-                        'name' => 'alarm_off_rest_time',
-                        'value' => get_static_option('alarm_off_rest_time', ''),
-                    ],
-                    [
-                        'type' => 'time',
-                        'title' => 'Out Office',
-                        'name' => 'alarm_out_office',
-                        'value' => get_static_option('alarm_out_office',''),
-                    ],
-                ],
-                'button' => true
-            ],
+            // [
+            //     'title' => 'Alarm',
+            //     'icon' => 'fa-solid fa-bell',
+            //     'key' => '',
+            //     'route' => route('admin.update-static-option'),
+            //     'methode' => '',
+            //     'field' => [
+            //         [
+            //             'type' => 'time',
+            //             'title' => 'Rest Time',
+            //             'name' => 'alarm_rest_time',
+            //             'value' => get_static_option('alarm_rest_time', ''),
+            //         ],
+            //         [
+            //             'type' => 'time',
+            //             'title' => 'Off Rest Time',
+            //             'name' => 'alarm_off_rest_time',
+            //             'value' => get_static_option('alarm_off_rest_time', ''),
+            //         ],
+            //         [
+            //             'type' => 'time',
+            //             'title' => 'Out Office',
+            //             'name' => 'alarm_out_office',
+            //             'value' => get_static_option('alarm_out_office',''),
+            //         ],
+            //     ],
+            //     'button' => true
+            // ],
             [
                 'title' => 'Time Precense',
                 'icon' => 'fa-solid fa-clock',
@@ -671,6 +681,31 @@ class AdminController extends Controller
         ]);
         
         try{
+            $minTimeOffice = Carbon::parse($request->min_in_office);
+            $maxTimeOffice = Carbon::parse($request->max_in_office);
+            $minTimeOut = Carbon::parse($request->min_out_office);
+
+            if($maxTimeOffice->lt($minTimeOffice)){
+                return response()->json([
+                    'type' => 'error',
+                    'msg' => 'Max Time In Office must be greater than Min Time In Office'
+                ], 422);
+            }
+
+            if($minTimeOut->lt($minTimeOffice)){
+                return response()->json([
+                    'type' => 'error',
+                    'msg' => 'Min Time Out Office must be greater than Min Time In Office'
+                ], 422);
+            }
+
+            if($minTimeOut->lt($maxTimeOffice)){
+                return response()->json([
+                    'type' => 'error',
+                    'msg' => 'Min Time Out Office must be greater than Max Time In Office'
+                ], 422);
+            }
+
             TimePrecense::updateOrCreate(
                 ['type' => 'settings'],
                 [

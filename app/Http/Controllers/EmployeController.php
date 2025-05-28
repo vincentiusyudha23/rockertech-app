@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Carbon\Carbon;
+use App\Models\User;
 use App\Models\Employee;
 use App\Models\Precense;
 use Illuminate\View\View;
@@ -290,5 +291,146 @@ class EmployeController extends Controller
         return $permit->delete() ?
             redirect()->back()->with('success', 'Deleted Permit is Successfully') :
             redirect()->back()->with('errors', 'Deleted Permit is Failed');
+    }
+
+    public function forgetPassword()
+    {
+        return view('employe.auth.forget-password');
+    }
+
+    public function sendOtpToEmail(Request $request)
+    {
+        $request->validate(['email' => 'required']);
+
+        $email = $request->email;
+        $user = User::where(['email' => $email, 'role' => 'employee'])->exists();
+
+        if(!$user){
+            return response()->json([
+                'type' => 'error',
+                'errors' => ['Email is invalid']
+            ]);
+        }
+
+        $otp = rand(1000, 9999);
+        
+        sendToEmail([
+            'to' => $email,
+            'subject' => 'OTP for reset Password',
+            'view' => 'otp',
+            'viewData' => [
+                'otp' => $otp
+            ]
+        ]);
+
+        session()->put('__forget_password_otp_employe', $otp);
+        session()->put('__email_admin_employe', $email);
+        session()->put('__otp_expired_time_employe', now()->addMinutes(5));
+        session()->put('__can_resend_otp_employe', now()->addSeconds(90));
+        session()->put('__step_number_employe', 2);
+
+        return response()->json([
+            'type' => 'success',
+            'canResendOTP' => now()->diffInSeconds(session()->get('__can_resend_otp_employe'))
+        ]);
+    }
+
+    public function verifyOtp(Request $request)
+    {
+        $request->validate([
+            'otp' => 'required'
+        ]);
+        
+        $otpInput = implode('', $request->otp);
+
+        $otp = session()->get('__forget_password_otp_employe');
+        $expiredTime = session()->get('__otp_expired_time_employe');
+
+        if($expiredTime < now()){
+            return response()->json([
+                'type' => 'error',
+                'msg' => 'OTP has expired'
+            ], 422);
+        }
+
+        if($otpInput == $otp){
+            session()->put('__step_number_employe', 3);
+
+            return response()->json([
+                'type' => 'success',
+                'msg' => 'OTP Successfully verified'
+            ], 200);
+        }
+
+        return response()->json([
+            'type' => 'error',
+            'msg' => 'OTP is Invalid'
+        ], 422);
+    }
+
+    public function resendOTP(Request $request)
+    {
+        $otp = rand(1000, 9999);
+        $email = session()->get('__email_admin_employe');
+
+        if(!session()->has('__forget_password_otp_employe') || !session()->has('__can_resend_otp_employe') || !session()->has('__email_admin_employe')){
+            return response()->json([
+                'type' => 'error',
+                'msg' => 'Not Valid!'
+            ], 422);
+        }
+
+        sendToEmail([
+            'to' => $email,
+            'subject' => 'OTP for reset Password',
+            'view' => 'otp',
+            'viewData' => [
+                'otp' => $otp
+            ]
+        ]);
+
+        session()->put('__forget_password_otp_employe', $otp);
+        session()->put('__otp_expired_time_employe', now()->addMinutes(5));
+        session()->put('__can_resend_otp_employe', now()->addSeconds(90));
+        session()->put('__step_number_employe', 2);
+
+        return response()->json([
+            'type' => 'success',
+            'msg' => 'Resend OTP is Successfully',
+            'canResendOTP' => now()->diffInSeconds(session()->get('__can_resend_otp_employe'))
+        ], 200);
+    }
+
+    public function changePassword(Request $request)
+    {
+        $request->validate([
+            'newPassword' => 'required|min:8',
+            'confirmNewPassword' => 'required|same:newPassword'
+        ]);
+
+        $email = session()->get('__email_admin_employe');
+        $admin = User::where(['email' => $email, 'role' => 'employee'])->first();
+
+        if(empty($admin)){
+            return response()->json([
+                'type' => 'error',
+                'errors' => ['Email is Invalid']
+            ], 422);
+        }
+
+        $admin->update([
+            'password' => Hash::make($request->newPassword)
+        ]);
+        
+        session()->forget('__forget_password_otp_employe');
+        session()->forget('__email_admin_employe');
+        session()->forget('__otp_expired_time_employe');
+        session()->forget('__can_resend_otp_employe');
+        session()->forget('__step_number_employe');
+
+        return response()->json([
+            'type' => 'success',
+            'msg' => 'Reset Password is Successfully'
+        ]);
     }
 }

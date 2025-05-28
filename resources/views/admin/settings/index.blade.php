@@ -155,6 +155,11 @@
                             toastr.success(response.msg);
                         }
                     },
+                    error: function(err){
+                        const error = err.responseJSON;
+                        
+                        toastr.error(error.msg);
+                    },
                     complete: function(){
                         el.text('Save');
                         el.removeClass('disabled');
