@@ -35,7 +35,7 @@
                                 {{ $employe->name }}
                             </h5>
                             <p class="mb-0 font-weight-bold text-sm text-uppercase">
-                                {{ $employe->position }}
+                                {{ labelPosition($employe->position) }}
                             </p>
                         </div>
                     </div>
